@@ -1,0 +1,42 @@
+#!/bin/ruby
+
+infile = "epp512_lm.raw"
+#infile = "epp512_lm.dis"
+
+def fixcall ( pre, seg, ip )
+	addr = seg.hex * 16 + ip.hex
+	xaddr = "0x%x" % addr
+	if addr < 0x1000
+	    rv = pre + "call " + xaddr + "    ;" + seg + ":" + ip
+	else
+	    rv = pre + "call " + xaddr + "   ;" + seg + ":" + ip
+	end
+	return rv
+end
+
+def fixjmp ( pre, seg, ip )
+	addr = seg.hex * 16 + ip.hex
+	xaddr = "0x%x" % addr
+	if addr < 0x10000
+	    rv = pre + "jmp " + xaddr + "     ;" + seg + ":" + ip
+	else
+	    rv = pre + "jmp " + xaddr + "    ;" + seg + ":" + ip
+	end
+	return rv
+end
+
+IO.foreach(infile) { |line|
+    w = line.split("  ",2)
+    line2 = w[0].downcase + "  " + w[1]
+    if line2 =~ /(.*)call (0x.*):(0x.*)/
+	line3 = fixcall $1, $2, $3
+	puts line3
+    elsif line2 =~ /(.*)jmp (0x.*):(0x.*)/
+	line3 = fixjmp $1, $2, $3
+	puts line3
+    else
+	puts line2
+    end
+}
+
+# THE END
