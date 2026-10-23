@@ -1,8 +1,49 @@
-; lm.txt
+; epp512.txt
 ;
-; The START is at 0x3da4
-; This thing at zero is just a subroutine called from below.
+; This is a disassembly of epp512.exe with my annotations
+;
+;  Tom Trebisky  10-22-2026
+;
+; Most of the annotation is further down in the file
+; The netwide assembler was used -- see the Makefile
+;
+; According to some notes from the MOD-EMUP over USB project,
+; all software checks the EMUP in the following way:
+;   It writes 00, 01, 00, 02 and then pulses to register E7
+;   then it reads the low nibble of register F8.
+;   (which the ALL-03 documentation doesn't mention)
+; The app doesn't need it, but it shows there's logic in the
+;   box we don't fully understand. See dosbox-x/README.md.
+; They call this "The identification check."
+; They learned all this by running the software in a patched
+;  dosbox that logged each IO port access.
+; My goal (one of them) is to find this code in this file.
+;
+; ------------------------------------------------
+;
+; You will note lines with a comment like the following:
+;
+; 00000006  9A90266F01        call 0x3d80   ;0x16f:0x2690
+;
+; This is done by my "fixadd" script.
+; These are "far" calls and the cs:ip notation is all
+;  but useless -- so I convert it to a flat address so
+;  this code can be studied.   The original was like so:
+;
+; 00000006  9A90266F01        call 0x16f:0x2690
+;
+; This same issue comes up in other places (data references)
+;  that I didn't fix, and they are a pain to sort out.
+; Often the ds register is loaded in one place and then
+;  another register (typically bx) is used subsequently
+;
+; ------------------------------------------
+; We don't start here at address 0
+; The START is at 0x3da4 (given in the EXE header)
+; This code at zero is just a subroutine called from below.
+; I call this "zerosub"
 
+	zerosub:
 00000000  55                push bp
 00000001  8BEC              mov bp,sp
 00000003  B84800            mov ax,0x48
@@ -300,6 +341,7 @@
 000002fe  3D0000            cmp ax,0x0
 00000301  7403              jz 0x306
 00000303  E97800            jmp 0x37e
+
 00000306  B80700            mov ax,0x7
 00000309  50                push ax
 0000030a  B81F00            mov ax,0x1f
@@ -307,8 +349,10 @@
 0000030e  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
 00000313  83C404            add sp,byte +0x4
 00000316  3D0000            cmp ax,0x0
+
 00000319  7403              jz 0x31e
 0000031b  E96000            jmp 0x37e
+
 0000031e  B80200            mov ax,0x2
 00000321  50                push ax
 00000322  B81700            mov ax,0x17
@@ -316,8 +360,10 @@
 00000326  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
 0000032b  83C404            add sp,byte +0x4
 0000032e  3D0000            cmp ax,0x0
+
 00000331  7403              jz 0x336
 00000333  E94800            jmp 0x37e
+
 00000336  B80B00            mov ax,0xb
 00000339  50                push ax
 0000033a  B80300            mov ax,0x3
@@ -325,8 +371,10 @@
 0000033e  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
 00000343  83C404            add sp,byte +0x4
 00000346  3D0000            cmp ax,0x0
+
 00000349  7403              jz 0x34e
 0000034b  E93000            jmp 0x37e
+
 0000034e  B80900            mov ax,0x9
 00000351  50                push ax
 00000352  B81600            mov ax,0x16
@@ -334,8 +382,10 @@
 00000356  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
 0000035b  83C404            add sp,byte +0x4
 0000035e  3D0000            cmp ax,0x0
+
 00000361  7403              jz 0x366
 00000363  E91800            jmp 0x37e
+
 00000366  B80800            mov ax,0x8
 00000369  50                push ax
 0000036a  B80B00            mov ax,0xb
@@ -343,8 +393,10 @@
 0000036e  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
 00000373  83C404            add sp,byte +0x4
 00000376  3D0000            cmp ax,0x0
+
 00000379  7503              jnz 0x37e
 0000037b  E99600            jmp 0x414
+
 0000037e  B84F00            mov ax,0x4f
 00000381  50                push ax
 00000382  B81800            mov ax,0x18
@@ -6019,7 +6071,7 @@
 00003ba9  9AD7306F01        call 0x47c7   ;0x16f:0x30d7
 00003bae  83C402            add sp,byte +0x2
 00003bb1  894404            mov [si+0x4],ax
-00003bb4  0BC0              or ax,ax
+00003bb4  0BC0              or ax,ax		; set flags
 00003bb6  7404              jz 0x3bbc
 00003bb8  B008              mov al,0x8
 00003bba  EB02              jmp short 0x3bbe
@@ -6061,9 +6113,9 @@
 00003c13  9A484D6F01        call 0x6438   ;0x16f:0x4d48
 00003c18  83C406            add sp,byte +0x6
 00003c1b  894402            mov [si+0x2],ax
-00003c1e  0BC0              or ax,ax
+00003c1e  0BC0              or ax,ax		; set flags
 00003c20  7F15              jg 0x3c37
-00003c22  0BC0              or ax,ax
+00003c22  0BC0              or ax,ax		; set flags
 00003c24  7404              jz 0x3c2a
 00003c26  B020              mov al,0x20
 00003c28  EB02              jmp short 0x3c2c
@@ -6150,7 +6202,7 @@
 00003cec  50                push ax
 00003ced  9A64436F01        call 0x5a54   ;0x16f:0x4364
 00003cf2  83C402            add sp,byte +0x2
-00003cf5  0BC0              or ax,ax
+00003cf5  0BC0              or ax,ax		; set flags
 00003cf7  7553              jnz 0x3d4c
 00003cf9  FF06802F          inc word [0x2f80]
 00003cfd  C74404B031        mov word [si+0x4],0x31b0
@@ -6175,7 +6227,7 @@
 00003d31  9AD7306F01        call 0x47c7   ;0x16f:0x30d7
 00003d36  83C402            add sp,byte +0x2
 00003d39  894404            mov [si+0x4],ax
-00003d3c  0BC0              or ax,ax
+00003d3c  0BC0              or ax,ax		; set flags
 00003d3e  740C              jz 0x3d4c
 00003d40  804C0608          or byte [si+0x6],0x8
 00003d44  40                inc ax
@@ -6207,6 +6259,8 @@
 00003d7b  EA7B386F01        jmp 0x4f6b     ;0x16f:0x387b
 
 ; subroutine
+; called with a variety of values in ax
+
 00003d80  59                pop cx
 00003d81  5A                pop dx
 00003d82  8BDC              mov bx,sp
@@ -6222,13 +6276,19 @@
 00003d93  A1C42D            mov ax,[0x2dc4]
 00003d96  40                inc ax
 00003d97  7505              jnz 0x3d9e
-00003d99  33C0              xor ax,ax
-00003d9b  E9B300            jmp 0x3e51
+00003d99  33C0              xor ax,ax		; ax = 0
+00003d9b  E9B300            jmp 0x3e51		; go print error message
+; (message 0 is "stack overflow")
 
 00003d9e  52                push dx
 00003d9f  51                push cx
-00003da0  FF2EC42D          jmp far [0x2dc4]
+00003da0  FF2EC42D          jmp far [0x2dc4]	; where does this go?
 
+; Maybe the above uses CS = 0x16f ?
+;  This would give 0x44b4 -- which also does not make sense.
+
+; ===============================================
+; ===============================================
 ; START
 ; This is the starting address
 
@@ -6309,13 +6369,15 @@
 00003e3b  FF365A2E          push word [0x2e5a]
 00003e3f  FF36582E          push word [0x2e58]
 
-00003e43  9A00000000        call 0x0    ;0x0:0x0
+00003e43  9A00000000        call 0x0    ; zerosub
 
 00003e48  50                push ax
 00003e49  9A1F286F01        call 0x3f0f   ;0x16f:0x281f
 
 ; fetch message "divide by 0"
 00003e4e  B80300            mov ax,0x3		; ax = 3
+
+; several places branch here to print error messages.
 00003e51  50                push ax
 00003e52  9AAD446F01        call 0x5b9d   ;0x16f:0x44ad
 00003e57  B8FF00            mov ax,0xff
@@ -6925,7 +6987,7 @@
 0000440f  8904              mov [si],ax
 00004411  8BC7              mov ax,di
 00004413  4F                dec di
-00004414  0BC0              or ax,ax
+00004414  0BC0              or ax,ax		; set flags
 00004416  7E62              jng 0x447a
 00004418  8B1C              mov bx,[si]
 0000441a  803F0A            cmp byte [bx],0xa
@@ -6958,7 +7020,7 @@
 0000445e  9A484D6F01        call 0x6438   ;0x16f:0x4d48
 00004463  83C406            add sp,byte +0x6
 00004466  894402            mov [si+0x2],ax
-00004469  0BC0              or ax,ax
+00004469  0BC0              or ax,ax		; set flags
 0000446b  7D95              jnl 0x4402
 0000446d  E913FE            jmp 0x4283
 00004470  8B4404            mov ax,[si+0x4]
@@ -7106,7 +7168,7 @@
 000045ba  53                push bx
 000045bb  9A4B516F01        call 0x683b   ;0x16f:0x514b
 000045c0  83C406            add sp,byte +0x6
-000045c3  0BC0              or ax,ax
+000045c3  0BC0              or ax,ax		; set flags
 000045c5  7507              jnz 0x45ce
 000045c7  8B1C              mov bx,[si]
 000045c9  8D4101            lea ax,[bx+di+0x1]
@@ -7156,7 +7218,7 @@
 0000461d  83FA02            cmp dx,byte +0x2
 00004620  7706              ja 0x4628
 00004622  7508              jnz 0x462c
-00004624  0BC0              or ax,ax
+00004624  0BC0              or ax,ax		; set flags
 00004626  7404              jz 0x462c
 00004628  0BFE              or di,si
 0000462a  754B              jnz 0x4677
@@ -7198,11 +7260,12 @@
 0000467f  5D                pop bp
 00004680  CB                retf
 
+; single argument -- read from port
 00004681  55                push bp
 00004682  8BEC              mov bp,sp
-00004684  8B5606            mov dx,[bp+0x6]
-00004687  EC                in al,dx			; << << <<
-00004688  32E4              xor ah,ah
+00004684  8B5606            mov dx,[bp+0x6]		; argument
+00004687  EC                in al,dx			; read the port
+00004688  32E4              xor ah,ah			; clear ah
 0000468a  8BE5              mov sp,bp
 0000468c  5D                pop bp
 0000468d  CB                retf
@@ -7378,11 +7441,12 @@
 0000480b  5D                pop bp
 0000480c  CB                retf
 
+; Subroutine -- write to port
 0000480d  55                push bp
 0000480e  8BEC              mov bp,sp
-00004810  8B5606            mov dx,[bp+0x6]
-00004813  8A4608            mov al,[bp+0x8]
-00004816  EE                out dx,al			; <<
+00004810  8B5606            mov dx,[bp+0x6]		; arg2 - port
+00004813  8A4608            mov al,[bp+0x8]		; arg1 - val
+00004816  EE                out dx,al			; port = val
 00004817  8BE5              mov sp,bp
 00004819  5D                pop bp
 0000481a  CB                retf
@@ -7916,7 +7980,7 @@
 00004c75  9A30576F01        call 0x6e20   ;0x16f:0x5730
 00004c7a  83C406            add sp,byte +0x6
 00004c7d  8946FA            mov [bp-0x6],ax
-00004c80  0BC0              or ax,ax
+00004c80  0BC0              or ax,ax		; set flags
 00004c82  7D03              jnl 0x4c87
 00004c84  E971FF            jmp 0x4bf8
 00004c87  F646FE08          test byte [bp-0x2],0x8
@@ -8035,7 +8099,7 @@
 00004daf  50                push ax
 00004db0  9A64436F01        call 0x5a54   ;0x16f:0x4364
 00004db5  83C402            add sp,byte +0x2
-00004db8  0BC0              or ax,ax
+00004db8  0BC0              or ax,ax		; set flags
 00004dba  740B              jz 0x4dc7
 00004dbc  56                push si
 00004dbd  9A56396F01        call 0x5046   ;0x16f:0x3956
@@ -8135,7 +8199,7 @@
 00004e8e  8944FE            mov [si-0x2],ax
 00004e91  EBE6              jmp short 0x4e79
 00004e93  8B4708            mov ax,[bx+0x8]
-00004e96  0BC0              or ax,ax
+00004e96  0BC0              or ax,ax		; set flags
 00004e98  7404              jz 0x4e9e
 00004e9a  8ED8              mov ds,ax
 00004e9c  EB14              jmp short 0x4eb2
@@ -8393,7 +8457,7 @@
 00005075  8B04              mov ax,[si]
 00005077  2B4404            sub ax,[si+0x4]
 0000507a  8946FC            mov [bp-0x4],ax
-0000507d  0BC0              or ax,ax
+0000507d  0BC0              or ax,ax		; set flags
 0000507f  7E1D              jng 0x509e
 00005081  50                push ax
 00005082  FF7404            push word [si+0x4]
@@ -8923,7 +8987,7 @@
 00005614  8804              mov [si],al
 00005616  46                inc si
 00005617  9A3B436F01        call 0x5a2b   ;0x16f:0x433b
-0000561c  0BC0              or ax,ax
+0000561c  0BC0              or ax,ax		; set flags
 0000561e  75BD              jnz 0x55dd
 00005620  83FFFF            cmp di,byte -0x1
 00005623  7506              jnz 0x562b
@@ -8989,7 +9053,7 @@
 000056c9  9AC9426F01        call 0x59b9   ;0x16f:0x42c9
 000056ce  8BF8              mov di,ax
 000056d0  9A3B436F01        call 0x5a2b   ;0x16f:0x433b
-000056d5  0BC0              or ax,ax
+000056d5  0BC0              or ax,ax		; set flags
 000056d7  7454              jz 0x572d
 000056d9  83FFFF            cmp di,byte -0x1
 000056dc  744F              jz 0x572d
@@ -9133,12 +9197,12 @@
 0000585b  56                push si
 0000585c  9A5C426F01        call 0x594c   ;0x16f:0x425c
 00005861  83C402            add sp,byte +0x2
-00005864  0BC0              or ax,ax
+00005864  0BC0              or ax,ax		; set flags
 00005866  75DF              jnz 0x5847
 00005868  83FE2E            cmp si,byte +0x2e
 0000586b  7531              jnz 0x589e
 0000586d  9A3B436F01        call 0x5a2b   ;0x16f:0x433b
-00005872  0BC0              or ax,ax
+00005872  0BC0              or ax,ax		; set flags
 00005874  7428              jz 0x589e
 00005876  397EB6            cmp [bp-0x4a],di
 00005879  7623              jna 0x589e
@@ -9154,7 +9218,7 @@
 00005891  56                push si
 00005892  9A5C426F01        call 0x594c   ;0x16f:0x425c
 00005897  83C402            add sp,byte +0x2
-0000589a  0BC0              or ax,ax
+0000589a  0BC0              or ax,ax		; set flags
 0000589c  75DF              jnz 0x587d
 0000589e  837EFE00          cmp word [bp-0x2],byte +0x0
 000058a2  7461              jz 0x5905
@@ -9163,7 +9227,7 @@
 000058a9  83FE45            cmp si,byte +0x45
 000058ac  7557              jnz 0x5905
 000058ae  9A3B436F01        call 0x5a2b   ;0x16f:0x433b
-000058b3  0BC0              or ax,ax
+000058b3  0BC0              or ax,ax		; set flags
 000058b5  744E              jz 0x5905
 000058b7  397EB6            cmp [bp-0x4a],di
 000058ba  7649              jna 0x5905
@@ -9177,7 +9241,7 @@
 000058cd  83FE2B            cmp si,byte +0x2b
 000058d0  7526              jnz 0x58f8
 000058d2  9A3B436F01        call 0x5a2b   ;0x16f:0x433b
-000058d7  0BC0              or ax,ax
+000058d7  0BC0              or ax,ax		; set flags
 000058d9  741D              jz 0x58f8
 000058db  83FE2D            cmp si,byte +0x2d
 000058de  7511              jnz 0x58f1
@@ -9194,7 +9258,7 @@
 000058f8  56                push si
 000058f9  9A5C426F01        call 0x594c   ;0x16f:0x425c
 000058fe  83C402            add sp,byte +0x2
-00005901  0BC0              or ax,ax
+00005901  0BC0              or ax,ax		; set flags
 00005903  75E2              jnz 0x58e7
 00005905  FF0E6C31          dec word [0x316c]
 00005909  FF365A31          push word [0x315a]
@@ -9232,7 +9296,7 @@
 0000595f  F687692E04        test byte [bx+0x2e69],0x4
 00005964  740E              jz 0x5974
 00005966  9A3B436F01        call 0x5a2b   ;0x16f:0x433b
-0000596b  0BC0              or ax,ax
+0000596b  0BC0              or ax,ax		; set flags
 0000596d  7405              jz 0x5974
 0000596f  B80100            mov ax,0x1
 00005972  EB02              jmp short 0x5976
@@ -9501,7 +9565,7 @@
 00005ba0  57                push di
 00005ba1  FF7606            push word [bp+0x6]
 00005ba4  9A7D446F01        call 0x5b6d   ;0x16f:0x447d
-00005ba9  0BC0              or ax,ax
+00005ba9  0BC0              or ax,ax		; set flags
 00005bab  7414              jz 0x5bc1
 00005bad  92                xchg ax,dx		; dx = ax
 
@@ -9581,7 +9645,7 @@
 00005c70  50                push ax
 00005c71  9A1E4D6F01        call 0x640e   ;0x16f:0x4d1e
 00005c76  83C402            add sp,byte +0x2
-00005c79  0BC0              or ax,ax
+00005c79  0BC0              or ax,ax		; set flags
 00005c7b  75BD              jnz 0x5c3a
 00005c7d  56                push si
 00005c7e  B89031            mov ax,0x3190
@@ -9853,7 +9917,7 @@
 00005f5b  46                inc si
 00005f5c  8B46FE            mov ax,[bp-0x2]
 00005f5f  FF4EFE            dec word [bp-0x2]
-00005f62  0BC0              or ax,ax
+00005f62  0BC0              or ax,ax		; set flags
 00005f64  7FF2              jg 0x5f58
 00005f66  8A05              mov al,[di]
 00005f68  8804              mov [si],al
@@ -10009,7 +10073,7 @@
 00006124  FF76FE            push word [bp-0x2]
 00006127  9AF8566F01        call 0x6de8   ;0x16f:0x56f8
 0000612c  83C402            add sp,byte +0x2
-0000612f  0BC0              or ax,ax
+0000612f  0BC0              or ax,ax		; set flags
 00006131  7405              jz 0x6138
 00006133  B80100            mov ax,0x1
 00006136  EB02              jmp short 0x613a
@@ -10082,7 +10146,7 @@
 000061db  FF069431          inc word [0x3194]
 000061df  8BC6              mov ax,si
 000061e1  4E                dec si
-000061e2  0BC0              or ax,ax
+000061e2  0BC0              or ax,ax		; set flags
 000061e4  7FC8              jg 0x61ae
 000061e6  833E943100        cmp word [0x3194],byte +0x0
 000061eb  7507              jnz 0x61f4
@@ -10128,7 +10192,7 @@
 0000624b  FF4606            inc word [bp+0x6]
 0000624e  8BC6              mov ax,si
 00006250  4E                dec si
-00006251  0BC0              or ax,ax
+00006251  0BC0              or ax,ax		; set flags
 00006253  75BE              jnz 0x6213
 00006255  833E943100        cmp word [0x3194],byte +0x0
 0000625a  7507              jnz 0x6263
@@ -10388,7 +10452,7 @@
 000064c5  B43F              mov ah,0x3f
 000064c7  CD21              int 0x21
 000064c9  72BC              jc 0x6487
-000064cb  0BC0              or ax,ax
+000064cb  0BC0              or ax,ax		; set flags
 000064cd  741A              jz 0x64e9
 000064cf  837E0A01          cmp word [bp+0xa],byte +0x1
 000064d3  7420              jz 0x64f5
@@ -10417,7 +10481,7 @@
 0000650c  56                push si
 0000650d  9A64566F01        call 0x6d54   ;0x16f:0x5664
 00006512  83C404            add sp,byte +0x4
-00006515  0BC0              or ax,ax
+00006515  0BC0              or ax,ax		; set flags
 00006517  7408              jz 0x6521
 00006519  8064FEFE          and byte [si-0x2],0xfe
 0000651d  8BC6              mov ax,si
@@ -10621,7 +10685,7 @@
 000066c1  57                push di
 000066c2  9AC3586F01        call 0x6fb3   ;0x16f:0x58c3
 000066c7  83C404            add sp,byte +0x4
-000066ca  0BC0              or ax,ax
+000066ca  0BC0              or ax,ax		; set flags
 000066cc  741A              jz 0x66e8
 000066ce  FF76F6            push word [bp-0xa]
 000066d1  8D8676FF          lea ax,[bp-0x8a]
@@ -10864,7 +10928,7 @@
 000068d9  7304              jnc 0x68df
 000068db  B409              mov ah,0x9
 000068dd  EB49              jmp short 0x6928
-000068df  0BC0              or ax,ax
+000068df  0BC0              or ax,ax		; set flags
 000068e1  742F              jz 0x6912
 000068e3  46                inc si
 000068e4  B90200            mov cx,0x2
@@ -10874,7 +10938,7 @@
 000068ee  7304              jnc 0x68f4
 000068f0  B409              mov ah,0x9
 000068f2  EB34              jmp short 0x6928
-000068f4  0BC0              or ax,ax
+000068f4  0BC0              or ax,ax		; set flags
 000068f6  741A              jz 0x6912
 000068f8  59                pop cx
 000068f9  8BD7              mov dx,di
@@ -10889,7 +10953,7 @@
 00006908  7304              jnc 0x690e
 0000690a  B409              mov ah,0x9
 0000690c  EB1A              jmp short 0x6928
-0000690e  0BC0              or ax,ax
+0000690e  0BC0              or ax,ax		; set flags
 00006910  7516              jnz 0x6928
 00006912  F687442E40        test byte [bx+0x2e44],0x40
 00006917  740B              jz 0x6924
@@ -10917,7 +10981,7 @@
 00006945  7304              jnc 0x694b
 00006947  B409              mov ah,0x9
 00006949  EBE4              jmp short 0x692f
-0000694b  0BC0              or ax,ax
+0000694b  0BC0              or ax,ax		; set flags
 0000694d  75E0              jnz 0x692f
 0000694f  F687442E40        test byte [bx+0x2e44],0x40
 00006954  740A              jz 0x6960
@@ -11078,7 +11142,7 @@
 00006abd  9AD7306F01        call 0x47c7   ;0x16f:0x30d7
 00006ac2  83C402            add sp,byte +0x2
 00006ac5  8946FE            mov [bp-0x2],ax
-00006ac8  0BC0              or ax,ax
+00006ac8  0BC0              or ax,ax		; set flags
 00006aca  752B              jnz 0x6af7
 00006acc  8B46F6            mov ax,[bp-0xa]
 00006acf  050F00            add ax,0xf
@@ -11216,7 +11280,7 @@
 00006c34  8B5EF0            mov bx,[bp-0x10]
 00006c37  8B07              mov ax,[bx]
 00006c39  8946EE            mov [bp-0x12],ax
-00006c3c  0BC0              or ax,ax
+00006c3c  0BC0              or ax,ax		; set flags
 00006c3e  7593              jnz 0x6bd3
 00006c40  C6050D            mov byte [di],0xd
 00006c43  8B5E0E            mov bx,[bp+0xe]
@@ -11504,7 +11568,7 @@
 00006ebd  BA0830            mov dx,0x3008
 00006ec0  B43F              mov ah,0x3f
 00006ec2  CD21              int 0x21
-00006ec4  0BC0              or ax,ax
+00006ec4  0BC0              or ax,ax		; set flags
 00006ec6  7416              jz 0x6ede
 00006ec8  803E08301A        cmp byte [0x3008],0x1a
 00006ecd  750F              jnz 0x6ede
@@ -11720,7 +11784,7 @@
 00007096  8BF7              mov si,di
 00007098  92                xchg ax,dx
 00007099  33D2              xor dx,dx
-0000709b  0BC0              or ax,ax
+0000709b  0BC0              or ax,ax		; set flags
 0000709d  7402              jz 0x70a1
 0000709f  F7F1              div cx
 000070a1  93                xchg ax,bx
@@ -11809,7 +11873,7 @@
 0000715c  53                push bx
 0000715d  33FF              xor di,di
 0000715f  8B4608            mov ax,[bp+0x8]
-00007162  0BC0              or ax,ax
+00007162  0BC0              or ax,ax		; set flags
 00007164  7D12              jnl 0x7178
 00007166  F7D7              not di
 00007168  8B5606            mov dx,[bp+0x6]
@@ -11819,7 +11883,7 @@
 00007172  894608            mov [bp+0x8],ax
 00007175  895606            mov [bp+0x6],dx
 00007178  8B460C            mov ax,[bp+0xc]
-0000717b  0BC0              or ax,ax
+0000717b  0BC0              or ax,ax		; set flags
 0000717d  7D12              jnl 0x7191
 0000717f  F7D7              not di
 00007181  8B560A            mov dx,[bp+0xa]
@@ -11828,7 +11892,7 @@
 00007188  1D0000            sbb ax,0x0
 0000718b  89460C            mov [bp+0xc],ax
 0000718e  89560A            mov [bp+0xa],dx
-00007191  0BC0              or ax,ax
+00007191  0BC0              or ax,ax		; set flags
 00007193  7516              jnz 0x71ab
 00007195  8B4E0A            mov cx,[bp+0xa]
 00007198  8B4608            mov ax,[bp+0x8]
@@ -11906,7 +11970,7 @@
 0000722c  57                push di
 0000722d  33FF              xor di,di
 0000722f  8B4608            mov ax,[bp+0x8]
-00007232  0BC0              or ax,ax
+00007232  0BC0              or ax,ax		; set flags
 00007234  7D12              jnl 0x7248
 00007236  F7D7              not di
 00007238  8B5606            mov dx,[bp+0x6]
@@ -11916,7 +11980,7 @@
 00007242  894608            mov [bp+0x8],ax
 00007245  895606            mov [bp+0x6],dx
 00007248  8B460C            mov ax,[bp+0xc]
-0000724b  0BC0              or ax,ax
+0000724b  0BC0              or ax,ax		; set flags
 0000724d  7D10              jnl 0x725f
 0000724f  8B560A            mov dx,[bp+0xa]
 00007252  F7D8              neg ax
@@ -11924,7 +11988,7 @@
 00007256  1D0000            sbb ax,0x0
 00007259  89460C            mov [bp+0xc],ax
 0000725c  89560A            mov [bp+0xa],dx
-0000725f  0BC0              or ax,ax
+0000725f  0BC0              or ax,ax		; set flags
 00007261  751A              jnz 0x727d
 00007263  8B4E0A            mov cx,[bp+0xa]
 00007266  8B4608            mov ax,[bp+0x8]
@@ -12044,7 +12108,7 @@
 00007366  8BEC              mov bp,sp
 00007368  53                push bx
 00007369  8B460C            mov ax,[bp+0xc]
-0000736c  0BC0              or ax,ax
+0000736c  0BC0              or ax,ax		; set flags
 0000736e  7516              jnz 0x7386
 00007370  8B4E0A            mov cx,[bp+0xa]
 00007373  8B4608            mov ax,[bp+0x8]
@@ -12542,6 +12606,7 @@
 00007861  3D0000            cmp ax,0x0
 00007864  7403              jz 0x7869
 00007866  E97800            jmp 0x78e1
+
 00007869  B80700            mov ax,0x7
 0000786c  50                push ax
 0000786d  B81F00            mov ax,0x1f
@@ -12549,8 +12614,10 @@
 00007871  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
 00007876  83C404            add sp,byte +0x4
 00007879  3D0000            cmp ax,0x0
+
 0000787c  7403              jz 0x7881
 0000787e  E96000            jmp 0x78e1
+
 00007881  B80200            mov ax,0x2
 00007884  50                push ax
 00007885  B81700            mov ax,0x17
@@ -12558,8 +12625,10 @@
 00007889  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
 0000788e  83C404            add sp,byte +0x4
 00007891  3D0000            cmp ax,0x0
+
 00007894  7403              jz 0x7899
 00007896  E94800            jmp 0x78e1
+
 00007899  B80B00            mov ax,0xb
 0000789c  50                push ax
 0000789d  B80300            mov ax,0x3
@@ -12567,8 +12636,10 @@
 000078a1  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
 000078a6  83C404            add sp,byte +0x4
 000078a9  3D0000            cmp ax,0x0
+
 000078ac  7403              jz 0x78b1
 000078ae  E93000            jmp 0x78e1
+
 000078b1  B80900            mov ax,0x9
 000078b4  50                push ax
 000078b5  B81600            mov ax,0x16
@@ -12576,8 +12647,10 @@
 000078b9  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
 000078be  83C404            add sp,byte +0x4
 000078c1  3D0000            cmp ax,0x0
+
 000078c4  7403              jz 0x78c9
 000078c6  E91800            jmp 0x78e1
+
 000078c9  B80800            mov ax,0x8
 000078cc  50                push ax
 000078cd  B80B00            mov ax,0xb
@@ -12585,8 +12658,10 @@
 000078d1  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
 000078d6  83C404            add sp,byte +0x4
 000078d9  3D0000            cmp ax,0x0
+
 000078dc  7503              jnz 0x78e1
 000078de  E90600            jmp 0x78e7
+
 000078e1  B80100            mov ax,0x1
 000078e4  E94F0A            jmp 0x8336
 000078e7  8B1E0C0B          mov bx,[0xb0c]
@@ -13659,7 +13734,7 @@
 0000859b  8956F0            mov [bp-0x10],dx
 0000859e  83FA01            cmp dx,byte +0x1
 000085a1  7504              jnz 0x85a7
-000085a3  0BC0              or ax,ax
+000085a3  0BC0              or ax,ax		; set flags
 000085a5  741E              jz 0x85c5
 000085a7  837EF000          cmp word [bp-0x10],byte +0x0
 000085ab  7507              jnz 0x85b4
@@ -13709,7 +13784,7 @@
 0000863f  807EFC00          cmp byte [bp-0x4],0x0
 00008643  7528              jnz 0x866d
 00008645  9ABC306F01        call 0x47ac   ;0x16f:0x30bc
-0000864a  0BC0              or ax,ax
+0000864a  0BC0              or ax,ax		; set flags
 0000864c  741F              jz 0x866d
 0000864e  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
 00008653  8946F6            mov [bp-0xa],ax
@@ -13883,7 +13958,7 @@
 0000884b  8956C2            mov [bp-0x3e],dx
 0000884e  83FA01            cmp dx,byte +0x1
 00008851  7504              jnz 0x8857
-00008853  0BC0              or ax,ax
+00008853  0BC0              or ax,ax		; set flags
 00008855  741E              jz 0x8875
 00008857  837EC200          cmp word [bp-0x3e],byte +0x0
 0000885b  7507              jnz 0x8864
@@ -14017,7 +14092,7 @@
 000089db  8346C810          add word [bp-0x38],byte +0x10
 000089df  8356CA00          adc word [bp-0x36],byte +0x0
 000089e3  9ABC306F01        call 0x47ac   ;0x16f:0x30bc
-000089e8  0BC0              or ax,ax
+000089e8  0BC0              or ax,ax		; set flags
 000089ea  7426              jz 0x8a12
 000089ec  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
 000089f1  3D1B00            cmp ax,0x1b
@@ -14679,7 +14754,7 @@
 000090ce  8956EC            mov [bp-0x14],dx
 000090d1  83FA01            cmp dx,byte +0x1
 000090d4  7504              jnz 0x90da
-000090d6  0BC0              or ax,ax
+000090d6  0BC0              or ax,ax		; set flags
 000090d8  741E              jz 0x90f8
 000090da  837EEC00          cmp word [bp-0x14],byte +0x0
 000090de  7507              jnz 0x90e7
@@ -14737,7 +14812,7 @@
 00009190  807EFA00          cmp byte [bp-0x6],0x0
 00009194  752E              jnz 0x91c4
 00009196  9ABC306F01        call 0x47ac   ;0x16f:0x30bc
-0000919b  0BC0              or ax,ax
+0000919b  0BC0              or ax,ax		; set flags
 0000919d  7425              jz 0x91c4
 0000919f  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
 000091a4  8946F4            mov [bp-0xc],ax
@@ -14965,7 +15040,7 @@
 00009421  8956E8            mov [bp-0x18],dx
 00009424  83FA01            cmp dx,byte +0x1
 00009427  7504              jnz 0x942d
-00009429  0BC0              or ax,ax
+00009429  0BC0              or ax,ax		; set flags
 0000942b  741E              jz 0x944b
 0000942d  837EE800          cmp word [bp-0x18],byte +0x0
 00009431  7507              jnz 0x943a
@@ -15014,7 +15089,7 @@
 000094c0  807EFC00          cmp byte [bp-0x4],0x0
 000094c4  7528              jnz 0x94ee
 000094c6  9ABC306F01        call 0x47ac   ;0x16f:0x30bc
-000094cb  0BC0              or ax,ax
+000094cb  0BC0              or ax,ax		; set flags
 000094cd  741F              jz 0x94ee
 000094cf  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
 000094d4  8946F4            mov [bp-0xc],ax
@@ -15118,7 +15193,7 @@
 000095ef  83C402            add sp,byte +0x2
 000095f2  C746EA0000        mov word [bp-0x16],0x0
 000095f7  9ABC306F01        call 0x47ac   ;0x16f:0x30bc
-000095fc  0BC0              or ax,ax
+000095fc  0BC0              or ax,ax		; set flags
 000095fe  7426              jz 0x9626
 00009600  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
 00009605  3D1B00            cmp ax,0x1b
@@ -15391,7 +15466,7 @@
 000098e1  8956EC            mov [bp-0x14],dx
 000098e4  83FA01            cmp dx,byte +0x1
 000098e7  7504              jnz 0x98ed
-000098e9  0BC0              or ax,ax
+000098e9  0BC0              or ax,ax		; set flags
 000098eb  7417              jz 0x9904
 000098ed  837EEC00          cmp word [bp-0x14],byte +0x0
 000098f1  7507              jnz 0x98fa
@@ -15425,7 +15500,7 @@
 00009949  807EFC00          cmp byte [bp-0x4],0x0
 0000994d  752F              jnz 0x997e
 0000994f  9ABC306F01        call 0x47ac   ;0x16f:0x30bc
-00009954  0BC0              or ax,ax
+00009954  0BC0              or ax,ax		; set flags
 00009956  7426              jz 0x997e
 00009958  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
 0000995d  8946F4            mov [bp-0xc],ax
@@ -15763,7 +15838,7 @@
 00009d3e  8346EC10          add word [bp-0x14],byte +0x10
 00009d42  8356EE00          adc word [bp-0x12],byte +0x0
 00009d46  9ABC306F01        call 0x47ac   ;0x16f:0x30bc
-00009d4b  0BC0              or ax,ax
+00009d4b  0BC0              or ax,ax		; set flags
 00009d4d  740A              jz 0x9d59
 00009d4f  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
 00009d54  3D1B00            cmp ax,0x1b
@@ -16035,7 +16110,7 @@
 0000a02a  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
 0000a02f  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
 0000a034  8946FE            mov [bp-0x2],ax
-0000a037  0BC0              or ax,ax
+0000a037  0BC0              or ax,ax		; set flags
 0000a039  74EF              jz 0xa02a
 0000a03b  3D0D00            cmp ax,0xd
 0000a03e  7503              jnz 0xa043
@@ -16079,7 +16154,7 @@
 0000a0a4  50                push ax
 0000a0a5  9A5D14B209        call 0xaf7d   ;0x9b2:0x145d
 0000a0aa  83C406            add sp,byte +0x6
-0000a0ad  0BC0              or ax,ax
+0000a0ad  0BC0              or ax,ax		; set flags
 0000a0af  7403              jz 0xa0b4
 0000a0b1  E92E01            jmp 0xa1e2
 0000a0b4  B84F00            mov ax,0x4f
@@ -16090,7 +16165,7 @@
 0000a0be  50                push ax
 0000a0bf  9A5D14B209        call 0xaf7d   ;0x9b2:0x145d
 0000a0c4  83C406            add sp,byte +0x6
-0000a0c7  0BC0              or ax,ax
+0000a0c7  0BC0              or ax,ax		; set flags
 0000a0c9  7403              jz 0xa0ce
 0000a0cb  E91401            jmp 0xa1e2
 0000a0ce  B84400            mov ax,0x44
@@ -16101,7 +16176,7 @@
 0000a0d8  50                push ax
 0000a0d9  9A5D14B209        call 0xaf7d   ;0x9b2:0x145d
 0000a0de  83C406            add sp,byte +0x6
-0000a0e1  0BC0              or ax,ax
+0000a0e1  0BC0              or ax,ax		; set flags
 0000a0e3  7403              jz 0xa0e8
 0000a0e5  E9FA00            jmp 0xa1e2
 0000a0e8  B85500            mov ax,0x55
@@ -16112,7 +16187,7 @@
 0000a0f2  50                push ax
 0000a0f3  9A5D14B209        call 0xaf7d   ;0x9b2:0x145d
 0000a0f8  83C406            add sp,byte +0x6
-0000a0fb  0BC0              or ax,ax
+0000a0fb  0BC0              or ax,ax		; set flags
 0000a0fd  7403              jz 0xa102
 0000a0ff  E9E000            jmp 0xa1e2
 0000a102  B84C00            mov ax,0x4c
@@ -16123,7 +16198,7 @@
 0000a10c  50                push ax
 0000a10d  9A5D14B209        call 0xaf7d   ;0x9b2:0x145d
 0000a112  83C406            add sp,byte +0x6
-0000a115  0BC0              or ax,ax
+0000a115  0BC0              or ax,ax		; set flags
 0000a117  7403              jz 0xa11c
 0000a119  E9C600            jmp 0xa1e2
 0000a11c  B84100            mov ax,0x41
@@ -16134,7 +16209,7 @@
 0000a126  50                push ax
 0000a127  9A5D14B209        call 0xaf7d   ;0x9b2:0x145d
 0000a12c  83C406            add sp,byte +0x6
-0000a12f  0BC0              or ax,ax
+0000a12f  0BC0              or ax,ax		; set flags
 0000a131  7403              jz 0xa136
 0000a133  E9AC00            jmp 0xa1e2
 0000a136  B85200            mov ax,0x52
@@ -16145,7 +16220,7 @@
 0000a140  50                push ax
 0000a141  9A5D14B209        call 0xaf7d   ;0x9b2:0x145d
 0000a146  83C406            add sp,byte +0x6
-0000a149  0BC0              or ax,ax
+0000a149  0BC0              or ax,ax		; set flags
 0000a14b  7403              jz 0xa150
 0000a14d  E99200            jmp 0xa1e2
 0000a150  B82000            mov ax,0x20
@@ -16156,7 +16231,7 @@
 0000a15a  50                push ax
 0000a15b  9A5D14B209        call 0xaf7d   ;0x9b2:0x145d
 0000a160  83C406            add sp,byte +0x6
-0000a163  0BC0              or ax,ax
+0000a163  0BC0              or ax,ax		; set flags
 0000a165  757B              jnz 0xa1e2
 0000a167  B84300            mov ax,0x43
 0000a16a  50                push ax
@@ -16166,47 +16241,57 @@
 0000a171  50                push ax
 0000a172  9A5D14B209        call 0xaf7d   ;0x9b2:0x145d
 0000a177  83C406            add sp,byte +0x6
-0000a17a  0BC0              or ax,ax
+0000a17a  0BC0              or ax,ax		; set flags
 0000a17c  7564              jnz 0xa1e2
+
 0000a17e  B80700            mov ax,0x7
 0000a181  50                push ax
 0000a182  B81F00            mov ax,0x1f
 0000a185  50                push ax
 0000a186  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
 0000a18b  83C404            add sp,byte +0x4
-0000a18e  0BC0              or ax,ax
+0000a18e  0BC0              or ax,ax		; set flags
+
 0000a190  7550              jnz 0xa1e2
+
 0000a192  B80200            mov ax,0x2
 0000a195  50                push ax
 0000a196  B81700            mov ax,0x17
 0000a199  50                push ax
 0000a19a  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
 0000a19f  83C404            add sp,byte +0x4
-0000a1a2  0BC0              or ax,ax
+0000a1a2  0BC0              or ax,ax		; set flags
+
 0000a1a4  753C              jnz 0xa1e2
+
 0000a1a6  B80B00            mov ax,0xb
 0000a1a9  50                push ax
 0000a1aa  B80300            mov ax,0x3
 0000a1ad  50                push ax
 0000a1ae  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
 0000a1b3  83C404            add sp,byte +0x4
-0000a1b6  0BC0              or ax,ax
+0000a1b6  0BC0              or ax,ax		; set flags
+
 0000a1b8  7528              jnz 0xa1e2
+
 0000a1ba  B80900            mov ax,0x9
 0000a1bd  50                push ax
 0000a1be  B81600            mov ax,0x16
 0000a1c1  50                push ax
 0000a1c2  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
 0000a1c7  83C404            add sp,byte +0x4
-0000a1ca  0BC0              or ax,ax
+0000a1ca  0BC0              or ax,ax		; set flags
+
 0000a1cc  7514              jnz 0xa1e2
+
 0000a1ce  B80800            mov ax,0x8
 0000a1d1  50                push ax
 0000a1d2  B80B00            mov ax,0xb
 0000a1d5  50                push ax
 0000a1d6  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
 0000a1db  83C404            add sp,byte +0x4
-0000a1de  0BC0              or ax,ax
+0000a1de  0BC0              or ax,ax		; set flags
+
 0000a1e0  7409              jz 0xa1eb
 0000a1e2  C706080B0000      mov word [0xb08],0x0
 0000a1e8  E9C1FD            jmp 0x9fac
@@ -16333,7 +16418,7 @@
 0000a31b  9A83296F01        call 0x4073   ;0x16f:0x2983
 0000a320  83C404            add sp,byte +0x4
 0000a323  8946FC            mov [bp-0x4],ax
-0000a326  0BC0              or ax,ax
+0000a326  0BC0              or ax,ax		; set flags
 0000a328  745B              jz 0xa385
 0000a32a  50                push ax
 0000a32b  9AAB286F01        call 0x3f9b   ;0x16f:0x28ab
@@ -16466,7 +16551,7 @@
 0000a47d  50                push ax
 0000a47e  9A8609B209        call 0xa4a6   ;0x9b2:0x986
 0000a483  83C406            add sp,byte +0x6
-0000a486  0BC0              or ax,ax
+0000a486  0BC0              or ax,ax		; set flags
 0000a488  7503              jnz 0xa48d
 0000a48a  E969FE            jmp 0xa2f6
 0000a48d  B84F00            mov ax,0x4f
@@ -16661,90 +16746,140 @@
 0000a669  5D                pop bp
 0000a66a  CB                retf
 
+; subroutine "secret"
+; These just might be the secret handshake protocol
+; it gets two arguments on the stack.
+;  the first (at offset bp+8) is an expected value
+;  the second (at offset bp+6) is count
+;    the count determines the passes through the pulse loop
+;
+;  4 places use this
+;    place A uses b,3 8,b
+;    place B uses 7,14, 2,17, b,3 9,16 8,b
+;    place C uses 7,14, 2,17, b,3 9,16 8,b
+;    place D uses 7,14, 2,17, b,3 9,16 8,b
+
 0000a66b  55                push bp
 0000a66c  8BEC              mov bp,sp
-0000a66e  B80200            mov ax,0x2
+
+; This performs some kind of sanity check
+0000a66e  B80200            mov ax,0x2		; ax = 2
 0000a671  9A90266F01        call 0x3d80   ;0x16f:0x2690
-0000a676  B8E700            mov ax,0xe7
+
+; apparently [0x31a8] holds the port base (2e0)
+; note that we add 2 to this when we want the data port
+
+; ID = 0xe7
+0000a676  B8E700            mov ax,0xe7		; VCC dac ID
 0000a679  50                push ax
 0000a67a  FF36A831          push word [0x31a8]
 0000a67e  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000a683  83C404            add sp,byte +0x4
-0000a686  2BC0              sub ax,ax
+
+; Data = 0
+0000a686  2BC0              sub ax,ax		; ax = 0
 0000a688  50                push ax
 0000a689  A1A831            mov ax,[0x31a8]
 0000a68c  050200            add ax,0x2
 0000a68f  50                push ax
 0000a690  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000a695  83C404            add sp,byte +0x4
-0000a698  B80100            mov ax,0x1
+
+; Data = 1
+0000a698  B80100            mov ax,0x1		; ax = 1
 0000a69b  50                push ax
 0000a69c  A1A831            mov ax,[0x31a8]
-0000a69f  050200            add ax,0x2
+0000a69f  050200            add ax,0x2		; ax = 2
 0000a6a2  50                push ax
 0000a6a3  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000a6a8  83C404            add sp,byte +0x4
-0000a6ab  2BC0              sub ax,ax
+
+; Data = 0
+0000a6ab  2BC0              sub ax,ax		; ax = 0
 0000a6ad  50                push ax
 0000a6ae  A1A831            mov ax,[0x31a8]
-0000a6b1  050200            add ax,0x2
+0000a6b1  050200            add ax,0x2		; ax = 2
 0000a6b4  50                push ax
 0000a6b5  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000a6ba  83C404            add sp,byte +0x4
-0000a6bd  B80200            mov ax,0x2
+
+; Data = 2
+0000a6bd  B80200            mov ax,0x2		; ax = 2
 0000a6c0  50                push ax
 0000a6c1  A1A831            mov ax,[0x31a8]
-0000a6c4  050200            add ax,0x2
+0000a6c4  050200            add ax,0x2		; ax = 2
 0000a6c7  50                push ax
 0000a6c8  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000a6cd  83C404            add sp,byte +0x4
-0000a6d0  C746FE0000        mov word [bp-0x2],0x0
-0000a6d5  EB29              jmp short 0xa700
-0000a6d7  B80300            mov ax,0x3
+
+; set up counter for loop
+0000a6d0  C746FE0000        mov word [bp-0x2],0x0	; count = 0
+0000a6d5  EB29              jmp short 0xa700		; enter loop
+
+; start loop
+
+; Data = 3
+0000a6d7  B80300            mov ax,0x3		; ax = 3
 0000a6da  50                push ax
 0000a6db  A1A831            mov ax,[0x31a8]
-0000a6de  050200            add ax,0x2
+0000a6de  050200            add ax,0x2		; ax = 2
 0000a6e1  50                push ax
 0000a6e2  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000a6e7  83C404            add sp,byte +0x4
-0000a6ea  B80200            mov ax,0x2
+
+; Data = 2
+0000a6ea  B80200            mov ax,0x2		; ax = 2
 0000a6ed  50                push ax
 0000a6ee  A1A831            mov ax,[0x31a8]
 0000a6f1  050200            add ax,0x2
 0000a6f4  50                push ax
 0000a6f5  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000a6fa  83C404            add sp,byte +0x4
-0000a6fd  FF46FE            inc word [bp-0x2]
-0000a700  8B4606            mov ax,[bp+0x6]
-0000a703  3946FE            cmp [bp-0x2],ax
-0000a706  7CCF              jl 0xa6d7
-0000a708  2BC0              sub ax,ax
+
+0000a6fd  FF46FE            inc word [bp-0x2]	; count++
+; enter loop here
+0000a700  8B4606            mov ax,[bp+0x6]		; argument 2
+0000a703  3946FE            cmp [bp-0x2],ax		; test count
+0000a706  7CCF              jl 0xa6d7		; loop back
+
+; loop finished
+; Data = 0
+0000a708  2BC0              sub ax,ax		; ax = 0
 0000a70a  50                push ax
 0000a70b  A1A831            mov ax,[0x31a8]
-0000a70e  050200            add ax,0x2
+0000a70e  050200            add ax,0x2		; ax = 2
 0000a711  50                push ax
 0000a712  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000a717  83C404            add sp,byte +0x4
-0000a71a  B8F800            mov ax,0xf8
+
+; ID = 0xf8
+0000a71a  B8F800            mov ax,0xf8			; Secret port
 0000a71d  50                push ax
 0000a71e  FF36A831          push word [0x31a8]
 0000a722  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000a727  83C404            add sp,byte +0x4
+
+; read Data port
 0000a72a  A1A831            mov ax,[0x31a8]
-0000a72d  050200            add ax,0x2
+0000a72d  050200            add ax,0x2		; ax = 2
 0000a730  50                push ax
 0000a731  9A912F6F01        call 0x4681   ;0x16f:0x2f91
 0000a736  83C402            add sp,byte +0x2
+
 0000a739  240F              and al,0xf
-0000a73b  8A4E08            mov cl,[bp+0x8]
-0000a73e  80E10F            and cl,0xf
+0000a73b  8A4E08            mov cl,[bp+0x8]		; argument 1 (expect)
+0000a73e  80E10F            and cl,0xf			; test 4 bits
 0000a741  3AC1              cmp al,cl
 0000a743  7509              jnz 0xa74e
+
+; matches "expect" -- return 0
 0000a745  9A0202B80D        call 0xdd82   ;0xdb8:0x202
-0000a74a  2BC0              sub ax,ax
-0000a74c  EB08              jmp short 0xa756
+0000a74a  2BC0              sub ax,ax		; ax = 0
+0000a74c  EB08              jmp short 0xa756	; return 0
+
+; does not match "expect" -- return -1
 0000a74e  9A0202B80D        call 0xdd82   ;0xdb8:0x202
-0000a753  B8FFFF            mov ax,0xffff
+0000a753  B8FFFF            mov ax,0xffff	; ax = -1
 0000a756  8BE5              mov sp,bp
 0000a758  5D                pop bp
 0000a759  CB                retf
@@ -16931,7 +17066,7 @@
 0000a92b  8A00              mov al,[bx+si]
 0000a92d  98                cbw
 0000a92e  8946FE            mov [bp-0x2],ax
-0000a931  0BC0              or ax,ax
+0000a931  0BC0              or ax,ax		; set flags
 0000a933  7416              jz 0xa94b
 0000a935  FF7608            push word [bp+0x8]
 0000a938  50                push ax
@@ -18286,7 +18421,7 @@
 0000b776  8346EC10          add word [bp-0x14],byte +0x10
 0000b77a  8356EE00          adc word [bp-0x12],byte +0x0
 0000b77e  9ABC306F01        call 0x47ac   ;0x16f:0x30bc
-0000b783  0BC0              or ax,ax
+0000b783  0BC0              or ax,ax		; set flags
 0000b785  740A              jz 0xb791
 0000b787  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
 0000b78c  3D1B00            cmp ax,0x1b
@@ -18467,7 +18602,7 @@
 0000b961  8346EC10          add word [bp-0x14],byte +0x10
 0000b965  8356EE00          adc word [bp-0x12],byte +0x0
 0000b969  9ABC306F01        call 0x47ac   ;0x16f:0x30bc
-0000b96e  0BC0              or ax,ax
+0000b96e  0BC0              or ax,ax		; set flags
 0000b970  740A              jz 0xb97c
 0000b972  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
 0000b977  3D1B00            cmp ax,0x1b
@@ -19678,7 +19813,7 @@
 0000c6b1  9AD72BB209        call 0xc6f7   ;0x9b2:0x2bd7
 0000c6b6  83C404            add sp,byte +0x4
 0000c6b9  8946FE            mov [bp-0x2],ax
-0000c6bc  0BC0              or ax,ax
+0000c6bc  0BC0              or ax,ax		; set flags
 0000c6be  7505              jnz 0xc6c5
 0000c6c0  B89A2A            mov ax,0x2a9a
 0000c6c3  EB25              jmp short 0xc6ea
@@ -20346,7 +20481,7 @@
 0000cd9d  9A83296F01        call 0x4073   ;0x16f:0x2983
 0000cda2  83C404            add sp,byte +0x4
 0000cda5  8946C4            mov [bp-0x3c],ax
-0000cda8  0BC0              or ax,ax
+0000cda8  0BC0              or ax,ax		; set flags
 0000cdaa  7520              jnz 0xcdcc
 0000cdac  B80700            mov ax,0x7
 0000cdaf  50                push ax
@@ -20593,7 +20728,7 @@
 0000d03c  9AD7306F01        call 0x47c7   ;0x16f:0x30d7
 0000d041  83C402            add sp,byte +0x2
 0000d044  8946FC            mov [bp-0x4],ax
-0000d047  0BC0              or ax,ax
+0000d047  0BC0              or ax,ax		; set flags
 0000d049  7517              jnz 0xd062
 0000d04b  C746B60000        mov word [bp-0x4a],0x0
 0000d050  A1903B            mov ax,[0x3b90]
@@ -20609,7 +20744,7 @@
 0000d069  9AA435B209        call 0xd0c4   ;0x9b2:0x35a4
 0000d06e  83C404            add sp,byte +0x4
 0000d071  8946FE            mov [bp-0x2],ax
-0000d074  0BC0              or ax,ax
+0000d074  0BC0              or ax,ax		; set flags
 0000d076  741A              jz 0xd092
 0000d078  FF76FC            push word [bp-0x4]
 0000d07b  9AC9306F01        call 0x47b9   ;0x16f:0x30c9
@@ -20647,7 +20782,7 @@
 0000d0d3  FF7606            push word [bp+0x6]
 0000d0d6  9AFE336F01        call 0x4aee   ;0x16f:0x33fe
 0000d0db  83C404            add sp,byte +0x4
-0000d0de  0BC0              or ax,ax
+0000d0de  0BC0              or ax,ax		; set flags
 0000d0e0  7507              jnz 0xd0e9
 0000d0e2  9A9F3DB209        call 0xd8bf   ;0x9b2:0x3d9f
 0000d0e7  EB1E              jmp short 0xd107
@@ -20662,7 +20797,7 @@
 0000d0ff  9A5B3DB209        call 0xd87b   ;0x9b2:0x3d5b
 0000d104  83C402            add sp,byte +0x2
 0000d107  8946FE            mov [bp-0x2],ax
-0000d10a  0BC0              or ax,ax
+0000d10a  0BC0              or ax,ax		; set flags
 0000d10c  7413              jz 0xd121
 0000d10e  B84400            mov ax,0x44
 0000d111  50                push ax
@@ -21779,7 +21914,7 @@
 0000dd0f  FF365C36          push word [0x365c]
 0000dd13  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000dd18  83C404            add sp,byte +0x4
-0000dd1b  B8E700            mov ax,0xe7
+0000dd1b  B8E700            mov ax,0xe7		; VCC dac ID
 0000dd1e  50                push ax
 0000dd1f  FF366036          push word [0x3660]
 0000dd23  9A1D316F01        call 0x480d   ;0x16f:0x311d
@@ -21876,7 +22011,7 @@
 0000de12  8BEC              mov bp,sp
 0000de14  33C0              xor ax,ax
 0000de16  9A90266F01        call 0x3d80   ;0x16f:0x2690
-0000de1b  B8E700            mov ax,0xe7
+0000de1b  B8E700            mov ax,0xe7		; VCC dac ID
 0000de1e  50                push ax
 0000de1f  FF366036          push word [0x3660]
 0000de23  9A1D316F01        call 0x480d   ;0x16f:0x311d
@@ -22018,7 +22153,7 @@
 0000df9e  83C404            add sp,byte +0x4
 0000dfa1  E92500            jmp 0xdfc9
 0000dfa4  E92200            jmp 0xdfc9
-0000dfa7  0BC0              or ax,ax
+0000dfa7  0BC0              or ax,ax		; set flags
 0000dfa9  7D03              jnl 0xdfae
 0000dfab  E91B00            jmp 0xdfc9
 0000dfae  3D0100            cmp ax,0x1
@@ -22061,7 +22196,7 @@
 0000e01c  83C404            add sp,byte +0x4
 0000e01f  E92500            jmp 0xe047
 0000e022  E92200            jmp 0xe047
-0000e025  0BC0              or ax,ax
+0000e025  0BC0              or ax,ax		; set flags
 0000e027  7D03              jnl 0xe02c
 0000e029  E91B00            jmp 0xe047
 0000e02c  3D0100            cmp ax,0x1
@@ -22091,7 +22226,7 @@
 0000e072  83C404            add sp,byte +0x4
 0000e075  E91D00            jmp 0xe095
 0000e078  E91A00            jmp 0xe095
-0000e07b  0BC0              or ax,ax
+0000e07b  0BC0              or ax,ax		; set flags
 0000e07d  7D03              jnl 0xe082
 0000e07f  E91300            jmp 0xe095
 0000e082  3D0200            cmp ax,0x2
@@ -22130,7 +22265,7 @@
 0000e0e7  83C404            add sp,byte +0x4
 0000e0ea  E91500            jmp 0xe102
 0000e0ed  E91200            jmp 0xe102
-0000e0f0  0BC0              or ax,ax
+0000e0f0  0BC0              or ax,ax		; set flags
 0000e0f2  7D03              jnl 0xe0f7
 0000e0f4  E90B00            jmp 0xe102
 0000e0f7  3D0200            cmp ax,0x2
@@ -22194,7 +22329,7 @@
 0000e1b6  83C404            add sp,byte +0x4
 0000e1b9  E92500            jmp 0xe1e1
 0000e1bc  E92200            jmp 0xe1e1
-0000e1bf  0BC0              or ax,ax
+0000e1bf  0BC0              or ax,ax		; set flags
 0000e1c1  7D03              jnl 0xe1c6
 0000e1c3  E91B00            jmp 0xe1e1
 0000e1c6  3D0200            cmp ax,0x2
@@ -22237,7 +22372,7 @@
 0000e234  83C404            add sp,byte +0x4
 0000e237  E91D00            jmp 0xe257
 0000e23a  E91A00            jmp 0xe257
-0000e23d  0BC0              or ax,ax
+0000e23d  0BC0              or ax,ax		; set flags
 0000e23f  7503              jnz 0xe244
 0000e241  E9A6FF            jmp 0xe1ea
 0000e244  3D0300            cmp ax,0x3
@@ -22277,7 +22412,7 @@
 0000e2aa  83C404            add sp,byte +0x4
 0000e2ad  E91D00            jmp 0xe2cd
 0000e2b0  E91A00            jmp 0xe2cd
-0000e2b3  0BC0              or ax,ax
+0000e2b3  0BC0              or ax,ax		; set flags
 0000e2b5  7503              jnz 0xe2ba
 0000e2b7  E9A6FF            jmp 0xe260
 0000e2ba  3D0300            cmp ax,0x3
@@ -22304,7 +22439,7 @@
 0000e2f8  83C404            add sp,byte +0x4
 0000e2fb  E90D00            jmp 0xe30b
 0000e2fe  E90A00            jmp 0xe30b
-0000e301  0BC0              or ax,ax
+0000e301  0BC0              or ax,ax		; set flags
 0000e303  7503              jnz 0xe308
 0000e305  E9CEFF            jmp 0xe2d6
 0000e308  E90000            jmp 0xe30b
@@ -22338,7 +22473,7 @@
 0000e35e  83C404            add sp,byte +0x4
 0000e361  E92D00            jmp 0xe391
 0000e364  E92A00            jmp 0xe391
-0000e367  0BC0              or ax,ax
+0000e367  0BC0              or ax,ax		; set flags
 0000e369  7503              jnz 0xe36e
 0000e36b  E9A6FF            jmp 0xe314
 0000e36e  3D0300            cmp ax,0x3
@@ -22371,7 +22506,7 @@
 0000e3bc  83C404            add sp,byte +0x4
 0000e3bf  E91500            jmp 0xe3d7
 0000e3c2  E91200            jmp 0xe3d7
-0000e3c5  0BC0              or ax,ax
+0000e3c5  0BC0              or ax,ax		; set flags
 0000e3c7  7D03              jnl 0xe3cc
 0000e3c9  E90B00            jmp 0xe3d7
 0000e3cc  3D0100            cmp ax,0x1
@@ -22395,7 +22530,7 @@
 0000e402  83C404            add sp,byte +0x4
 0000e405  E91500            jmp 0xe41d
 0000e408  E91200            jmp 0xe41d
-0000e40b  0BC0              or ax,ax
+0000e40b  0BC0              or ax,ax		; set flags
 0000e40d  7D03              jnl 0xe412
 0000e40f  E90B00            jmp 0xe41d
 0000e412  3D0200            cmp ax,0x2
@@ -22432,7 +22567,7 @@
 0000e470  83C404            add sp,byte +0x4
 0000e473  E91D00            jmp 0xe493
 0000e476  E91A00            jmp 0xe493
-0000e479  0BC0              or ax,ax
+0000e479  0BC0              or ax,ax		; set flags
 0000e47b  7503              jnz 0xe480
 0000e47d  E9A6FF            jmp 0xe426
 0000e480  3D0200            cmp ax,0x2
@@ -22459,7 +22594,7 @@
 0000e4be  83C404            add sp,byte +0x4
 0000e4c1  E90D00            jmp 0xe4d1
 0000e4c4  E90A00            jmp 0xe4d1
-0000e4c7  0BC0              or ax,ax
+0000e4c7  0BC0              or ax,ax		; set flags
 0000e4c9  7503              jnz 0xe4ce
 0000e4cb  E9CEFF            jmp 0xe49c
 0000e4ce  E90000            jmp 0xe4d1
@@ -22494,7 +22629,7 @@
 0000e527  83C404            add sp,byte +0x4
 0000e52a  E91D00            jmp 0xe54a
 0000e52d  E91A00            jmp 0xe54a
-0000e530  0BC0              or ax,ax
+0000e530  0BC0              or ax,ax		; set flags
 0000e532  7503              jnz 0xe537
 0000e534  E9A6FF            jmp 0xe4dd
 0000e537  3D0400            cmp ax,0x4
@@ -22534,7 +22669,7 @@
 0000e59d  83C404            add sp,byte +0x4
 0000e5a0  E92500            jmp 0xe5c8
 0000e5a3  E92200            jmp 0xe5c8
-0000e5a6  0BC0              or ax,ax
+0000e5a6  0BC0              or ax,ax		; set flags
 0000e5a8  7D03              jnl 0xe5ad
 0000e5aa  E91B00            jmp 0xe5c8
 0000e5ad  3D0100            cmp ax,0x1
@@ -22577,7 +22712,7 @@
 0000e61b  83C404            add sp,byte +0x4
 0000e61e  E91D00            jmp 0xe63e
 0000e621  E91A00            jmp 0xe63e
-0000e624  0BC0              or ax,ax
+0000e624  0BC0              or ax,ax		; set flags
 0000e626  7503              jnz 0xe62b
 0000e628  E9A6FF            jmp 0xe5d1
 0000e62b  3D0100            cmp ax,0x1
@@ -22628,7 +22763,7 @@
 0000e6b0  83C404            add sp,byte +0x4
 0000e6b3  E91500            jmp 0xe6cb
 0000e6b6  E91200            jmp 0xe6cb
-0000e6b9  0BC0              or ax,ax
+0000e6b9  0BC0              or ax,ax		; set flags
 0000e6bb  7D03              jnl 0xe6c0
 0000e6bd  E90B00            jmp 0xe6cb
 0000e6c0  3D0200            cmp ax,0x2
@@ -22652,7 +22787,7 @@
 0000e6f6  83C404            add sp,byte +0x4
 0000e6f9  E91500            jmp 0xe711
 0000e6fc  E91200            jmp 0xe711
-0000e6ff  0BC0              or ax,ax
+0000e6ff  0BC0              or ax,ax		; set flags
 0000e701  7D03              jnl 0xe706
 0000e703  E90B00            jmp 0xe711
 0000e706  3D0200            cmp ax,0x2
@@ -22689,7 +22824,7 @@
 0000e764  83C404            add sp,byte +0x4
 0000e767  E91D00            jmp 0xe787
 0000e76a  E91A00            jmp 0xe787
-0000e76d  0BC0              or ax,ax
+0000e76d  0BC0              or ax,ax		; set flags
 0000e76f  7503              jnz 0xe774
 0000e771  E9A6FF            jmp 0xe71a
 0000e774  3D0300            cmp ax,0x3
@@ -22804,7 +22939,7 @@
 0000e8b9  83C404            add sp,byte +0x4
 0000e8bc  E91500            jmp 0xe8d4
 0000e8bf  E91200            jmp 0xe8d4
-0000e8c2  0BC0              or ax,ax
+0000e8c2  0BC0              or ax,ax		; set flags
 0000e8c4  7D03              jnl 0xe8c9
 0000e8c6  E90B00            jmp 0xe8d4
 0000e8c9  3D0200            cmp ax,0x2
@@ -22828,7 +22963,7 @@
 0000e901  83C404            add sp,byte +0x4
 0000e904  E91500            jmp 0xe91c
 0000e907  E91200            jmp 0xe91c
-0000e90a  0BC0              or ax,ax
+0000e90a  0BC0              or ax,ax		; set flags
 0000e90c  7D03              jnl 0xe911
 0000e90e  E90B00            jmp 0xe91c
 0000e911  3D0200            cmp ax,0x2
@@ -22852,7 +22987,7 @@
 0000e949  83C404            add sp,byte +0x4
 0000e94c  E90D00            jmp 0xe95c
 0000e94f  E90A00            jmp 0xe95c
-0000e952  0BC0              or ax,ax
+0000e952  0BC0              or ax,ax		; set flags
 0000e954  7503              jnz 0xe959
 0000e956  E9CCFF            jmp 0xe925
 0000e959  E90000            jmp 0xe95c
@@ -22919,7 +23054,7 @@
 0000e9f2  A0D133            mov al,[0x33d1]
 0000e9f5  E9A900            jmp 0xeaa1
 0000e9f8  A10E0B            mov ax,[0xb0e]
-0000e9fb  0BC0              or ax,ax
+0000e9fb  0BC0              or ax,ax		; set flags
 0000e9fd  7D03              jnl 0xea02
 0000e9ff  E9AE00            jmp 0xeab0
 0000ea02  3D0200            cmp ax,0x2
@@ -22993,7 +23128,7 @@
 0000eace  742D              jz 0xeafd
 0000ead0  EB38              jmp short 0xeb0a
 0000ead2  A10E0B            mov ax,[0xb0e]
-0000ead5  0BC0              or ax,ax
+0000ead5  0BC0              or ax,ax		; set flags
 0000ead7  7C49              jl 0xeb22
 0000ead9  3D0200            cmp ax,0x2
 0000eadc  7E3F              jng 0xeb1d
@@ -23016,7 +23151,7 @@
 0000eb0a  8026453BFD        and byte [0x3b45],0xfd
 0000eb0f  EB11              jmp short 0xeb22
 0000eb11  A10E0B            mov ax,[0xb0e]
-0000eb14  0BC0              or ax,ax
+0000eb14  0BC0              or ax,ax		; set flags
 0000eb16  7C0A              jl 0xeb22
 0000eb18  3D0100            cmp ax,0x1
 0000eb1b  7F05              jg 0xeb22
@@ -23048,7 +23183,7 @@
 0000eb5f  742D              jz 0xeb8e
 0000eb61  EB38              jmp short 0xeb9b
 0000eb63  A10E0B            mov ax,[0xb0e]
-0000eb66  0BC0              or ax,ax
+0000eb66  0BC0              or ax,ax		; set flags
 0000eb68  7C49              jl 0xebb3
 0000eb6a  3D0200            cmp ax,0x2
 0000eb6d  7E3F              jng 0xebae
@@ -23071,7 +23206,7 @@
 0000eb9b  800E453B02        or byte [0x3b45],0x2
 0000eba0  EB11              jmp short 0xebb3
 0000eba2  A10E0B            mov ax,[0xb0e]
-0000eba5  0BC0              or ax,ax
+0000eba5  0BC0              or ax,ax		; set flags
 0000eba7  7C0A              jl 0xebb3
 0000eba9  3D0100            cmp ax,0x1
 0000ebac  7F05              jg 0xebb3
@@ -23101,7 +23236,7 @@
 0000ebeb  7428              jz 0xec15
 0000ebed  EB0C              jmp short 0xebfb
 0000ebef  A10E0B            mov ax,[0xb0e]
-0000ebf2  0BC0              or ax,ax
+0000ebf2  0BC0              or ax,ax		; set flags
 0000ebf4  7C75              jl 0xec6b
 0000ebf6  3D0100            cmp ax,0x1
 0000ebf9  7F70              jg 0xec6b
@@ -23155,7 +23290,7 @@
 0000ec84  7428              jz 0xecae
 0000ec86  EB0C              jmp short 0xec94
 0000ec88  A10E0B            mov ax,[0xb0e]
-0000ec8b  0BC0              or ax,ax
+0000ec8b  0BC0              or ax,ax		; set flags
 0000ec8d  7C75              jl 0xed04
 0000ec8f  3D0100            cmp ax,0x1
 0000ec92  7F70              jg 0xed04
@@ -23204,7 +23339,7 @@
 0000ed0e  9A90266F01        call 0x3d80   ;0x16f:0x2690
 0000ed13  56                push si
 0000ed14  9ABC306F01        call 0x47ac   ;0x16f:0x30bc
-0000ed19  0BC0              or ax,ax
+0000ed19  0BC0              or ax,ax		; set flags
 0000ed1b  7414              jz 0xed31
 0000ed1d  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
 0000ed22  8846FE            mov [bp-0x2],al
@@ -23212,21 +23347,25 @@
 0000ed27  7403              jz 0xed2c
 0000ed29  E9C300            jmp 0xedef
 0000ed2c  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
-0000ed31  B80B00            mov ax,0xb
+
+0000ed31  B80B00            mov ax,0xb		; arg1
 0000ed34  50                push ax
-0000ed35  B80300            mov ax,0x3
+0000ed35  B80300            mov ax,0x3		; arg2
 0000ed38  50                push ax
 0000ed39  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
 0000ed3e  83C404            add sp,byte +0x4
-0000ed41  0BC0              or ax,ax
+0000ed41  0BC0              or ax,ax		; set flags
+
 0000ed43  75CF              jnz 0xed14
-0000ed45  B80800            mov ax,0x8
+
+0000ed45  B80800            mov ax,0x8		; arg1
 0000ed48  50                push ax
-0000ed49  B80B00            mov ax,0xb
+0000ed49  B80B00            mov ax,0xb		; arg2
 0000ed4c  50                push ax
 0000ed4d  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
 0000ed52  83C404            add sp,byte +0x4
-0000ed55  0BC0              or ax,ax
+0000ed55  0BC0              or ax,ax		; set flags
+
 0000ed57  75BB              jnz 0xed14
 0000ed59  803EE21500        cmp byte [0x15e2],0x0
 0000ed5e  7425              jz 0xed85
@@ -23241,7 +23380,7 @@
 0000ed7c  8846FC            mov [bp-0x4],al
 0000ed7f  C646F880          mov byte [bp-0x8],0x80
 0000ed83  EB23              jmp short 0xeda8
-0000ed85  B8E700            mov ax,0xe7
+0000ed85  B8E700            mov ax,0xe7		; VCC dac ID
 0000ed88  50                push ax
 0000ed89  FF366036          push word [0x3660]
 0000ed8d  9A1D316F01        call 0x480d   ;0x16f:0x311d
@@ -23301,7 +23440,7 @@
 0000ee28  8BEC              mov bp,sp
 0000ee2a  B80200            mov ax,0x2
 0000ee2d  9A90266F01        call 0x3d80   ;0x16f:0x2690
-0000ee32  B8E700            mov ax,0xe7
+0000ee32  B8E700            mov ax,0xe7		; VCC dac ID
 0000ee35  50                push ax
 0000ee36  FF366036          push word [0x3660]
 0000ee3a  9A1D316F01        call 0x480d   ;0x16f:0x311d
@@ -23504,7 +23643,7 @@
 0000f069  9AD7306F01        call 0x47c7   ;0x16f:0x30d7
 0000f06e  83C402            add sp,byte +0x2
 0000f071  8946EE            mov [bp-0x12],ax
-0000f074  0BC0              or ax,ax
+0000f074  0BC0              or ax,ax		; set flags
 0000f076  7506              jnz 0xf07e
 0000f078  B80500            mov ax,0x5
 0000f07b  E98305            jmp 0xf601
@@ -23525,7 +23664,7 @@
 0000f0aa  A36236            mov [0x3662],ax
 0000f0ad  89166436          mov [0x3664],dx
 0000f0b1  9A311FB80D        call 0xfab1   ;0xdb8:0x1f31
-0000f0b6  0BC0              or ax,ax
+0000f0b6  0BC0              or ax,ax		; set flags
 0000f0b8  7406              jz 0xf0c0
 0000f0ba  B80700            mov ax,0x7
 0000f0bd  E94105            jmp 0xf601
@@ -23554,7 +23693,7 @@
 0000f0f9  9A83296F01        call 0x4073   ;0x16f:0x2983
 0000f0fe  83C404            add sp,byte +0x4
 0000f101  8946F8            mov [bp-0x8],ax
-0000f104  0BC0              or ax,ax
+0000f104  0BC0              or ax,ax		; set flags
 0000f106  7527              jnz 0xf12f
 0000f108  C606AC3103        mov byte [0x31ac],0x3
 0000f10d  FF76F8            push word [bp-0x8]
@@ -23576,7 +23715,7 @@
 0000f141  FF76F8            push word [bp-0x8]
 0000f144  9A1E2B6F01        call 0x420e   ;0x16f:0x2b1e
 0000f149  83C408            add sp,byte +0x8
-0000f14c  0BC0              or ax,ax
+0000f14c  0BC0              or ax,ax		; set flags
 0000f14e  75B8              jnz 0xf108
 0000f150  A16236            mov ax,[0x3662]
 0000f153  8B166436          mov dx,[0x3664]
@@ -23760,7 +23899,7 @@
 0000f38b  9A83296F01        call 0x4073   ;0x16f:0x2983
 0000f390  83C404            add sp,byte +0x4
 0000f393  8946F8            mov [bp-0x8],ax
-0000f396  0BC0              or ax,ax
+0000f396  0BC0              or ax,ax		; set flags
 0000f398  7503              jnz 0xf39d
 0000f39a  E96BFD            jmp 0xf108
 0000f39d  2BC0              sub ax,ax
@@ -23770,7 +23909,7 @@
 0000f3a8  FF76F8            push word [bp-0x8]
 0000f3ab  9A1E2B6F01        call 0x420e   ;0x16f:0x2b1e
 0000f3b0  83C408            add sp,byte +0x8
-0000f3b3  0BC0              or ax,ax
+0000f3b3  0BC0              or ax,ax		; set flags
 0000f3b5  741C              jz 0xf3d3
 0000f3b7  E94EFD            jmp 0xf108
 0000f3ba  B8A72C            mov ax,0x2ca7
@@ -23779,7 +23918,7 @@
 0000f3c1  9A83296F01        call 0x4073   ;0x16f:0x2983
 0000f3c6  83C404            add sp,byte +0x4
 0000f3c9  8946F8            mov [bp-0x8],ax
-0000f3cc  0BC0              or ax,ax
+0000f3cc  0BC0              or ax,ax		; set flags
 0000f3ce  7503              jnz 0xf3d3
 0000f3d0  E935FD            jmp 0xf108
 0000f3d3  9ACC1BB80D        call 0xf74c   ;0xdb8:0x1bcc
@@ -24114,7 +24253,7 @@
 0000f768  8946FE            mov [bp-0x2],ax
 0000f76b  C646FC01          mov byte [bp-0x4],0x1
 0000f76f  9ABC306F01        call 0x47ac   ;0x16f:0x30bc
-0000f774  0BC0              or ax,ax
+0000f774  0BC0              or ax,ax		; set flags
 0000f776  7423              jz 0xf79b
 0000f778  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
 0000f77d  8846FA            mov [bp-0x6],al
@@ -24155,7 +24294,7 @@
 0000f7e6  8946FE            mov [bp-0x2],ax
 0000f7e9  C646FC01          mov byte [bp-0x4],0x1
 0000f7ed  9ABC306F01        call 0x47ac   ;0x16f:0x30bc
-0000f7f2  0BC0              or ax,ax
+0000f7f2  0BC0              or ax,ax		; set flags
 0000f7f4  7423              jz 0xf819
 0000f7f6  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
 0000f7fb  8846FA            mov [bp-0x6],al
@@ -24435,7 +24574,7 @@
 0000fac7  9AF41FB80D        call 0xfb74   ;0xdb8:0x1ff4
 0000facc  83C404            add sp,byte +0x4
 0000facf  A38E2C            mov [0x2c8e],ax
-0000fad2  0BC0              or ax,ax
+0000fad2  0BC0              or ax,ax		; set flags
 0000fad4  7505              jnz 0xfadb
 0000fad6  B80100            mov ax,0x1
 0000fad9  EB4C              jmp short 0xfb27
