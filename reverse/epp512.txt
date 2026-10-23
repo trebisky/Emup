@@ -17,7 +17,9 @@
 ; They call this "The identification check."
 ; They learned all this by running the software in a patched
 ;  dosbox that logged each IO port access.
-; My goal (one of them) is to find this code in this file.
+;
+; by searching for 0xf8 I located this code.
+; It is at 0xa66b
 ;
 ; ------------------------------------------------
 ;
@@ -6293,7 +6295,7 @@
 ; This is the starting address
 
 00003da4  B430              mov ah,0x30
-00003da6  CD21              int 0x21
+00003da6  CD21              int 0x21		; get DOS version
 
 ; This call gets the MSDOS version number
 ; it returns it in AL
@@ -6384,11 +6386,11 @@
 00003e5a  50                push ax
 00003e5b  9A36286F01        call 0x3f26   ;0x16f:0x2836
 00003e60  B430              mov ah,0x30
-00003e62  CD21              int 0x21
+00003e62  CD21              int 0x21	; get DOS version
 00003e64  A3402E            mov [0x2e40],ax
 00003e67  BB0400            mov bx,0x4
 00003e6a  B80044            mov ax,0x4400
-00003e6d  CD21              int 0x21
+00003e6d  CD21              int 0x21		; ioctl
 00003e6f  720A              jc 0x3e7b
 00003e71  F6C280            test dl,0x80
 00003e74  7405              jz 0x3e7b
@@ -6396,14 +6398,14 @@
 00003e7b  4B                dec bx
 00003e7c  79EC              jns 0x3e6a
 00003e7e  B80035            mov ax,0x3500
-00003e81  CD21              int 0x21
+00003e81  CD21              int 0x21		; get int vector
 00003e83  891E2C2E          mov [0x2e2c],bx
 00003e87  8C062E2E          mov [0x2e2e],es
 00003e8b  0E                push cs
 00003e8c  1F                pop ds
 00003e8d  B80025            mov ax,0x2500
 00003e90  BA5E27            mov dx,0x275e
-00003e93  CD21              int 0x21
+00003e93  CD21              int 0x21		; set int vector
 00003e95  16                push ss
 00003e96  1F                pop ds
 00003e97  8B0E3C30          mov cx,[0x303c]
@@ -6478,13 +6480,13 @@
 00003f3c  F687442E01        test byte [bx+0x2e44],0x1
 00003f41  7404              jz 0x3f47
 00003f43  B43E              mov ah,0x3e
-00003f45  CD21              int 0x21
+00003f45  CD21              int 0x21		; close file
 00003f47  43                inc bx
 00003f48  E2F2              loop 0x3f3c
 00003f4a  E80700            call 0x3f54
 00003f4d  8B4606            mov ax,[bp+0x6]
 00003f50  B44C              mov ah,0x4c
-00003f52  CD21              int 0x21
+00003f52  CD21              int 0x21		; safely terminate
 00003f54  8B0E3C30          mov cx,[0x303c]
 00003f58  E307              jcxz 0x3f61
 00003f5a  BB0200            mov bx,0x2
@@ -6492,7 +6494,7 @@
 00003f61  1E                push ds
 00003f62  C5162C2E          lds dx,[0x2e2c]
 00003f66  B80025            mov ax,0x2500
-00003f69  CD21              int 0x21
+00003f69  CD21              int 0x21		; set int vector
 00003f6b  1F                pop ds
 00003f6c  C3                ret
 
@@ -6518,7 +6520,7 @@
 00003f8f  8BEC              mov bp,sp
 00003f91  B43B              mov ah,0x3b
 00003f93  8B5606            mov dx,[bp+0x6]
-00003f96  CD21              int 0x21
+00003f96  CD21              int 0x21			; chdir
 00003f98  E96310            jmp 0x4ffe
 00003f9b  55                push bp
 00003f9c  8BEC              mov bp,sp
@@ -7139,7 +7141,7 @@
 0000457a  88267E2F          mov [0x2f7e],ah
 0000457e  EB06              jmp short 0x4586
 00004580  B408              mov ah,0x8
-00004582  CD21              int 0x21
+00004582  CD21              int 0x21			; kb input, no echo
 00004584  32E4              xor ah,ah
 00004586  8BE5              mov sp,bp
 00004588  5D                pop bp
@@ -7188,7 +7190,7 @@
 000045e1  C44606            les ax,[bp+0x6]
 000045e4  33C0              xor ax,ax
 000045e6  B449              mov ah,0x49
-000045e8  CD21              int 0x21
+000045e8  CD21              int 0x21			; free memory
 000045ea  E9190A            jmp 0x5006
 000045ed  55                push bp
 000045ee  8BEC              mov bp,sp
@@ -7232,7 +7234,7 @@
 00004641  33C9              xor cx,cx
 00004643  8BF9              mov di,cx
 00004645  B448              mov ah,0x48
-00004647  CD21              int 0x21
+00004647  CD21              int 0x21			; allocate memory
 00004649  722C              jc 0x4677
 0000464b  8BD0              mov dx,ax
 0000464d  8EC2              mov es,dx
@@ -7393,7 +7395,7 @@
 000047ac  55                push bp
 000047ad  8BEC              mov bp,sp
 000047af  B40B              mov ah,0xb
-000047b1  CD21              int 0x21
+000047b1  CD21              int 0x21			; check stdin status
 000047b3  32E4              xor ah,ah
 000047b5  8BE5              mov sp,bp
 000047b7  5D                pop bp
@@ -7483,7 +7485,7 @@
 00004858  8BEC              mov bp,sp
 0000485a  8A5606            mov dl,[bp+0x6]
 0000485d  B406              mov ah,0x6
-0000485f  CD21              int 0x21
+0000485f  CD21              int 0x21			; direct console IO
 00004861  8BE5              mov sp,bp
 00004863  5D                pop bp
 00004864  CB                retf
@@ -8389,7 +8391,7 @@
 00004feb  8BEC              mov bp,sp
 00004fed  8B5E06            mov bx,[bp+0x6]
 00004ff0  B43E              mov ah,0x3e
-00004ff2  CD21              int 0x21
+00004ff2  CD21              int 0x21			; close file
 00004ff4  7205              jc 0x4ffb
 00004ff6  C687442E00        mov byte [bx+0x2e44],0x0
 00004ffb  E90000            jmp 0x4ffe
@@ -9437,7 +9439,7 @@
 00005aba  33C9              xor cx,cx
 00005abc  8BD1              mov dx,cx
 00005abe  B80142            mov ax,0x4201
-00005ac1  CD21              int 0x21
+00005ac1  CD21              int 0x21			; lseek file
 00005ac3  7250              jc 0x5b15
 00005ac5  F7460C0200        test word [bp+0xc],0x2
 00005aca  750E              jnz 0x5ada
@@ -9451,20 +9453,20 @@
 00005ade  A3A42F            mov [0x2fa4],ax
 00005ae1  8BD1              mov dx,cx
 00005ae3  B80242            mov ax,0x4202
-00005ae6  CD21              int 0x21
+00005ae6  CD21              int 0x21				; lseek file
 00005ae8  034608            add ax,[bp+0x8]
 00005aeb  13560A            adc dx,[bp+0xa]
 00005aee  790F              jns 0x5aff
 00005af0  8B0EA22F          mov cx,[0x2fa2]
 00005af4  8B16A42F          mov dx,[0x2fa4]
 00005af8  B80042            mov ax,0x4200
-00005afb  CD21              int 0x21
+00005afb  CD21              int 0x21				; lseek file
 00005afd  EBD5              jmp short 0x5ad4
 00005aff  8B5608            mov dx,[bp+0x8]
 00005b02  8B4E0A            mov cx,[bp+0xa]
 00005b05  8A460C            mov al,[bp+0xc]
 00005b08  B442              mov ah,0x42
-00005b0a  CD21              int 0x21
+00005b0a  CD21              int 0x21				; lseek file
 00005b0c  7207              jc 0x5b15
 00005b0e  80A7442EFD        and byte [bx+0x2e44],0xfd
 00005b13  EB03              jmp short 0x5b18
@@ -10397,7 +10399,7 @@
 0000644a  8B4E0A            mov cx,[bp+0xa]
 0000644d  8B5608            mov dx,[bp+0x8]
 00006450  B43F              mov ah,0x3f
-00006452  CD21              int 0x21
+00006452  CD21              int 0x21			; close file
 00006454  7304              jnc 0x645a
 00006456  B409              mov ah,0x9
 00006458  EB2F              jmp short 0x6489
@@ -10438,19 +10440,19 @@
 0000649c  F687442E40        test byte [bx+0x2e44],0x40
 000064a1  7419              jz 0x64bc
 000064a3  B80044            mov ax,0x4400
-000064a6  CD21              int 0x21
+000064a6  CD21              int 0x21			; ioctl file
 000064a8  F7C22000          test dx,0x20
 000064ac  750A              jnz 0x64b8
 000064ae  8D16BA2F          lea dx,[0x2fba]
 000064b2  B43F              mov ah,0x3f
-000064b4  CD21              int 0x21
+000064b4  CD21              int 0x21			; read file block
 000064b6  72CF              jc 0x6487
 000064b8  B00A              mov al,0xa
 000064ba  EB2F              jmp short 0x64eb
 000064bc  C606BA2F00        mov byte [0x2fba],0x0
 000064c1  8D16BA2F          lea dx,[0x2fba]
 000064c5  B43F              mov ah,0x3f
-000064c7  CD21              int 0x21
+000064c7  CD21              int 0x21		; read file block
 000064c9  72BC              jc 0x6487
 000064cb  0BC0              or ax,ax		; set flags
 000064cd  741A              jz 0x64e9
@@ -10459,7 +10461,7 @@
 000064d5  B9FFFF            mov cx,0xffff
 000064d8  8BD1              mov dx,cx
 000064da  B80142            mov ax,0x4201
-000064dd  CD21              int 0x21
+000064dd  CD21              int 0x21			; lseek
 000064df  B90100            mov cx,0x1
 000064e2  803EBA2F0A        cmp byte [0x2fba],0xa
 000064e7  7407              jz 0x64f0
@@ -10886,7 +10888,7 @@
 00006880  8BEC              mov bp,sp
 00006882  8B5606            mov dx,[bp+0x6]
 00006885  B441              mov ah,0x41
-00006887  CD21              int 0x21
+00006887  CD21              int 0x21		; delete file (unlink)
 00006889  E972E7            jmp 0x4ffe
 0000688c  55                push bp
 0000688d  8BEC              mov bp,sp
@@ -10896,7 +10898,7 @@
 00006899  B80242            mov ax,0x4202
 0000689c  33C9              xor cx,cx
 0000689e  8BD1              mov dx,cx
-000068a0  CD21              int 0x21
+000068a0  CD21              int 0x21		; lseek
 000068a2  7303              jnc 0x68a7
 000068a4  E95FE7            jmp 0x5006
 000068a7  F687442E80        test byte [bx+0x2e44],0x80
@@ -10921,7 +10923,7 @@
 000068ce  2BCA              sub cx,dx
 000068d0  49                dec cx
 000068d1  E310              jcxz 0x68e3
-000068d3  CD21              int 0x21
+000068d3  CD21              int 0x21		; write file block
 000068d5  9C                pushf
 000068d6  03F0              add si,ax
 000068d8  9D                popf
@@ -10934,7 +10936,7 @@
 000068e4  B90200            mov cx,0x2
 000068e7  BACA2F            mov dx,0x2fca
 000068ea  B440              mov ah,0x40
-000068ec  CD21              int 0x21
+000068ec  CD21              int 0x21		; write file block
 000068ee  7304              jnc 0x68f4
 000068f0  B409              mov ah,0x9
 000068f2  EB34              jmp short 0x6928
@@ -10943,10 +10945,11 @@
 000068f8  59                pop cx
 000068f9  8BD7              mov dx,di
 000068fb  EBC5              jmp short 0x68c2
+
 000068fd  51                push cx
 000068fe  8BCF              mov cx,di
 00006900  2BCA              sub cx,dx
-00006902  CD21              int 0x21
+00006902  CD21              int 0x21		; ???
 00006904  9C                pushf
 00006905  03F0              add si,ax
 00006907  9D                popf
@@ -10977,7 +10980,7 @@
 0000693b  E9C8E6            jmp 0x5006
 0000693e  8B5608            mov dx,[bp+0x8]
 00006941  B440              mov ah,0x40
-00006943  CD21              int 0x21
+00006943  CD21              int 0x21			; write file block
 00006945  7304              jnc 0x694b
 00006947  B409              mov ah,0x9
 00006949  EBE4              jmp short 0x692f
@@ -11033,7 +11036,7 @@
 000069b7  B103              mov cl,0x3
 000069b9  D3EB              shr bx,cl
 000069bb  B448              mov ah,0x48
-000069bd  CD21              int 0x21
+000069bd  CD21              int 0x21			; allocate memory
 000069bf  72E9              jc 0x69aa
 000069c1  92                xchg ax,dx
 000069c2  8904              mov [si],ax
@@ -11077,7 +11080,7 @@
 00006a12  2BD8              sub bx,ax
 00006a14  8EC0              mov es,ax
 00006a16  B44A              mov ah,0x4a
-00006a18  CD21              int 0x21
+00006a18  CD21              int 0x21			; adjust memory block size
 00006a1a  720D              jc 0x6a29
 00006a1c  3BF7              cmp si,di
 00006a1e  7504              jnz 0x6a24
@@ -11325,10 +11328,10 @@
 00006c99  46                inc si
 00006c9a  BFE82F            mov di,0x2fe8
 00006c9d  B80129            mov ax,0x2901
-00006ca0  CD21              int 0x21
+00006ca0  CD21              int 0x21				; parse filename
 00006ca2  B80129            mov ax,0x2901
 00006ca5  BFF82F            mov di,0x2ff8
-00006ca8  CD21              int 0x21
+00006ca8  CD21              int 0x21				; parse filename
 00006caa  55                push bp
 00006cab  06                push es
 00006cac  1E                push ds
@@ -11352,17 +11355,17 @@
 00006ce6  F8                clc
 00006ce7  50                push ax
 00006ce8  B40B              mov ah,0xb
-00006cea  CD21              int 0x21
+00006cea  CD21              int 0x21				; check stdin status
 00006cec  58                pop ax
 00006ced  C7065E2E0100      mov word [0x2e5e],0x1
 00006cf3  8B5608            mov dx,[bp+0x8]
 00006cf6  B44B              mov ah,0x4b
-00006cf8  CD21              int 0x21
+00006cf8  CD21              int 0x21				; load or execute (file?)
 00006cfa  50                push ax
 00006cfb  9F                lahf
 00006cfc  50                push ax
 00006cfd  B430              mov ah,0x30
-00006cff  CD21              int 0x21
+00006cff  CD21              int 0x21				; get DOS version
 00006d01  3C03              cmp al,0x3
 00006d03  58                pop ax
 00006d04  5B                pop bx
@@ -11385,7 +11388,7 @@
 00006d34  5E                pop si
 00006d35  7204              jc 0x6d3b
 00006d37  B44D              mov ah,0x4d
-00006d39  CD21              int 0x21
+00006d39  CD21              int 0x21				; wait and get exit code
 00006d3b  E9C8E2            jmp 0x5006
 00006d3e  8B0E4C30          mov cx,[0x304c]
 00006d42  E304              jcxz 0x6d48
@@ -11520,11 +11523,11 @@
 00006e41  8176080100        xor word [bp+0x8],0x1
 00006e46  BA0830            mov dx,0x3008
 00006e49  B41A              mov ah,0x1a
-00006e4b  CD21              int 0x21
+00006e4b  CD21              int 0x21			; set disk xfer area address
 00006e4d  B93700            mov cx,0x37
 00006e50  8B5606            mov dx,[bp+0x6]
 00006e53  B44E              mov ah,0x4e
-00006e55  CD21              int 0x21
+00006e55  CD21              int 0x21			; find first asciiz
 00006e57  7303              jnc 0x6e5c
 00006e59  E99B00            jmp 0x6ef7
 00006e5c  8B4608            mov ax,[bp+0x8]
@@ -11541,7 +11544,7 @@
 00006e79  740B              jz 0x6e86
 00006e7b  8B5606            mov dx,[bp+0x6]
 00006e7e  B80043            mov ax,0x4300
-00006e81  CD21              int 0x21
+00006e81  CD21              int 0x21			; chmod
 00006e83  E99C00            jmp 0x6f22
 00006e86  A90300            test ax,0x3
 00006e89  7457              jz 0x6ee2
@@ -11553,21 +11556,21 @@
 00006e99  0A063430          or al,[0x3034]
 00006e9d  8B5606            mov dx,[bp+0x6]
 00006ea0  B43D              mov ah,0x3d
-00006ea2  CD21              int 0x21
+00006ea2  CD21              int 0x21			; Open file by handle !!
 00006ea4  72C7              jc 0x6e6d
 00006ea6  93                xchg ax,bx
 00006ea7  B80044            mov ax,0x4400
-00006eaa  CD21              int 0x21
+00006eaa  CD21              int 0x21			; ioctl - get info
 00006eac  F6C280            test dl,0x80
 00006eaf  752D              jnz 0x6ede
 00006eb1  B9FFFF            mov cx,0xffff
 00006eb4  8BD1              mov dx,cx
 00006eb6  B80242            mov ax,0x4202
-00006eb9  CD21              int 0x21
+00006eb9  CD21              int 0x21			; lseek
 00006ebb  F7D9              neg cx
 00006ebd  BA0830            mov dx,0x3008
 00006ec0  B43F              mov ah,0x3f
-00006ec2  CD21              int 0x21
+00006ec2  CD21              int 0x21			; read block from handle
 00006ec4  0BC0              or ax,ax		; set flags
 00006ec6  7416              jz 0x6ede
 00006ec8  803E08301A        cmp byte [0x3008],0x1a
@@ -11575,18 +11578,18 @@
 00006ecf  F7D9              neg cx
 00006ed1  8BD1              mov dx,cx
 00006ed3  B80242            mov ax,0x4202
-00006ed6  CD21              int 0x21
+00006ed6  CD21              int 0x21			; lseek
 00006ed8  33C9              xor cx,cx
 00006eda  B440              mov ah,0x40
-00006edc  CD21              int 0x21
+00006edc  CD21              int 0x21			; write block via handle
 00006ede  B43E              mov ah,0x3e
-00006ee0  CD21              int 0x21
+00006ee0  CD21              int 0x21			; close file
 00006ee2  8A4608            mov al,[bp+0x8]
 00006ee5  2403              and al,0x3
 00006ee7  0A063430          or al,[0x3034]
 00006eeb  8B5606            mov dx,[bp+0x6]
 00006eee  B43D              mov ah,0x3d
-00006ef0  CD21              int 0x21
+00006ef0  CD21              int 0x21			; Open file by handle !!
 00006ef2  7237              jc 0x6f2b
 00006ef4  E9F001            jmp 0x70e7
 00006ef7  F746080001        test word [bp+0x8],0x100
@@ -11604,7 +11607,7 @@
 00006f1f  80E1FE            and cl,0xfe
 00006f22  8B5606            mov dx,[bp+0x6]
 00006f25  B43C              mov ah,0x3c
-00006f27  CD21              int 0x21
+00006f27  CD21              int 0x21			; Create file !!
 00006f29  7303              jnc 0x6f2e
 00006f2b  E9D8E0            jmp 0x5006
 00006f2e  F6063430FF        test byte [0x3034],0xff
@@ -11613,13 +11616,13 @@
 00006f3a  7532              jnz 0x6f6e
 00006f3c  93                xchg ax,bx
 00006f3d  B43E              mov ah,0x3e
-00006f3f  CD21              int 0x21
+00006f3f  CD21              int 0x21			; close file
 00006f41  8A4608            mov al,[bp+0x8]
 00006f44  2403              and al,0x3
 00006f46  0A063430          or al,[0x3034]
 00006f4a  8B5606            mov dx,[bp+0x6]
 00006f4d  B43D              mov ah,0x3d
-00006f4f  CD21              int 0x21
+00006f4f  CD21              int 0x21			; Open file by handle !!
 00006f51  72D8              jc 0x6f2b
 00006f53  F606353001        test byte [0x3035],0x1
 00006f58  7514              jnz 0x6f6e
@@ -11629,7 +11632,7 @@
 00006f64  93                xchg ax,bx
 00006f65  8B5606            mov dx,[bp+0x6]
 00006f68  B80143            mov ax,0x4301
-00006f6b  CD21              int 0x21
+00006f6b  CD21              int 0x21			; chmod
 00006f6d  93                xchg ax,bx
 00006f6e  E97601            jmp 0x70e7
 00006f71  8BD0              mov dx,ax
@@ -11649,7 +11652,7 @@
 00006f93  8EC3              mov es,bx
 00006f95  8BD8              mov bx,ax
 00006f97  B44A              mov ah,0x4a
-00006f99  CD21              int 0x21
+00006f99  CD21              int 0x21			; adjust memory block size
 00006f9b  58                pop ax
 00006f9c  7210              jc 0x6fae
 00006f9e  24F0              and al,0xf0
@@ -11823,12 +11826,12 @@
 000070dc  8B5606            mov dx,[bp+0x6]
 000070df  32ED              xor ch,ch
 000070e1  B43C              mov ah,0x3c
-000070e3  CD21              int 0x21
+000070e3  CD21              int 0x21			; close file
 000070e5  7254              jc 0x713b
 000070e7  8BD8              mov bx,ax
 000070e9  8B5606            mov dx,[bp+0x6]
 000070ec  B80043            mov ax,0x4300
-000070ef  CD21              int 0x21
+000070ef  CD21              int 0x21			; chmod
 000070f1  F7C10100          test cx,0x1
 000070f5  7504              jnz 0x70fb
 000070f7  32C9              xor cl,cl
@@ -11843,7 +11846,7 @@
 00007112  80C980            or cl,0x80
 00007115  0A0E3330          or cl,[0x3033]
 00007119  B80044            mov ax,0x4400
-0000711c  CD21              int 0x21
+0000711c  CD21              int 0x21			; ioctl - get info
 0000711e  7305              jnc 0x7125
 00007120  B80500            mov ax,0x5
 00007123  EB16              jmp short 0x713b
