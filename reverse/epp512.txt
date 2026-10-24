@@ -5,7 +5,21 @@
 ;  Tom Trebisky  10-22-2026
 ;
 ; Most of the annotation is further down in the file
-; The netwide assembler was used -- see the Makefile
+; The netwide (dis)assembler was used -- see the Makefile
+
+; -----------------------------------------------------------
+
+; Studying disassembled code like this provides an endless
+;  source of addictive puzzles.  A little routine will
+;  pop up that calls no other routine and does something
+;  with its inputs.  What is it doing?
+;
+; Apart from getting distracted by things like this, the
+;   purpose of studying this is to understand the
+;   algorithms used to read and particularly program
+;   EPROM devices.
+
+; -----------------------------------------------------------
 ;
 ; According to some notes from the MOD-EMUP over USB project,
 ; all software checks the EMUP in the following way:
@@ -21,6 +35,16 @@
 ; by searching for 0xf8 I located this code.
 ; It is at 0xa66b
 ;
+; This code also monkeys with 0xf7, which I don't see described.
+;
+; ------------------------------------------------
+;
+; There is a routine to set the VHH dac, but it is never called.
+;  This implies that this program includes a shared block of code
+;  that all of the EMUP gang of programs includes.
+; If this is true, it may be possible to identify this block of code
+;   in other programs and greatly simplify their analysis
+
 ; ------------------------------------------------
 ;
 ; You will note lines with a comment like the following:
@@ -3422,6 +3446,7 @@
 000022dd  5D                pop bp
 000022de  CB                retf
 
+; no calls to this
 000022df  8026453B89        and byte [0x3b45],0x89
 000022e4  8B4606            mov ax,[bp+0x6]
 000022e7  B90800            mov cx,0x8
@@ -3469,6 +3494,7 @@
 00002356  5D                pop bp
 00002357  CB                retf
 
+; no calls to this either
 00002358  800E423B7F        or byte [0x3b42],0x7f
 0000235d  8B166036          mov dx,[0x3660]
 00002361  B8E000            mov ax,0xe0
@@ -3482,6 +3508,7 @@
 00002373  EB00              jmp short 0x2375
 00002375  CB                retf
 
+; This is real code, there are calls to this
 00002376  55                push bp
 00002377  8BEC              mov bp,sp
 00002379  8026453BEF        and byte [0x3b45],0xef
@@ -3596,7 +3623,7 @@
 0000247b  5D                pop bp
 0000247c  CB                retf
 
-; subroutine
+; subroutine -- there are many calls to this
 0000247d  C606443BFF        mov byte [0x3b44],0xff
 00002482  800E453B01        or byte [0x3b45],0x1
 00002487  8B166036          mov dx,[0x3660]
@@ -3838,6 +3865,8 @@
 000026aa  0B03              or ax,[bp+di]
 000026ac  DB2EFFA7          fld tword [0xa7ff]
 000026b0  C20F04            ret 0x40f
+
+; the above and below here look more like data to me.
 
 000026b3  11                db 0x11
 000026b4  0411              add al,0x11
@@ -11507,6 +11536,7 @@
 00006e1e  5D                pop bp
 00006e1f  CB                retf
 
+; Subroutine -- some kind of file handling
 00006e20  55                push bp
 00006e21  8BEC              mov bp,sp
 00006e23  32FF              xor bh,bh
@@ -11530,6 +11560,7 @@
 00006e55  CD21              int 0x21			; find first asciiz
 00006e57  7303              jnc 0x6e5c
 00006e59  E99B00            jmp 0x6ef7
+
 00006e5c  8B4608            mov ax,[bp+0x8]
 00006e5f  8BC8              mov cx,ax
 00006e61  250005            and ax,0x500
@@ -11538,6 +11569,7 @@
 00006e69  B80011            mov ax,0x1100
 00006e6c  F9                stc
 00006e6d  E996E1            jmp 0x5006
+
 00006e70  C606353001        mov byte [0x3035],0x1
 00006e75  91                xchg ax,cx
 00006e76  A90002            test ax,0x200
@@ -11546,6 +11578,7 @@
 00006e7e  B80043            mov ax,0x4300
 00006e81  CD21              int 0x21			; chmod
 00006e83  E99C00            jmp 0x6f22
+
 00006e86  A90300            test ax,0x3
 00006e89  7457              jz 0x6ee2
 00006e8b  A90080            test ax,0x8000
@@ -11663,6 +11696,8 @@
 00006fa9  0116CE2D          add [0x2dce],dx
 00006fad  C3                ret
 
+; ------- branched to from above
+
 00006fae  8BC7              mov ax,di
 00006fb0  E99ECE            jmp 0x3e51
 00006fb3  55                push bp
@@ -11690,33 +11725,45 @@
 00006fdb  5D                pop bp
 00006fdc  CB                retf
 
+; -----------------------------------------------
+; subroutine - 2 calls
+; a peculiar function.  Give it a string and a character.
+; It goes to the end of the string, then scans back to
+; try to find the character.
 00006fdd  55                push bp
 00006fde  8BEC              mov bp,sp
 00006fe0  57                push di
+
 00006fe1  1E                push ds
-00006fe2  07                pop es
-00006fe3  8B7E06            mov di,[bp+0x6]
-00006fe6  33C0              xor ax,ax
+00006fe2  07                pop es		; es = ds
+
+00006fe3  8B7E06            mov di,[bp+0x6]		; arg2
+00006fe6  33C0              xor ax,ax			; ax = 0
 00006fe8  B9FFFF            mov cx,0xffff
-00006feb  F2AE              repne scasb
+00006feb  F2AE              repne scasb			; scan for null
 00006fed  41                inc cx
 00006fee  F7D9              neg cx
 00006ff0  4F                dec di
-00006ff1  8A4608            mov al,[bp+0x8]
-00006ff4  FD                std
-00006ff5  F2AE              repne scasb
+00006ff1  8A4608            mov al,[bp+0x8]		; arg1
+00006ff4  FD                std					; set DF (decrement)
+00006ff5  F2AE              repne scasb			; scan back for arg
 00006ff7  47                inc di
-00006ff8  3805              cmp [di],al
+00006ff8  3805              cmp [di],al			; verify
 00006ffa  7404              jz 0x7000
-00006ffc  33C0              xor ax,ax
+
+00006ffc  33C0              xor ax,ax			; fail
 00006ffe  EB02              jmp short 0x7002
-00007000  8BC7              mov ax,di
+
+00007000  8BC7              mov ax,di			; good
 00007002  FC                cld
+
 00007003  5F                pop di
 00007004  8BE5              mov sp,bp
 00007006  5D                pop bp
 00007007  CB                retf
 
+; -----------------------------------------------
+; subroutine
 00007008  55                push bp
 00007009  8BEC              mov bp,sp
 0000700b  56                push si
@@ -11764,10 +11811,15 @@
 0000706c  5D                pop bp
 0000706d  CB                retf
 
+; ------------------------
+
+; we may jump here.
 0000706e  8B4E0C            mov cx,[bp+0xc]
 00007071  8B4606            mov ax,[bp+0x6]
 00007074  8B5608            mov dx,[bp+0x8]
 00007077  8B7E0A            mov di,[bp+0xa]
+
+; or we may jump here.
 0000707a  57                push di
 0000707b  1E                push ds
 0000707c  07                pop es
@@ -12682,12 +12734,12 @@
 00007907  8B1E943B          mov bx,[0x3b94]
 0000790b  D1E3              shl bx,1
 0000790d  FFB7620B          push word [bx+0xb62]
-00007911  9A9102B80D        call 0xde11   ;0xdb8:0x291
+00007911  9A9102B80D        call 0xde11   ; set VCC dac
 00007916  83C402            add sp,byte +0x2
 00007919  8B1E5A34          mov bx,[0x345a]
 0000791d  D1E3              shl bx,1
 0000791f  FFB73C0B          push word [bx+0xb3c]
-00007923  9A1502B80D        call 0xdd95   ;0xdb8:0x215
+00007923  9A1502B80D        call 0xdd95   		; set VOP dac
 00007928  83C402            add sp,byte +0x2
 0000792b  9ACF02B80D        call 0xde4f   ;0xdb8:0x2cf
 00007930  B8C800            mov ax,0xc8
@@ -13487,11 +13539,11 @@
 00008310  83C402            add sp,byte +0x2
 00008313  B80000            mov ax,0x0
 00008316  50                push ax
-00008317  9A1502B80D        call 0xdd95   ;0xdb8:0x215
+00008317  9A1502B80D        call 0xdd95   	; set VOP dac
 0000831c  83C402            add sp,byte +0x2
 0000831f  B80000            mov ax,0x0
 00008322  50                push ax
-00008323  9A9102B80D        call 0xde11   ;0xdb8:0x291
+00008323  9A9102B80D        call 0xde11   ; set VCC dac
 00008328  83C402            add sp,byte +0x2
 0000832b  9A0202B80D        call 0xdd82   ;0xdb8:0x202
 00008330  8B46E6            mov ax,[bp-0x1a]
@@ -13714,12 +13766,12 @@
 0000855a  56                push si
 0000855b  B87D00            mov ax,0x7d
 0000855e  50                push ax
-0000855f  9A9102B80D        call 0xde11   ;0xdb8:0x291
+0000855f  9A9102B80D        call 0xde11   ; set VCC dac
 00008564  83C402            add sp,byte +0x2
 00008567  9ACF02B80D        call 0xde4f   ;0xdb8:0x2cf
 0000856c  B83200            mov ax,0x32
 0000856f  50                push ax
-00008570  9A1502B80D        call 0xdd95   ;0xdb8:0x215
+00008570  9A1502B80D        call 0xdd95   ; set VOP dac
 00008575  83C402            add sp,byte +0x2
 00008578  8B1E0C0B          mov bx,[0xb0c]
 0000857c  D1E3              shl bx,1
@@ -13866,11 +13918,11 @@
 00008754  83C402            add sp,byte +0x2
 00008757  2BC0              sub ax,ax
 00008759  50                push ax
-0000875a  9A9102B80D        call 0xde11   ;0xdb8:0x291
+0000875a  9A9102B80D        call 0xde11   ; set VCC dac
 0000875f  83C402            add sp,byte +0x2
 00008762  2BC0              sub ax,ax
 00008764  50                push ax
-00008765  9A1502B80D        call 0xdd95   ;0xdb8:0x215
+00008765  9A1502B80D        call 0xdd95   ; set VOP dac
 0000876a  83C402            add sp,byte +0x2
 0000876d  9A0202B80D        call 0xdd82   ;0xdb8:0x202
 00008772  5E                pop si
@@ -13938,12 +13990,12 @@
 00008808  8956CA            mov [bp-0x36],dx
 0000880b  B87D00            mov ax,0x7d
 0000880e  50                push ax
-0000880f  9A9102B80D        call 0xde11   ;0xdb8:0x291
+0000880f  9A9102B80D        call 0xde11   ; set VCC dac
 00008814  83C402            add sp,byte +0x2
 00008817  9ACF02B80D        call 0xde4f   ;0xdb8:0x2cf
 0000881c  B83200            mov ax,0x32
 0000881f  50                push ax
-00008820  9A1502B80D        call 0xdd95   ;0xdb8:0x215
+00008820  9A1502B80D        call 0xdd95   ; set VOP dac
 00008825  83C402            add sp,byte +0x2
 00008828  8B1E0C0B          mov bx,[0xb0c]
 0000882c  D1E3              shl bx,1
@@ -14117,11 +14169,11 @@
 00008a2c  9A6203B80D        call 0xdee2   ;0xdb8:0x362
 00008a31  2BC0              sub ax,ax
 00008a33  50                push ax
-00008a34  9A9102B80D        call 0xde11   ;0xdb8:0x291
+00008a34  9A9102B80D        call 0xde11   ; set VCC dac
 00008a39  83C402            add sp,byte +0x2
 00008a3c  2BC0              sub ax,ax
 00008a3e  50                push ax
-00008a3f  9A1502B80D        call 0xdd95   ;0xdb8:0x215
+00008a3f  9A1502B80D        call 0xdd95   ; set VOP dac
 00008a44  83C402            add sp,byte +0x2
 00008a47  9A0202B80D        call 0xdd82   ;0xdb8:0x202
 00008a4c  B8711D            mov ax,0x1d71
@@ -14728,17 +14780,17 @@
 0000907b  7511              jnz 0x908e
 0000907d  B88900            mov ax,0x89
 00009080  50                push ax
-00009081  9A9102B80D        call 0xde11   ;0xdb8:0x291
+00009081  9A9102B80D        call 0xde11   ; set VCC dac
 00009086  83C402            add sp,byte +0x2
 00009089  B83700            mov ax,0x37
 0000908c  EB0F              jmp short 0x909d
 0000908e  B87D00            mov ax,0x7d
 00009091  50                push ax
-00009092  9A9102B80D        call 0xde11   ;0xdb8:0x291
+00009092  9A9102B80D        call 0xde11   ; set VCC dac
 00009097  83C402            add sp,byte +0x2
 0000909a  B83200            mov ax,0x32
 0000909d  50                push ax
-0000909e  9A1502B80D        call 0xdd95   ;0xdb8:0x215
+0000909e  9A1502B80D        call 0xdd95   ; set VOP dac
 000090a3  83C402            add sp,byte +0x2
 000090a6  9ACF02B80D        call 0xde4f   ;0xdb8:0x2cf
 000090ab  8B1E0C0B          mov bx,[0xb0c]
@@ -14876,11 +14928,11 @@
 00009260  83C402            add sp,byte +0x2
 00009263  2BC0              sub ax,ax
 00009265  50                push ax
-00009266  9A9102B80D        call 0xde11   ;0xdb8:0x291
+00009266  9A9102B80D        call 0xde11   ; set VCC dac
 0000926b  83C402            add sp,byte +0x2
 0000926e  2BC0              sub ax,ax
 00009270  50                push ax
-00009271  9A1502B80D        call 0xdd95   ;0xdb8:0x215
+00009271  9A1502B80D        call 0xdd95   ; set VOP dac
 00009276  83C402            add sp,byte +0x2
 00009279  9A0202B80D        call 0xdd82   ;0xdb8:0x202
 0000927e  8B46EE            mov ax,[bp-0x12]
@@ -15020,12 +15072,12 @@
 000093dc  C746EC0200        mov word [bp-0x14],0x2
 000093e1  B87D00            mov ax,0x7d
 000093e4  50                push ax
-000093e5  9A9102B80D        call 0xde11   ;0xdb8:0x291
+000093e5  9A9102B80D        call 0xde11   ; set VCC dac
 000093ea  83C402            add sp,byte +0x2
 000093ed  9ACF02B80D        call 0xde4f   ;0xdb8:0x2cf
 000093f2  B83200            mov ax,0x32
 000093f5  50                push ax
-000093f6  9A1502B80D        call 0xdd95   ;0xdb8:0x215
+000093f6  9A1502B80D        call 0xdd95   ; set VOP dac
 000093fb  83C402            add sp,byte +0x2
 000093fe  8B1E0C0B          mov bx,[0xb0c]
 00009402  D1E3              shl bx,1
@@ -15223,11 +15275,11 @@
 0000964f  9A6203B80D        call 0xdee2   ;0xdb8:0x362
 00009654  2BC0              sub ax,ax
 00009656  50                push ax
-00009657  9A9102B80D        call 0xde11   ;0xdb8:0x291
+00009657  9A9102B80D        call 0xde11   ; set VCC dac
 0000965c  83C402            add sp,byte +0x2
 0000965f  2BC0              sub ax,ax
 00009661  50                push ax
-00009662  9A1502B80D        call 0xdd95   ;0xdb8:0x215
+00009662  9A1502B80D        call 0xdd95   ; set VOP dac
 00009667  83C402            add sp,byte +0x2
 0000966a  9A0202B80D        call 0xdd82   ;0xdb8:0x202
 0000966f  837EF200          cmp word [bp-0xe],byte +0x0
@@ -15440,7 +15492,7 @@
 00009889  C746F20000        mov word [bp-0xe],0x0
 0000988e  B87D00            mov ax,0x7d
 00009891  50                push ax
-00009892  9A9102B80D        call 0xde11   ;0xdb8:0x291
+00009892  9A9102B80D        call 0xde11   ; set VCC dac
 00009897  83C402            add sp,byte +0x2
 0000989a  833E0C0B04        cmp word [0xb0c],byte +0x4
 0000989f  750C              jnz 0x98ad
@@ -15450,7 +15502,7 @@
 000098ab  EB04              jmp short 0x98b1
 000098ad  B83200            mov ax,0x32
 000098b0  50                push ax
-000098b1  9A1502B80D        call 0xdd95   ;0xdb8:0x215
+000098b1  9A1502B80D        call 0xdd95   ; set VOP dac
 000098b6  83C402            add sp,byte +0x2
 000098b9  9ACF02B80D        call 0xde4f   ;0xdb8:0x2cf
 000098be  8B1E0C0B          mov bx,[0xb0c]
@@ -15602,11 +15654,11 @@
 00009a9f  83C402            add sp,byte +0x2
 00009aa2  2BC0              sub ax,ax
 00009aa4  50                push ax
-00009aa5  9A1502B80D        call 0xdd95   ;0xdb8:0x215
+00009aa5  9A1502B80D        call 0xdd95   ; set VOP dac
 00009aaa  83C402            add sp,byte +0x2
 00009aad  2BC0              sub ax,ax
 00009aaf  50                push ax
-00009ab0  9A9102B80D        call 0xde11   ;0xdb8:0x291
+00009ab0  9A9102B80D        call 0xde11   ; set VCC dac
 00009ab5  83C402            add sp,byte +0x2
 00009ab8  9A0202B80D        call 0xdd82   ;0xdb8:0x202
 00009abd  8B46F2            mov ax,[bp-0xe]
@@ -21794,164 +21846,209 @@
 0000db81  5D                pop bp
 0000db82  CB                retf
 
+; ------------------------------------------------------
+; subroutine
+
 0000db83  55                push bp
 0000db84  8BEC              mov bp,sp
 0000db86  B80200            mov ax,0x2
 0000db89  9A90266F01        call 0x3d80   ;0x16f:0x2690
-0000db8e  C746FE0000        mov word [bp-0x2],0x0
+
+0000db8e  C746FE0000        mov word [bp-0x2],0x0	; index = 0
+
+; loop 0 ... 4
 0000db93  8B5EFE            mov bx,[bp-0x2]
-0000db96  C687423BFF        mov byte [bx+0x3b42],0xff
+0000db96  C687423BFF        mov byte [bx+0x3b42],0xff	; for TTL pins
 0000db9b  8B5EFE            mov bx,[bp-0x2]
-0000db9e  C687D13300        mov byte [bx+0x33d1],0x0
+0000db9e  C687D13300        mov byte [bx+0x33d1],0x0	; for VOP pins
 0000dba3  8B5EFE            mov bx,[bp-0x2]
-0000dba6  C687A03100        mov byte [bx+0x31a0],0x0
+0000dba6  C687A03100        mov byte [bx+0x31a0],0x0	; for VHH pins
 0000dbab  FF46FE            inc word [bp-0x2]
 0000dbae  837EFE05          cmp word [bp-0x2],byte +0x5
 0000dbb2  7CDF              jl 0xdb93
-0000dbb4  C6063C3B00        mov byte [0x3b3c],0x0
-0000dbb9  C6065E3600        mov byte [0x365e],0x0
-0000dbbe  C606D03300        mov byte [0x33d0],0x0
-0000dbc3  C606923B00        mov byte [0x3b92],0x0
-0000dbc8  80268E3B08        and byte [0x3b8e],0x8
+
+0000dbb4  C6063C3B00        mov byte [0x3b3c],0x0		; for VOP dac
+0000dbb9  C6065E3600        mov byte [0x365e],0x0		; for VHH dac
+0000dbbe  C606D03300        mov byte [0x33d0],0x0		; for VCC dac
+0000dbc3  C606923B00        mov byte [0x3b92],0x0		; for OTHER
+0000dbc8  80268E3B08        and byte [0x3b8e],0x8		; for 0xf7
+
+; loop 0 .. 1
 0000dbcd  C746FE0000        mov word [bp-0x2],0x0
 0000dbd2  8B5EFE            mov bx,[bp-0x2]
-0000dbd5  C6878C3B00        mov byte [bx+0x3b8c],0x0
+0000dbd5  C6878C3B00        mov byte [bx+0x3b8c],0x0	; for VCC pins
+
 0000dbda  8B5EFE            mov bx,[bp-0x2]
-0000dbdd  C687AA3100        mov byte [bx+0x31aa],0x0
+0000dbdd  C687AA3100        mov byte [bx+0x31aa],0x0	; for VHHC pins
 0000dbe2  FF46FE            inc word [bp-0x2]
 0000dbe5  837EFE02          cmp word [bp-0x2],byte +0x2
 0000dbe9  7CE7              jl 0xdbd2
-0000dbeb  C746FE0000        mov word [bp-0x2],0x0
+
+; --------------
+
+0000dbeb  C746FE0000        mov word [bp-0x2],0x0	; index = 0
+
+; loop starts here.
+; it will set index = 0, 1, 2, 3, 4
 0000dbf0  8B46FE            mov ax,[bp-0x2]
-0000dbf3  05E000            add ax,0xe0
+0000dbf3  05E000            add ax,0xe0				; select some TTL register
 0000dbf6  50                push ax
 0000dbf7  FF366036          push word [0x3660]
 0000dbfb  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000dc00  83C404            add sp,byte +0x4
-0000dc03  8B5EFE            mov bx,[bp-0x2]
-0000dc06  8A87423B          mov al,[bx+0x3b42]
+
+0000dc03  8B5EFE            mov bx,[bp-0x2]			; index
+0000dc06  8A87423B          mov al,[bx+0x3b42]		; table
 0000dc0a  2AE4              sub ah,ah
-0000dc0c  50                push ax
+0000dc0c  50                push ax					; set value
 0000dc0d  FF365C36          push word [0x365c]
 0000dc11  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000dc16  83C404            add sp,byte +0x4
+
 0000dc19  8B46FE            mov ax,[bp-0x2]
-0000dc1c  05E800            add ax,0xe8
+0000dc1c  05E800            add ax,0xe8				; select some VOP register
 0000dc1f  50                push ax
 0000dc20  FF366036          push word [0x3660]
 0000dc24  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000dc29  83C404            add sp,byte +0x4
-0000dc2c  8B5EFE            mov bx,[bp-0x2]
-0000dc2f  8A87D133          mov al,[bx+0x33d1]
+
+0000dc2c  8B5EFE            mov bx,[bp-0x2]			; index
+0000dc2f  8A87D133          mov al,[bx+0x33d1]		; table
 0000dc33  2AE4              sub ah,ah
-0000dc35  50                push ax
+0000dc35  50                push ax					; set value
 0000dc36  FF365C36          push word [0x365c]
 0000dc3a  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000dc3f  83C404            add sp,byte +0x4
+
 0000dc42  8B46FE            mov ax,[bp-0x2]
-0000dc45  05F000            add ax,0xf0
+0000dc45  05F000            add ax,0xf0				; select some VHH register
 0000dc48  50                push ax
 0000dc49  FF366036          push word [0x3660]
 0000dc4d  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000dc52  83C404            add sp,byte +0x4
-0000dc55  8B5EFE            mov bx,[bp-0x2]
-0000dc58  8A87A031          mov al,[bx+0x31a0]
+
+0000dc55  8B5EFE            mov bx,[bp-0x2]			; index
+0000dc58  8A87A031          mov al,[bx+0x31a0]		; table
 0000dc5c  2AE4              sub ah,ah
-0000dc5e  50                push ax
+0000dc5e  50                push ax					; set value
 0000dc5f  FF365C36          push word [0x365c]
 0000dc63  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000dc68  83C404            add sp,byte +0x4
+
 0000dc6b  FF46FE            inc word [bp-0x2]
 0000dc6e  837EFE05          cmp word [bp-0x2],byte +0x5
 0000dc72  7D03              jnl 0xdc77
-0000dc74  E979FF            jmp 0xdbf0
+0000dc74  E979FF            jmp 0xdbf0				; loop back
+
+; --------------
+; A loop here, but only 0 .. 1
+
 0000dc77  C746FE0000        mov word [bp-0x2],0x0
 0000dc7c  8B46FE            mov ax,[bp-0x2]
-0000dc7f  05ED00            add ax,0xed
+0000dc7f  05ED00            add ax,0xed				; select VCC pins
 0000dc82  50                push ax
 0000dc83  FF366036          push word [0x3660]
 0000dc87  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000dc8c  83C404            add sp,byte +0x4
-0000dc8f  8B5EFE            mov bx,[bp-0x2]
-0000dc92  8A878C3B          mov al,[bx+0x3b8c]
+
+0000dc8f  8B5EFE            mov bx,[bp-0x2]			; index
+0000dc92  8A878C3B          mov al,[bx+0x3b8c]		; table
 0000dc96  2AE4              sub ah,ah
 0000dc98  50                push ax
 0000dc99  FF365C36          push word [0x365c]
 0000dc9d  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000dca2  83C404            add sp,byte +0x4
+
 0000dca5  8B46FE            mov ax,[bp-0x2]
-0000dca8  05F500            add ax,0xf5
+0000dca8  05F500            add ax,0xf5				; select VHHC pins
 0000dcab  50                push ax
 0000dcac  FF366036          push word [0x3660]
 0000dcb0  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000dcb5  83C404            add sp,byte +0x4
-0000dcb8  8B5EFE            mov bx,[bp-0x2]
-0000dcbb  8A87AA31          mov al,[bx+0x31aa]
+
+0000dcb8  8B5EFE            mov bx,[bp-0x2]			; index
+0000dcbb  8A87AA31          mov al,[bx+0x31aa]		; table
 0000dcbf  2AE4              sub ah,ah
-0000dcc1  50                push ax
+0000dcc1  50                push ax					; set value
 0000dcc2  FF365C36          push word [0x365c]
 0000dcc6  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000dccb  83C404            add sp,byte +0x4
+
 0000dcce  FF46FE            inc word [bp-0x2]
 0000dcd1  837EFE02          cmp word [bp-0x2],byte +0x2
-0000dcd5  7CA5              jl 0xdc7c
-0000dcd7  B8E500            mov ax,0xe5
+0000dcd5  7CA5              jl 0xdc7c				; loop back
+
+; --------------
+
+0000dcd7  B8E500            mov ax,0xe5				; select the VOP dac
 0000dcda  50                push ax
 0000dcdb  FF366036          push word [0x3660]
 0000dcdf  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000dce4  83C404            add sp,byte +0x4
+
 0000dce7  A03C3B            mov al,[0x3b3c]
-0000dcea  2AE4              sub ah,ah
+0000dcea  2AE4              sub ah,ah				; set it
 0000dcec  50                push ax
 0000dced  FF365C36          push word [0x365c]
 0000dcf1  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000dcf6  83C404            add sp,byte +0x4
-0000dcf9  B8E600            mov ax,0xe6
+
+0000dcf9  B8E600            mov ax,0xe6				; select the VHH dac
 0000dcfc  50                push ax
 0000dcfd  FF366036          push word [0x3660]
 0000dd01  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000dd06  83C404            add sp,byte +0x4
+
 0000dd09  A05E36            mov al,[0x365e]
-0000dd0c  2AE4              sub ah,ah
+0000dd0c  2AE4              sub ah,ah				; set it
 0000dd0e  50                push ax
 0000dd0f  FF365C36          push word [0x365c]
 0000dd13  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000dd18  83C404            add sp,byte +0x4
-0000dd1b  B8E700            mov ax,0xe7		; VCC dac ID
+
+0000dd1b  B8E700            mov ax,0xe7				; select the VCC dac
 0000dd1e  50                push ax
 0000dd1f  FF366036          push word [0x3660]
 0000dd23  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000dd28  83C404            add sp,byte +0x4
+
 0000dd2b  A0D033            mov al,[0x33d0]
-0000dd2e  2AE4              sub ah,ah
+0000dd2e  2AE4              sub ah,ah				; set it
 0000dd30  50                push ax
 0000dd31  FF365C36          push word [0x365c]
 0000dd35  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000dd3a  83C404            add sp,byte +0x4
-0000dd3d  B8EF00            mov ax,0xef
+
+0000dd3d  B8EF00            mov ax,0xef				; select OTHER
 0000dd40  50                push ax
 0000dd41  FF366036          push word [0x3660]
 0000dd45  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000dd4a  83C404            add sp,byte +0x4
+
 0000dd4d  A0923B            mov al,[0x3b92]
 0000dd50  2AE4              sub ah,ah
-0000dd52  50                push ax
+0000dd52  50                push ax					; set OTHER
 0000dd53  FF365C36          push word [0x365c]
 0000dd57  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000dd5c  83C404            add sp,byte +0x4
-0000dd5f  B8F700            mov ax,0xf7
+
+0000dd5f  B8F700            mov ax,0xf7				; select 0xf7 (what is it?)
 0000dd62  50                push ax
 0000dd63  FF366036          push word [0x3660]
 0000dd67  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000dd6c  83C404            add sp,byte +0x4
+
 0000dd6f  A08E3B            mov al,[0x3b8e]
 0000dd72  2AE4              sub ah,ah
-0000dd74  50                push ax
+0000dd74  50                push ax					; set value
 0000dd75  FF365C36          push word [0x365c]
 0000dd79  9A1D316F01        call 0x480d   ;0x16f:0x311d
+
 0000dd7e  8BE5              mov sp,bp
 0000dd80  5D                pop bp
 0000dd81  CB                retf
+
+; --------------------------------------------
 
 0000dd82  55                push bp
 0000dd83  8BEC              mov bp,sp
@@ -21962,77 +22059,97 @@
 0000dd93  5D                pop bp
 0000dd94  CB                retf
 
+; -----------------------------------------------
+; subroutine to set the VOP dac
+; many calls
+
 0000dd95  55                push bp
 0000dd96  8BEC              mov bp,sp
 0000dd98  33C0              xor ax,ax
 0000dd9a  9A90266F01        call 0x3d80   ;0x16f:0x2690
-0000dd9f  B8E500            mov ax,0xe5
+
+0000dd9f  B8E500            mov ax,0xe5			; select the VOP dac
 0000dda2  50                push ax
 0000dda3  FF366036          push word [0x3660]
 0000dda7  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000ddac  83C404            add sp,byte +0x4
+
 0000ddaf  8B4606            mov ax,[bp+0x6]
 0000ddb2  050600            add ax,0x6
 0000ddb5  3DFF00            cmp ax,0xff
 0000ddb8  7E05              jng 0xddbf
 0000ddba  B8FF00            mov ax,0xff
 0000ddbd  EB06              jmp short 0xddc5
-0000ddbf  8B4606            mov ax,[bp+0x6]
-0000ddc2  050600            add ax,0x6
-0000ddc5  50                push ax
+
+0000ddbf  8B4606            mov ax,[bp+0x6]		; argument
+0000ddc2  050600            add ax,0x6			; offset (as per documentation)
+0000ddc5  50                push ax				; set the VOP value
 0000ddc6  FF365C36          push word [0x365c]
 0000ddca  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000ddcf  8BE5              mov sp,bp
 0000ddd1  5D                pop bp
 0000ddd2  CB                retf
 
+; -------------------------------------------------------------------------
+; subroutine to set the VHH dac
+; (I don't see any calls to this)
+
 0000ddd3  55                push bp
 0000ddd4  8BEC              mov bp,sp
 0000ddd6  33C0              xor ax,ax
 0000ddd8  9A90266F01        call 0x3d80   ;0x16f:0x2690
-0000dddd  B8E600            mov ax,0xe6
+
+0000dddd  B8E600            mov ax,0xe6			; select the VHH dac
 0000dde0  50                push ax
 0000dde1  FF366036          push word [0x3660]
 0000dde5  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000ddea  83C404            add sp,byte +0x4
-0000dded  8B4606            mov ax,[bp+0x6]
-0000ddf0  050A00            add ax,0xa
+
+0000dded  8B4606            mov ax,[bp+0x6]		; argument
+0000ddf0  050A00            add ax,0xa			; offset (as per documentation)
 0000ddf3  3DFF00            cmp ax,0xff
 0000ddf6  7E05              jng 0xddfd
 0000ddf8  B8FF00            mov ax,0xff
 0000ddfb  EB06              jmp short 0xde03
 0000ddfd  8B4606            mov ax,[bp+0x6]
 0000de00  050A00            add ax,0xa
-0000de03  50                push ax
+0000de03  50                push ax				; set value
 0000de04  FF365C36          push word [0x365c]
 0000de08  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000de0d  8BE5              mov sp,bp
 0000de0f  5D                pop bp
 0000de10  CB                retf
 
+; -------------------------------------------------------------------------
+; subroutine to set the VCC dac
+; many calls
+
 0000de11  55                push bp
 0000de12  8BEC              mov bp,sp
 0000de14  33C0              xor ax,ax
 0000de16  9A90266F01        call 0x3d80   ;0x16f:0x2690
-0000de1b  B8E700            mov ax,0xe7		; VCC dac ID
+0000de1b  B8E700            mov ax,0xe7		; select the VCC dac
 0000de1e  50                push ax
 0000de1f  FF366036          push word [0x3660]
 0000de23  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000de28  83C404            add sp,byte +0x4
-0000de2b  8B4606            mov ax,[bp+0x6]
-0000de2e  050F00            add ax,0xf
+
+0000de2b  8B4606            mov ax,[bp+0x6]		; argument
+0000de2e  050F00            add ax,0xf			; offset (as per documentation)
 0000de31  3DFF00            cmp ax,0xff
 0000de34  7E05              jng 0xde3b
 0000de36  B8FF00            mov ax,0xff
 0000de39  EB06              jmp short 0xde41
 0000de3b  8B4606            mov ax,[bp+0x6]
 0000de3e  050F00            add ax,0xf
-0000de41  50                push ax
+0000de41  50                push ax				; set the value
 0000de42  FF365C36          push word [0x365c]
 0000de46  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000de4b  8BE5              mov sp,bp
 0000de4d  5D                pop bp
 0000de4e  CB                retf
+
+; -------------------------------------------------------------------------
 
 0000de4f  55                push bp
 0000de50  8BEC              mov bp,sp
@@ -23383,11 +23500,13 @@
 0000ed7c  8846FC            mov [bp-0x4],al
 0000ed7f  C646F880          mov byte [bp-0x8],0x80
 0000ed83  EB23              jmp short 0xeda8
+
 0000ed85  B8E700            mov ax,0xe7		; VCC dac ID
 0000ed88  50                push ax
 0000ed89  FF366036          push word [0x3660]
 0000ed8d  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000ed92  83C404            add sp,byte +0x4
+
 0000ed95  FF365C36          push word [0x365c]
 0000ed99  9A912F6F01        call 0x4681   ;0x16f:0x2f91
 0000ed9e  83C402            add sp,byte +0x2
@@ -23418,17 +23537,20 @@
 0000ede8  E929FF            jmp 0xed14
 0000edeb  C646FE79          mov byte [bp-0x2],0x79
 0000edef  80268E3BF7        and byte [0x3b8e],0xf7
-0000edf4  B8F700            mov ax,0xf7
+
+0000edf4  B8F700            mov ax,0xf7					; Mystery
 0000edf7  50                push ax
 0000edf8  FF366036          push word [0x3660]
 0000edfc  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000ee01  83C404            add sp,byte +0x4
+
 0000ee04  A08E3B            mov al,[0x3b8e]
 0000ee07  2AE4              sub ah,ah
-0000ee09  50                push ax
+0000ee09  50                push ax					; set value
 0000ee0a  FF365C36          push word [0x365c]
 0000ee0e  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000ee13  83C404            add sp,byte +0x4
+
 0000ee16  8A46FE            mov al,[bp-0x2]
 0000ee19  2AE4              sub ah,ah
 0000ee1b  EB05              jmp short 0xee22
@@ -23487,16 +23609,21 @@
 0000eeb6  5D                pop bp
 0000eeb7  CB                retf
 
+; ---------------------------------------------------------------
+; subroutine
+
 0000eeb8  55                push bp
 0000eeb9  8BEC              mov bp,sp
 0000eebb  33C0              xor ax,ax
 0000eebd  9A90266F01        call 0x3d80   ;0x16f:0x2690
+
 0000eec2  800E8E3BC0        or byte [0x3b8e],0xc0
-0000eec7  B8F700            mov ax,0xf7
+0000eec7  B8F700            mov ax,0xf7			; Mystery
 0000eeca  50                push ax
 0000eecb  FF366036          push word [0x3660]
 0000eecf  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000eed4  83C404            add sp,byte +0x4
+
 0000eed7  A08E3B            mov al,[0x3b8e]
 0000eeda  2AE4              sub ah,ah
 0000eedc  50                push ax
@@ -23505,17 +23632,19 @@
 0000eee6  8BE5              mov sp,bp
 0000eee8  5D                pop bp
 0000eee9  CB                retf
+; ---------------------------------------------------------------
 
 0000eeea  55                push bp
 0000eeeb  8BEC              mov bp,sp
 0000eeed  33C0              xor ax,ax
 0000eeef  9A90266F01        call 0x3d80   ;0x16f:0x2690
 0000eef4  800E8E3B08        or byte [0x3b8e],0x8
-0000eef9  B8F700            mov ax,0xf7
+0000eef9  B8F700            mov ax,0xf7			; Mystery
 0000eefc  50                push ax
 0000eefd  FF366036          push word [0x3660]
 0000ef01  9A1D316F01        call 0x480d   ;0x16f:0x311d
 0000ef06  83C404            add sp,byte +0x4
+
 0000ef09  A08E3B            mov al,[0x3b8e]
 0000ef0c  2AE4              sub ah,ah
 0000ef0e  50                push ax
@@ -23525,12 +23654,14 @@
 0000ef1a  5D                pop bp
 0000ef1b  CB                retf
 
+; ---------------------------------------------------------------
+
 0000ef1c  55                push bp
 0000ef1d  8BEC              mov bp,sp
 0000ef1f  33C0              xor ax,ax
 0000ef21  9A90266F01        call 0x3d80   ;0x16f:0x2690
 0000ef26  80268E3BF7        and byte [0x3b8e],0xf7
-0000ef2b  B8F700            mov ax,0xf7
+0000ef2b  B8F700            mov ax,0xf7			; Mystery
 0000ef2e  50                push ax
 0000ef2f  FF366036          push word [0x3660]
 0000ef33  9A1D316F01        call 0x480d   ;0x16f:0x311d
@@ -23543,6 +23674,8 @@
 0000ef4a  8BE5              mov sp,bp
 0000ef4c  5D                pop bp
 0000ef4d  CB                retf
+
+; ---------------------------------------------------------------
 
 0000ef4e  55                push bp
 0000ef4f  8BEC              mov bp,sp
@@ -24682,6 +24815,9 @@
 0000fbdb  5D                pop bp
 0000fbdc  CB                retf
 
+; ==============================================================================================
+; ==============================================================================================
+; ==============================================================================================
 
 ; probably entirely strings and data below here.
 
