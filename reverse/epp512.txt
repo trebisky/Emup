@@ -6415,8 +6415,11 @@
 
 00003e43  9A00000000        call 0x0    ; zerosub
 
+; this call will terminate
 00003e48  50                push ax
 00003e49  9A1F286F01        call 0x3f0f   ;0x16f:0x281f
+
+; -------------------------------------------------
 
 ; fetch message "divide by 0"
 00003e4e  B80300            mov ax,0x3		; ax = 3
@@ -6502,6 +6505,7 @@
 00003f0b  E85F00            call 0x3f6d
 00003f0e  CB                retf
 
+; subroutine -- many calls
 00003f0f  55                push bp
 00003f10  8BEC              mov bp,sp
 00003f12  BE9C31            mov si,0x319c
@@ -6511,6 +6515,8 @@
 00003f1e  BF4A30            mov di,0x304a
 00003f21  E84900            call 0x3f6d
 00003f24  EB03              jmp short 0x3f29
+
+; subroutine - believe it or not
 00003f26  55                push bp
 00003f27  8BEC              mov bp,sp
 00003f29  BE4A30            mov si,0x304a
@@ -6525,10 +6531,12 @@
 00003f45  CD21              int 0x21		; close file
 00003f47  43                inc bx
 00003f48  E2F2              loop 0x3f3c
-00003f4a  E80700            call 0x3f54
+
+00003f4a  E80700            call 0x3f54		; immediately below
 00003f4d  8B4606            mov ax,[bp+0x6]
 00003f50  B44C              mov ah,0x4c
 00003f52  CD21              int 0x21		; safely terminate
+
 00003f54  8B0E3C30          mov cx,[0x303c]
 00003f58  E307              jcxz 0x3f61
 00003f5a  BB0200            mov bx,0x2
