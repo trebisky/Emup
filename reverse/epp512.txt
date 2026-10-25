@@ -372,7 +372,7 @@
 00000309  50                push ax
 0000030a  B81F00            mov ax,0x1f
 0000030d  50                push ax
-0000030e  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
+0000030e  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b		secret
 00000313  83C404            add sp,byte +0x4
 00000316  3D0000            cmp ax,0x0
 
@@ -383,7 +383,7 @@
 00000321  50                push ax
 00000322  B81700            mov ax,0x17
 00000325  50                push ax
-00000326  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
+00000326  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b		secret
 0000032b  83C404            add sp,byte +0x4
 0000032e  3D0000            cmp ax,0x0
 
@@ -394,7 +394,7 @@
 00000339  50                push ax
 0000033a  B80300            mov ax,0x3
 0000033d  50                push ax
-0000033e  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
+0000033e  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b		secret
 00000343  83C404            add sp,byte +0x4
 00000346  3D0000            cmp ax,0x0
 
@@ -405,7 +405,7 @@
 00000351  50                push ax
 00000352  B81600            mov ax,0x16
 00000355  50                push ax
-00000356  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
+00000356  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b		secret
 0000035b  83C404            add sp,byte +0x4
 0000035e  3D0000            cmp ax,0x0
 
@@ -416,7 +416,7 @@
 00000369  50                push ax
 0000036a  B80B00            mov ax,0xb
 0000036d  50                push ax
-0000036e  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
+0000036e  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b		secret
 00000373  83C404            add sp,byte +0x4
 00000376  3D0000            cmp ax,0x0
 
@@ -2447,6 +2447,7 @@
 00001885  03DB              add bx,bx
 00001887  2EFFA79C01        jmp [cs:bx+0x19c]
 
+; DATA
 ; below here looks like a block of data.
 0000188c  D201              rol byte [bx+di],cl
 0000188e  F9                stc
@@ -3866,6 +3867,7 @@
 000026ac  DB2EFFA7          fld tword [0xa7ff]
 000026b0  C20F04            ret 0x40f
 
+; DATA
 ; the above and below here look more like data to me.
 
 000026b3  11                db 0x11
@@ -6317,11 +6319,18 @@
 
 ; Maybe the above uses CS = 0x16f ?
 ;  This would give 0x44b4 -- which also does not make sense.
+;
+;  All of this Intel segment register business ends up
+;   being the worst sort of nightmare.
+;  What a wonderful world when addresses are just addresses.
 
 ; ===============================================
 ; ===============================================
 ; START
 ; This is the starting address
+; -- it gets relocated at runtime, so these addresses are
+; -- useless for working with the debugger, but they are
+; -- consistent within this disassembly (for the most part)
 
 00003da4  B430              mov ah,0x30
 00003da6  CD21              int 0x21		; get DOS version
@@ -6341,15 +6350,15 @@
 00003dba  CD20              int 0x20	; terminate process
 
 ; That DOS version is ok
-00003dbc  BFBE0F            mov di,0xfbe
-00003dbf  8B360200          mov si,[0x2]
+00003dbc  BFBE0F            mov di,0xfbe	; << gets relocated to 17a6
+00003dbf  8B360200          mov si,[0x2]	; << fetches 9fff
 00003dc3  2BF7              sub si,di
 00003dc5  81FE0010          cmp si,0x1000
 00003dc9  7203              jc 0x3dce
 00003dcb  BE0010            mov si,0x1000
 00003dce  FA                cli
-00003dcf  8ED7              mov ss,di
-00003dd1  81C49E3B          add sp,0x3b9e
+00003dcf  8ED7              mov ss,di		; << 17a6
+00003dd1  81C49E3B          add sp,0x3b9e	; << 439e
 00003dd5  FB                sti
 00003dd6  730D              jnc 0x3de5
 
@@ -6362,6 +6371,8 @@
 00003de0  B8FF4C            mov ax,0x4cff
 00003de3  CD21              int 0x21
 
+; a bunch of relocation related adjusting of segment
+; registers goes on.
 00003de5  81E4FEFF          and sp,0xfffe
 00003de9  368926CE2D        mov [ss:0x2dce],sp
 00003dee  368926CC2D        mov [ss:0x2dcc],sp
@@ -6381,7 +6392,7 @@
 00003e0c  CD21              int 0x21
 00003e0e  368C1E3E2E        mov [ss:0x2e3e],ds
 00003e13  16                push ss
-00003e14  07                pop es
+00003e14  07                pop es			; set es
 00003e15  FC                cld
 00003e16  BF5631            mov di,0x3156
 00003e19  B9A03B            mov cx,0x3ba0
@@ -6389,10 +6400,12 @@
 00003e1e  33C0              xor ax,ax
 00003e20  F3AA              rep stosb
 00003e22  16                push ss
-00003e23  1F                pop ds
+00003e23  1F                pop ds			; set ds
+
 00003e24  9A70276F01        call 0x3e60   ;0x16f:0x2770
 00003e29  16                push ss
-00003e2a  1F                pop ds
+00003e2a  1F                pop ds			; set ds
+
 00003e2b  9A794E6F01        call 0x6569   ;0x16f:0x4e79
 00003e30  9AAE506F01        call 0x679e   ;0x16f:0x50ae
 00003e35  33ED              xor bp,bp
@@ -12666,7 +12679,7 @@
 0000786c  50                push ax
 0000786d  B81F00            mov ax,0x1f
 00007870  50                push ax
-00007871  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
+00007871  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b		secret
 00007876  83C404            add sp,byte +0x4
 00007879  3D0000            cmp ax,0x0
 
@@ -12677,7 +12690,7 @@
 00007884  50                push ax
 00007885  B81700            mov ax,0x17
 00007888  50                push ax
-00007889  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
+00007889  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b		secret
 0000788e  83C404            add sp,byte +0x4
 00007891  3D0000            cmp ax,0x0
 
@@ -12688,7 +12701,7 @@
 0000789c  50                push ax
 0000789d  B80300            mov ax,0x3
 000078a0  50                push ax
-000078a1  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
+000078a1  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b		secret
 000078a6  83C404            add sp,byte +0x4
 000078a9  3D0000            cmp ax,0x0
 
@@ -12699,7 +12712,7 @@
 000078b4  50                push ax
 000078b5  B81600            mov ax,0x16
 000078b8  50                push ax
-000078b9  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
+000078b9  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b		secret
 000078be  83C404            add sp,byte +0x4
 000078c1  3D0000            cmp ax,0x0
 
@@ -12710,7 +12723,7 @@
 000078cc  50                push ax
 000078cd  B80B00            mov ax,0xb
 000078d0  50                push ax
-000078d1  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
+000078d1  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b		secret
 000078d6  83C404            add sp,byte +0x4
 000078d9  3D0000            cmp ax,0x0
 
@@ -16303,7 +16316,7 @@
 0000a181  50                push ax
 0000a182  B81F00            mov ax,0x1f
 0000a185  50                push ax
-0000a186  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
+0000a186  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b		secret
 0000a18b  83C404            add sp,byte +0x4
 0000a18e  0BC0              or ax,ax		; set flags
 
@@ -16313,7 +16326,7 @@
 0000a195  50                push ax
 0000a196  B81700            mov ax,0x17
 0000a199  50                push ax
-0000a19a  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
+0000a19a  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b		secret
 0000a19f  83C404            add sp,byte +0x4
 0000a1a2  0BC0              or ax,ax		; set flags
 
@@ -16323,7 +16336,7 @@
 0000a1a9  50                push ax
 0000a1aa  B80300            mov ax,0x3
 0000a1ad  50                push ax
-0000a1ae  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
+0000a1ae  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b		secret
 0000a1b3  83C404            add sp,byte +0x4
 0000a1b6  0BC0              or ax,ax		; set flags
 
@@ -16333,7 +16346,7 @@
 0000a1bd  50                push ax
 0000a1be  B81600            mov ax,0x16
 0000a1c1  50                push ax
-0000a1c2  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
+0000a1c2  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b		secret
 0000a1c7  83C404            add sp,byte +0x4
 0000a1ca  0BC0              or ax,ax		; set flags
 
@@ -16343,7 +16356,7 @@
 0000a1d1  50                push ax
 0000a1d2  B80B00            mov ax,0xb
 0000a1d5  50                push ax
-0000a1d6  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
+0000a1d6  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b		secret
 0000a1db  83C404            add sp,byte +0x4
 0000a1de  0BC0              or ax,ax		; set flags
 
@@ -23453,6 +23466,7 @@
 0000ed06  5D                pop bp
 0000ed07  CB                retf
 
+; subroutine
 0000ed08  55                push bp
 0000ed09  8BEC              mov bp,sp
 0000ed0b  B80800            mov ax,0x8
@@ -23472,7 +23486,7 @@
 0000ed34  50                push ax
 0000ed35  B80300            mov ax,0x3		; arg2
 0000ed38  50                push ax
-0000ed39  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
+0000ed39  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b		secret
 0000ed3e  83C404            add sp,byte +0x4
 0000ed41  0BC0              or ax,ax		; set flags
 
@@ -23482,7 +23496,7 @@
 0000ed48  50                push ax
 0000ed49  B80B00            mov ax,0xb		; arg2
 0000ed4c  50                push ax
-0000ed4d  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b
+0000ed4d  9A4B0BB209        call 0xa66b   ;0x9b2:0xb4b		secret
 0000ed52  83C404            add sp,byte +0x4
 0000ed55  0BC0              or ax,ax		; set flags
 

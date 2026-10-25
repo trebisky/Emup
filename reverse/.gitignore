@@ -1,3 +1,5 @@
 *.raw
 *.lm
 *.odx
+*.swp
+tagtmp
