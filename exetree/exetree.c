@@ -67,6 +67,14 @@ char *infile = "epp512_lm.raw";
  * This kind of thing tells you that you are dealing
  * with compiler generated code, and not a very good
  * compiler at that.
+ *
+ * In mid project, ndisasm began producing a new style
+ * of output, adding "word" to calls as follow:
+ *
+ *		call 0x16f:0x281f
+ *		call word 0x16f:word 0x281f
+ *
+ * A nuisance, but it can be fixed.
  */
 
 // The biggest so far is 67 bytes
@@ -86,14 +94,15 @@ struct line {
 	int addr;
 	char opcode[MAXOP];
 	char arg[MAXARG];
-	char extra_arg[MAXARG];
+	char extra1[MAXARG];
+	char extra2[MAXARG];
+	int n_extra;
 	int is_jump;
 	int is_ujump;
 	int is_call;
 	int is_ret;
 	int visited;
 	int has_arg;
-	int has_extra;
 	struct line *calls[MAX_CALLS];
 	int ncalls;
 	struct line *jumps[MAX_JUMPS];
@@ -164,6 +173,7 @@ save_line ( char *ll )
 	int size;
 	char *wp[MAXW];
 	int nw;
+	char pig[256];
 
 	// lp = (struct line *) = malloc ( sizeof(struct line) );
 	size = strlen(ll) + 1;
@@ -177,35 +187,48 @@ save_line ( char *ll )
 	lp->is_call = 0;
 	lp->is_ret = 0;
 	lp->has_arg = 0;
-	lp->has_extra = 0;
+	lp->n_extra = 0;
 	lp->visited = 0;
 
 	strcpy ( lp->orig, ll );
 
+	strcpy ( pig, ll );
 	nw = split ( ll, wp, MAXW );
 	if ( nw < 3 )
 		error ( "Evil line" );
-	// if ( nw < max )
-	// 	max = nw;
+
+	/* The biggest line we see has 6 words.
+	 * Here it is:
+	 * 00000006  9A90266F01        call word 0x16f:word 0x2690
+	if ( nw > max ) {
+		printf ( "NW: %s\n", pig );
+		max = nw;
+	}
+	*/
 
 	lp->addr = hex ( wp[0] );
 
 	strcpy ( lp->opcode, wp[2] );
 
-	// is there an extra arg?
-	// we only deal with one, there could be more
+	// We can handle 2 extra arguments
+	if ( nw > 6 )
+		error ( "Whoa dude, line too complex" );
+
+	// extra arguments?
 	if ( nw > 4 ) {
-		lp->has_extra = 1;
-		strcpy ( lp->extra_arg, wp[4] );
+		lp->n_extra = nw - 4;
+		strcpy ( lp->extra1, wp[4] );
+		if ( nw > 5 )
+			strcpy ( lp->extra2, wp[5] );
 	}
 
 	// has one (or more) args
 	if ( nw > 3 ) {
 		lp->has_arg = 1;
 		strcpy ( lp->arg, wp[3] );
-		size = strlen ( wp[3] );
-		if ( size > max )
-			max = size;
+		// size = strlen ( wp[3] );
+		// if ( size > max )
+		// 	max = size;
 	}
 
 	// "jmp" is unconditional -- Ujump
@@ -291,7 +314,7 @@ find_addr ( int addr )
 
 #define INVALID		0x0fffffff
 
-/* Return the address embedded in a jump instruction
+/* Return the address embedded in a JUMP instruction
  */
 static int
 jump_addr ( struct line *lp )
@@ -301,19 +324,67 @@ jump_addr ( struct line *lp )
 		return INVALID;
 	}
 
-	if ( lp->has_extra ) {
+	if ( lp->n_extra > 0 ) {
 		if ( strcmp ( lp->arg, "short" ) == 0 )
-			return ( hex(lp->extra_arg) );
+			return ( hex(lp->extra1) );
 		else
 			printf ( "Weird jump: %s\n", lp->orig );
+		return INVALID;
+	}
+
+	if ( lp->arg[0] == '[' ) {
+		printf ( "Weird jump: %s\n", lp->orig );
 		return INVALID;
 	}
 
 	return ( hex(lp->arg) );
 }
 
+/* Return the address embedded in a CALL instruction
+ */
+static int
+call_addr ( struct line *lp )
+{
+	char *div;
+	int seg, off, adr;
+
+	if ( ! lp->has_arg ) {
+		printf ( "Weird call: %s\n", lp->orig );
+		return INVALID;
+	}
+
+	if ( lp->n_extra != 2 ) {
+		printf ( "Weird call: %s\n", lp->orig );
+		return INVALID;
+	}
+
+	/* Code that worked for the old way.
+	 *		call 0x16f:0x281f
+	div = strchr ( lp->arg, ':' );
+	if ( div == NULL ) {
+		// printf ( "Weird call: %s\n", lp->orig );
+		return ( hex(lp->arg) );
+	}
+	seg = hex ( lp->arg );
+	off = hex ( div+1 );
+	*/
+
+	/* Code that works for the new way.
+	 *		call word 0x16f:word 0x281f
+	 */
+	seg = hex ( lp->extra1 );
+	off = hex ( lp->extra2 );
+
+	adr = (seg<<4) + off;
+
+	// printf ( "call addr: %x %x --> %x\n", seg, off, adr );
+	// error ( "not really" );
+
+	return ( adr );
+}
+
 static void
-chase ( int start, int verbose )
+chase ( int start, struct line *from, int is_call, int verbose )
 {
 	int nn;
 	struct line *lp;
@@ -326,6 +397,18 @@ chase ( int start, int verbose )
 	nn = find_addr ( start );
 	top = &lines[nn];
 
+	if ( is_call ) {
+		if ( from == NULL )
+			printf ( "** CHASE --- call (initial)\n" );
+		else
+			printf ( "** CHASE call from: %s\n", from->orig );
+	} else {
+		if ( from == NULL )
+			printf ( "** CHASE --- follow jump (initial)\n" );
+		else
+			printf ( "** CHASE follow jump from: %s\n", from->orig );
+	}
+
 	top->ncalls = 0;
 	top->njumps = 0;
 
@@ -337,40 +420,50 @@ chase ( int start, int verbose )
 		}
 
 		lp->visited = 1;
+
 		if ( lp->is_call ) {
+			// XXX - check and skip if already traversed
 			top->calls[top->ncalls++] = lp;
 			printf ( "%s\n", lp->orig );
 			continue;
 		}
+
+		// Must be before general jump check below
+		if ( lp->is_ujump ) {
+			top->jumps[top->njumps++] = lp;
+			printf ( "%s\n", lp->orig );
+			printf ( " BREAK on jmp\n" );
+			break;
+		}
+
 		if ( lp->is_jump ) {
 			top->jumps[top->njumps++] = lp;
 			printf ( "%s\n", lp->orig );
 			continue;
 		}
+
 		if ( verbose )
 			printf ( "%s\n", lp->orig );
 
 		if ( lp->is_ret ) {
 			printf ( "%s\n", lp->orig );
-			break;
-		}
-		if ( lp->is_ujump ) {
-			printf ( "%s\n", lp->orig );
+			printf ( " BREAK on ret\n" );
 			break;
 		}
 	}
 
-	printf ( "%d calls\n", top->ncalls ); 
 	printf ( "%d jumps\n", top->njumps ); 
+	printf ( "%d calls\n", top->ncalls ); 
 
 	for ( i=0; i<top->njumps; i++ ) {
 		printf ( "Jump: %s\n", top->jumps[i]->orig );
 		// recursion
-		chase ( jump_addr ( top->jumps[i] ), 1 );
+		chase ( jump_addr ( top->jumps[i] ), top->jumps[i], 0, 1 );
 	}
 
 	for ( i=0; i<top->ncalls; i++ ) {
 		printf ( "Call: %s\n", top->calls[i]->orig );
+		chase ( call_addr ( top->calls[i] ), top->calls[i], 1, 1 );
 	}
 }
 
@@ -379,7 +472,7 @@ main ( int argc, char **argv )
 {
 	loadfile ( infile );
 	// alljumps ();
-	chase ( 0x3da4, 0 );
+	chase ( 0x3da4, NULL, 1, 0 );
 
 	exit (0);
 }

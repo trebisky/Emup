@@ -11,10 +11,10 @@ all2:	access_lm.dis access.odx
 
 fetch: epp512.exe access.exe
 
-epp512.exe: ../EMUP/epp512.exe
+epp512.exe: ../../EMUP/epp512.exe
 	cp ../EMUP/epp512.exe .
 
-access.exe: ../EMUP/access.exe
+access.exe: ../../EMUP/access.exe
 	cp ../EMUP/access.exe .
 
 # Skip the header and reloc table.
@@ -38,7 +38,8 @@ access.odx: access.lm
 # The "-s 0x26B4" specifies a sync value
 # The 0x26B4 value is the initial IP (PC) from the header
 epp512_lm.raw:	epp512.lm
-	ndisasm -a -s 0x26B4 epp512.lm >epp512_lm.raw
+#	ndisasm -a -s 0x26B4 epp512.lm >epp512_lm.raw
+	ndisasm -a -s 0x794 -s 0x26B4 epp512.lm >epp512_lm.raw
 
 access_lm.raw:	access.lm
 	ndisasm -a -s 0x760e access.lm >access_lm.raw

@@ -100,6 +100,7 @@
 00000048  0B06403B          or ax,[0x3b40]
 0000004c  7403              jz 0x51
 0000004e  E91800            jmp 0x69
+
 00000051  B8B107            mov ax,0x7b1
 00000054  50                push ax
 00000055  9A2B316F01        call 0x481b   ;0x16f:0x312b
@@ -108,6 +109,7 @@
 00000060  50                push ax
 00000061  9A1F286F01        call 0x3f0f   ;0x16f:0x281f
 00000066  83C402            add sp,byte +0x2
+
 00000069  B8CA07            mov ax,0x7ca
 0000006c  50                push ax
 0000006d  B8CC07            mov ax,0x7cc
@@ -118,6 +120,7 @@
 0000007c  837EB800          cmp word [bp-0x48],byte +0x0
 00000080  7503              jnz 0x85
 00000082  E9BF00            jmp 0x144
+
 00000085  8D46BA            lea ax,[bp-0x46]
 00000088  50                push ax
 00000089  B8D707            mov ax,0x7d7
@@ -170,6 +173,7 @@
 00000110  837EBA09          cmp word [bp-0x46],byte +0x9
 00000114  7C03              jl 0x119
 00000116  E92000            jmp 0x139
+
 00000119  8B1E0C0B          mov bx,[0xb0c]
 0000011d  D1E3              shl bx,1
 0000011f  D1E3              shl bx,1
@@ -182,9 +186,11 @@
 00000131  D1E3              shl bx,1
 00000133  8B46BA            mov ax,[bp-0x46]
 00000136  894008            mov [bx+si+0x8],ax
+
 00000139  FF76B8            push word [bp-0x48]
 0000013c  9AAB286F01        call 0x3f9b   ;0x16f:0x28ab
 00000141  83C402            add sp,byte +0x2
+
 00000144  B8EB07            mov ax,0x7eb
 00000147  50                push ax
 00000148  B8ED07            mov ax,0x7ed
@@ -195,6 +201,7 @@
 00000157  837EB800          cmp word [bp-0x48],byte +0x0
 0000015b  7503              jnz 0x160
 0000015d  E92400            jmp 0x184
+
 00000160  8D46BA            lea ax,[bp-0x46]
 00000163  50                push ax
 00000164  B8F807            mov ax,0x7f8
@@ -207,6 +214,7 @@
 00000179  FF76B8            push word [bp-0x48]
 0000017c  9AAB286F01        call 0x3f9b   ;0x16f:0x28ab
 00000181  83C402            add sp,byte +0x2
+
 00000184  9AB5226F01        call 0x39a5   ;0x16f:0x22b5
 00000189  A10A0B            mov ax,[0xb0a]
 0000018c  B104              mov cl,0x4
@@ -557,6 +565,7 @@
 0000050e  9A13110000        call 0x1113   ;0x0:0x1113
 00000513  E90500            jmp 0x51b
 00000516  9ADF120000        call 0x12df   ;0x0:0x12df
+
 0000051b  B84F00            mov ax,0x4f
 0000051e  50                push ax
 0000051f  B81800            mov ax,0x18
@@ -567,6 +576,7 @@
 0000052a  50                push ax
 0000052b  9A7713B209        call 0xae97   ;0x9b2:0x1377
 00000530  83C408            add sp,byte +0x8
+
 00000533  B80700            mov ax,0x7
 00000536  50                push ax
 00000537  B8AC0A            mov ax,0xaac
@@ -577,6 +587,7 @@
 00000542  50                push ax
 00000543  9AA92DB209        call 0xc8c9   ;0x9b2:0x2da9
 00000548  83C408            add sp,byte +0x8
+
 0000054b  9A3A0CB209        call 0xa75a   ;0x9b2:0xc3a
 00000550  8946BC            mov [bp-0x44],ax
 00000553  837EBC0D          cmp word [bp-0x44],byte +0xd
@@ -589,9 +600,11 @@
 00000569  7403              jz 0x56e
 0000056b  E90300            jmp 0x571
 0000056e  E90B00            jmp 0x57c
+
 00000571  FF76BC            push word [bp-0x44]
 00000574  9A67316F01        call 0x4857   ;0x16f:0x3167
 00000579  83C402            add sp,byte +0x2
+
 0000057c  8B5EBC            mov bx,[bp-0x44]
 0000057f  F687692E02        test byte [bx+0x2e69],0x2
 00000584  7503              jnz 0x589
@@ -603,6 +616,8 @@
 00000595  8946BC            mov [bp-0x44],ax
 00000598  8B46BC            mov ax,[bp-0x44]
 0000059b  E98F01            jmp 0x72d
+
+; How do we get here?
 0000059e  9AED06B209        call 0xa20d   ;0x9b2:0x6ed
 000005a3  E9EE01            jmp 0x794
 000005a6  9A052EB209        call 0xc925   ;0x9b2:0x2e05
@@ -719,92 +734,76 @@
 00000713  FF76B8            push word [bp-0x48]
 00000716  9AAB286F01        call 0x3f9b   ;0x16f:0x28ab
 0000071b  83C402            add sp,byte +0x2
-0000071e  B80000            mov ax,0x0
+
+0000071e  B80000            mov ax,0x0		; ax = 0
 00000721  50                push ax
 00000722  9A1F286F01        call 0x3f0f   ;0x16f:0x281f
 00000727  83C402            add sp,byte +0x2
 0000072a  E96700            jmp 0x794
+
 0000072d  2D3100            sub ax,0x31
 00000730  3D2900            cmp ax,0x29
 00000733  7603              jna 0x738
-00000735  E95C00            jmp 0x794
-00000738  03C0              add ax,ax
-0000073a  93                xchg ax,bx
-0000073b  2EFFA74007        jmp [cs:bx+0x740]
-00000740  9E                sahf
-00000741  05A605            add ax,0x5a6
-00000744  AE                scasb
-00000745  05B605            add ax,0x5b6
-00000748  BE05C6            mov si,0xc605
-0000074b  05CE05            add ax,0x5ce
-0000074e  94                xchg ax,sp
-0000074f  07                pop es
-00000750  94                xchg ax,sp
-00000751  07                pop es
-00000752  94                xchg ax,sp
-00000753  07                pop es
-00000754  94                xchg ax,sp
-00000755  07                pop es
-00000756  94                xchg ax,sp
-00000757  07                pop es
-00000758  94                xchg ax,sp
-00000759  07                pop es
-0000075a  94                xchg ax,sp
-0000075b  07                pop es
-0000075c  94                xchg ax,sp
-0000075d  07                pop es
-0000075e  94                xchg ax,sp
-0000075f  07                pop es
-00000760  0E                push cs
-00000761  06                push es
-00000762  F60526            test byte [di],0x26
-00000765  06                push es
-00000766  FE05              inc byte [di]
-00000768  94                xchg ax,sp
-00000769  07                pop es
-0000076a  94                xchg ax,sp
-0000076b  07                pop es
-0000076c  94                xchg ax,sp
-0000076d  07                pop es
-0000076e  94                xchg ax,sp
-0000076f  07                pop es
-00000770  94                xchg ax,sp
-00000771  07                pop es
-00000772  94                xchg ax,sp
-00000773  07                pop es
-00000774  94                xchg ax,sp
-00000775  07                pop es
-00000776  94                xchg ax,sp
-00000777  07                pop es
-00000778  DE05              fiadd word [di]
-0000077a  94                xchg ax,sp
-0000077b  07                pop es
-0000077c  94                xchg ax,sp
-0000077d  07                pop es
-0000077e  06                push es
-0000077f  06                push es
-00000780  2E06              cs push es
-00000782  16                push ss
-00000783  06                push es
-00000784  D6                salc
-00000785  05E605            add ax,0x5e6
-00000788  94                xchg ax,sp
-00000789  07                pop es
-0000078a  1E                push ds
-0000078b  06                push es
-0000078c  94                xchg ax,sp
-0000078d  07                pop es
-0000078e  94                xchg ax,sp
-0000078f  07                pop es
-00000790  94                xchg ax,sp
-00000791  07                pop es
-00000792  EE                out dx,al			; <<
-00000793  05837E            add ax,0x7e83
-00000796  BC3175            mov sp,0x7531
-00000799  03E9              add bp,cx
-0000079b  48                dec ax
-0000079c  00837EBC          add [bp+di-0x4382],al
-000007a0  327503            xor dh,[di+0x3]
+00000735  E95C00            jmp 0x794			; will not work
+
+00000738  03C0              add ax,ax			; ax *= 2
+0000073a  93                xchg ax,bx			; bx = ax
+0000073b  2EFFA74007        jmp [cs:bx+0x740]	; what is this?
+
+; This is a jump table used by the above.
+
+00000740  9E05
+00000742  A605
+00000744  AE05
+00000746  B605
+00000748  BE05
+0000074A  C605
+0000074c  CE05
+0000074e  9407
+00000750  9407
+00000752  9407
+00000754  9407
+00000756  9407
+00000758  9407
+0000075a  9407
+0000075c  9407
+0000075e  9407
+00000760  0E06
+00000762  F605
+00000764  2606
+00000766  FE05
+00000768  9407
+0000076a  9407
+0000076c  9407
+0000076e  9407
+00000770  9407
+00000772  9407
+00000774  9407
+00000776  9407
+00000778  DE05
+0000077a  9407
+0000077c  9407
+0000077e  0606
+00000780  2E06
+00000782  1606
+00000784  D605
+00000786  E605
+00000788  9407
+0000078a  1E06
+0000078c  9407
+0000078e  9407
+00000790  9407
+00000792  EE05
+
+; many good jumps to 0x794, so this was originally misaligned
+' the proper disassembly follows:
+
+00000794  837EBC31          cmp word [bp-0x44],0x31
+00000798  7503              jnz 0x79d
+0000079A  E94800            jmp 0x7e5
+0000079D  837EBC32          cmp word [bp-0x44],0x32
+000007A1  7503              jnz 0x7a6
+
 000007a3  E93F00            jmp 0x7e5
 000007a6  837EBC34          cmp word [bp-0x44],byte +0x34
 000007aa  7503              jnz 0x7af
