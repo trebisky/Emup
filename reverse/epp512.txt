@@ -107,7 +107,7 @@
 0000005a  83C402            add sp,byte +0x2
 0000005d  B80100            mov ax,0x1
 00000060  50                push ax
-00000061  9A1F286F01        call 0x3f0f   ;0x16f:0x281f
+00000061  9A1F286F01        call 0x3f0f   ;0x16f:0x281f		; bail_out
 00000066  83C402            add sp,byte +0x2
 
 00000069  B8CA07            mov ax,0x7ca
@@ -459,29 +459,37 @@
 000003c1  50                push ax
 000003c2  9A2B316F01        call 0x481b   ;0x16f:0x312b
 000003c7  83C402            add sp,byte +0x2
-000003ca  9A3A0CB209        call 0xa75a   ;0x9b2:0xc3a
+
+000003ca  9A3A0CB209        call 0xa75a   ;0x9b2:0xc3a		; kb_read
 000003cf  8946BC            mov [bp-0x44],ax
-000003d2  837EBC71          cmp word [bp-0x44],byte +0x71
+000003d2  837EBC71          cmp word [bp-0x44],byte +0x71	; 'q'
 000003d6  7503              jnz 0x3db
 000003d8  E90900            jmp 0x3e4
-000003db  837EBC51          cmp word [bp-0x44],byte +0x51
+000003db  837EBC51          cmp word [bp-0x44],byte +0x51	; 'Q'
 000003df  7403              jz 0x3e4
 000003e1  E90C00            jmp 0x3f0
+
+; somebody typed q or Q
 000003e4  B80000            mov ax,0x0
 000003e7  50                push ax
-000003e8  9A1F286F01        call 0x3f0f   ;0x16f:0x281f
+000003e8  9A1F286F01        call 0x3f0f   ;0x16f:0x281f		; bail_out
 000003ed  83C402            add sp,byte +0x2
-000003f0  837EBC0D          cmp word [bp-0x44],byte +0xd
+
+
+000003f0  837EBC0D          cmp word [bp-0x44],byte +0xd	'\r'
 000003f4  7503              jnz 0x3f9
 000003f6  E90900            jmp 0x402
-000003f9  837EBC0A          cmp word [bp-0x44],byte +0xa
+000003f9  837EBC0A          cmp word [bp-0x44],byte +0xa	'\n'
 000003fd  7403              jz 0x402
 000003ff  E90900            jmp 0x40b
+
+; empty line ?
 00000402  C706060B0100      mov word [0xb06],0x1
 00000408  E90300            jmp 0x40e
 0000040b  E9BCFF            jmp 0x3ca
 0000040e  E9A3FD            jmp 0x1b4
 00000411  E90C00            jmp 0x420
+
 00000414  C706080B0100      mov word [0xb08],0x1
 0000041a  C706060B0100      mov word [0xb06],0x1
 00000420  B8A908            mov ax,0x8a9
@@ -588,23 +596,25 @@
 00000543  9AA92DB209        call 0xc8c9   ;0x9b2:0x2da9
 00000548  83C408            add sp,byte +0x8
 
-0000054b  9A3A0CB209        call 0xa75a   ;0x9b2:0xc3a
+0000054b  9A3A0CB209        call 0xa75a   ;0x9b2:0xc3a		; kb_read
 00000550  8946BC            mov [bp-0x44],ax
-00000553  837EBC0D          cmp word [bp-0x44],byte +0xd
+00000553  837EBC0D          cmp word [bp-0x44],byte +0xd	; '\r'
 00000557  7503              jnz 0x55c
 00000559  E91200            jmp 0x56e
-0000055c  837EBC0A          cmp word [bp-0x44],byte +0xa
+0000055c  837EBC0A          cmp word [bp-0x44],byte +0xa	; '\n'
 00000560  7503              jnz 0x565
 00000562  E90900            jmp 0x56e
-00000565  837EBC1B          cmp word [bp-0x44],byte +0x1b
+00000565  837EBC1B          cmp word [bp-0x44],byte +0x1b	; ESC
 00000569  7403              jz 0x56e
-0000056b  E90300            jmp 0x571
-0000056e  E90B00            jmp 0x57c
+0000056b  E90300            jmp 0x571		; none of the above 3
+0000056e  E90B00            jmp 0x57c		; any of the above 3
 
+; echo if not one of the evil three
 00000571  FF76BC            push word [bp-0x44]
-00000574  9A67316F01        call 0x4857   ;0x16f:0x3167
+00000574  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 00000579  83C402            add sp,byte +0x2
 
+; all kb input comes here.
 0000057c  8B5EBC            mov bx,[bp-0x44]
 0000057f  F687692E02        test byte [bx+0x2e69],0x2
 00000584  7503              jnz 0x589
@@ -676,7 +686,7 @@
 00000665  E90C00            jmp 0x674
 00000668  B80000            mov ax,0x0
 0000066b  50                push ax
-0000066c  9A1F286F01        call 0x3f0f   ;0x16f:0x281f
+0000066c  9A1F286F01        call 0x3f0f   ;0x16f:0x281f		; bail_out
 00000671  83C402            add sp,byte +0x2
 00000674  FF360A0B          push word [0xb0a]
 00000678  B8CC0A            mov ax,0xacc
@@ -737,18 +747,18 @@
 
 0000071e  B80000            mov ax,0x0		; ax = 0
 00000721  50                push ax
-00000722  9A1F286F01        call 0x3f0f   ;0x16f:0x281f
+00000722  9A1F286F01        call 0x3f0f   ;0x16f:0x281f		; bail_out
 00000727  83C402            add sp,byte +0x2
 0000072a  E96700            jmp 0x794
 
 0000072d  2D3100            sub ax,0x31
 00000730  3D2900            cmp ax,0x29
 00000733  7603              jna 0x738
-00000735  E95C00            jmp 0x794			; will not work
+00000735  E95C00            jmp 0x794
 
 00000738  03C0              add ax,ax			; ax *= 2
 0000073a  93                xchg ax,bx			; bx = ax
-0000073b  2EFFA74007        jmp [cs:bx+0x740]	; what is this?
+0000073b  2EFFA74007        jmp [cs:bx+0x740]	; jump table follows
 
 ; This is a jump table used by the above.
 
@@ -798,43 +808,45 @@
 ; many good jumps to 0x794, so this was originally misaligned
 ' the proper disassembly follows:
 
-00000794  837EBC31          cmp word [bp-0x44],0x31
+00000794  837EBC31          cmp word [bp-0x44],0x31			; '1'
 00000798  7503              jnz 0x79d
 0000079A  E94800            jmp 0x7e5
-0000079D  837EBC32          cmp word [bp-0x44],0x32
+0000079D  837EBC32          cmp word [bp-0x44],0x32			; '2'
 000007A1  7503              jnz 0x7a6
 
 000007a3  E93F00            jmp 0x7e5
-000007a6  837EBC34          cmp word [bp-0x44],byte +0x34
+000007a6  837EBC34          cmp word [bp-0x44],byte +0x34	; '4'
 000007aa  7503              jnz 0x7af
 000007ac  E93600            jmp 0x7e5
-000007af  837EBC36          cmp word [bp-0x44],byte +0x36
+000007af  837EBC36          cmp word [bp-0x44],byte +0x36	; '6'
 000007b3  7503              jnz 0x7b8
 000007b5  E92D00            jmp 0x7e5
-000007b8  837EBC43          cmp word [bp-0x44],byte +0x43
+000007b8  837EBC43          cmp word [bp-0x44],byte +0x43	; 'C'
 000007bc  7503              jnz 0x7c1
 000007be  E92400            jmp 0x7e5
-000007c1  837EBC44          cmp word [bp-0x44],byte +0x44
+000007c1  837EBC44          cmp word [bp-0x44],byte +0x44	; 'D'
 000007c5  7503              jnz 0x7ca
 000007c7  E91B00            jmp 0x7e5
-000007ca  837EBC37          cmp word [bp-0x44],byte +0x37
+000007ca  837EBC37          cmp word [bp-0x44],byte +0x37	; '7'
 000007ce  7503              jnz 0x7d3
 000007d0  E91200            jmp 0x7e5
-000007d3  837EBC4D          cmp word [bp-0x44],byte +0x4d
+000007d3  837EBC4D          cmp word [bp-0x44],byte +0x4d	; 'K'
 000007d7  7503              jnz 0x7dc
 000007d9  E90900            jmp 0x7e5
-000007dc  837EBC54          cmp word [bp-0x44],byte +0x54
+000007dc  837EBC54          cmp word [bp-0x44],byte +0x54	; 'T'
 000007e0  7403              jz 0x7e5
 000007e2  E90300            jmp 0x7e8
 000007e5  E90300            jmp 0x7eb
 000007e8  E930FD            jmp 0x51b
 000007eb  E9C6F9            jmp 0x1b4
-000007ee  5E                pop si
+
+000007ee  5E                pop si			; how do we get here ??
 000007ef  5F                pop di
 000007f0  8BE5              mov sp,bp
 000007f2  5D                pop bp
 000007f3  CB                retf
 
+; subroutine
 000007f4  55                push bp
 000007f5  8BEC              mov bp,sp
 000007f7  B80200            mov ax,0x2
@@ -889,6 +901,7 @@
 00000888  7508              jnz 0x892
 0000088a  C706943B0100      mov word [0x3b94],0x1
 00000890  EB76              jmp short 0x908
+
 00000892  837EFE01          cmp word [bp-0x2],byte +0x1
 00000896  7422              jz 0x8ba
 00000898  837EFE03          cmp word [bp-0x2],byte +0x3
@@ -903,10 +916,12 @@
 000008b8  7508              jnz 0x8c2
 000008ba  C706943B0300      mov word [0x3b94],0x3
 000008c0  EB46              jmp short 0x908
+
 000008c2  837EFE04          cmp word [bp-0x2],byte +0x4
 000008c6  7508              jnz 0x8d0
 000008c8  C706943B0700      mov word [0x3b94],0x7
 000008ce  EB38              jmp short 0x908
+
 000008d0  833E0C0B17        cmp word [0xb0c],byte +0x17
 000008d5  752B              jnz 0x902
 000008d7  833E0E0B01        cmp word [0xb0e],byte +0x1
@@ -921,7 +936,9 @@
 000008f8  7508              jnz 0x902
 000008fa  C706943B0800      mov word [0x3b94],0x8
 00000900  EB06              jmp short 0x908
+
 00000902  C706943B0400      mov word [0x3b94],0x4
+
 00000908  8B1E0C0B          mov bx,[0xb0c]
 0000090c  D1E3              shl bx,1
 0000090e  D1E3              shl bx,1
@@ -1196,7 +1213,7 @@
 00000bbe  7503              jnz 0xbc3
 00000bc0  E9B100            jmp 0xc74
 00000bc3  FF76FA            push word [bp-0x6]
-00000bc6  9A67316F01        call 0x4857   ;0x16f:0x3167
+00000bc6  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 00000bcb  83C402            add sp,byte +0x2
 00000bce  8B5EFA            mov bx,[bp-0x6]
 00000bd1  F687692E02        test byte [bx+0x2e69],0x2
@@ -1251,7 +1268,7 @@
 00000c5b  50                push ax
 00000c5c  9AA92DB209        call 0xc8c9   ;0x9b2:0x2da9
 00000c61  83C408            add sp,byte +0x8
-00000c64  9A3A0CB209        call 0xa75a   ;0x9b2:0xc3a
+00000c64  9A3A0CB209        call 0xa75a   ;0x9b2:0xc3a		; kb_read
 00000c69  8946FA            mov [bp-0x6],ax
 00000c6c  3D0D00            cmp ax,0xd
 00000c6f  7403              jz 0xc74
@@ -1452,7 +1469,7 @@
 00000e56  8A46FE            mov al,[bp-0x2]
 00000e59  98                cbw
 00000e5a  50                push ax
-00000e5b  9A67316F01        call 0x4857   ;0x16f:0x3167
+00000e5b  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 00000e60  83C402            add sp,byte +0x2
 00000e63  807EFE30          cmp byte [bp-0x2],0x30
 00000e67  7C34              jl 0xe9d
@@ -1494,7 +1511,7 @@
 00000ec4  50                push ax
 00000ec5  9AA92DB209        call 0xc8c9   ;0x9b2:0x2da9
 00000eca  83C408            add sp,byte +0x8
-00000ecd  9A3A0CB209        call 0xa75a   ;0x9b2:0xc3a
+00000ecd  9A3A0CB209        call 0xa75a   ;0x9b2:0xc3a		; kb_read
 00000ed2  8846FE            mov [bp-0x2],al
 00000ed5  3C0D              cmp al,0xd
 00000ed7  7403              jz 0xedc
@@ -2199,7 +2216,7 @@
 00001626  9AA92DB209        call 0xc8c9   ;0x9b2:0x2da9
 0000162b  83C408            add sp,byte +0x8
 0000162e  9A433DB209        call 0xd863   ;0x9b2:0x3d43
-00001633  9A3A0CB209        call 0xa75a   ;0x9b2:0xc3a
+00001633  9A3A0CB209        call 0xa75a   ;0x9b2:0xc3a		; kb_read
 00001638  8946FA            mov [bp-0x6],ax
 0000163b  9A353DB209        call 0xd855   ;0x9b2:0x3d35
 00001640  837EFA0D          cmp word [bp-0x6],byte +0xd
@@ -6416,7 +6433,7 @@
 
 ; this call will terminate
 00003e48  50                push ax
-00003e49  9A1F286F01        call 0x3f0f   ;0x16f:0x281f
+00003e49  9A1F286F01        call 0x3f0f   ;0x16f:0x281f		; bail_out
 
 ; -------------------------------------------------
 
@@ -6504,7 +6521,8 @@
 00003f0b  E85F00            call 0x3f6d
 00003f0e  CB                retf
 
-; subroutine -- many calls
+; subroutine -- many calls	"bail_out"
+; ? this seems to be used to terminate
 00003f0f  55                push bp
 00003f10  8BEC              mov bp,sp
 00003f12  BE9C31            mov si,0x319c
@@ -6513,15 +6531,18 @@
 00003f1b  BE4630            mov si,0x3046
 00003f1e  BF4A30            mov di,0x304a
 00003f21  E84900            call 0x3f6d
-00003f24  EB03              jmp short 0x3f29
+00003f24  EB03              jmp short 0x3f29		; short cut to below
 
 ; subroutine - believe it or not
 00003f26  55                push bp
 00003f27  8BEC              mov bp,sp
+
 00003f29  BE4A30            mov si,0x304a
 00003f2c  BF4A30            mov di,0x304a
 00003f2f  E83B00            call 0x3f6d
+
 00003f32  9AD0386F01        call 0x4fc0   ;0x16f:0x38d0
+
 00003f37  B91400            mov cx,0x14
 00003f3a  33DB              xor bx,bx
 00003f3c  F687442E01        test byte [bx+0x2e44],0x1
@@ -6535,6 +6556,8 @@
 00003f4d  8B4606            mov ax,[bp+0x6]
 00003f50  B44C              mov ah,0x4c
 00003f52  CD21              int 0x21		; safely terminate
+
+; not likely to fall thru to here, but called from above.
 
 00003f54  8B0E3C30          mov cx,[0x303c]
 00003f58  E307              jcxz 0x3f61
@@ -7181,6 +7204,8 @@
 0000456c  5D                pop bp
 0000456d  CB                retf
 
+; ------------------------------------------------
+; Do keyboard input
 0000456e  55                push bp
 0000456f  8BEC              mov bp,sp
 00004571  A07E2F            mov al,[0x2f7e]
@@ -7189,12 +7214,15 @@
 00004578  32E4              xor ah,ah
 0000457a  88267E2F          mov [0x2f7e],ah
 0000457e  EB06              jmp short 0x4586
+
 00004580  B408              mov ah,0x8
 00004582  CD21              int 0x21			; kb input, no echo
-00004584  32E4              xor ah,ah
+00004584  32E4              xor ah,ah			; zero upper byte
 00004586  8BE5              mov sp,bp
 00004588  5D                pop bp
 00004589  CB                retf
+
+; ------------------------------------------------
 
 0000458a  55                push bp
 0000458b  8BEC              mov bp,sp
@@ -7502,37 +7530,47 @@
 00004819  5D                pop bp
 0000481a  CB                retf
 
+; Subroutine
+; many many calls
+
 0000481b  55                push bp
 0000481c  8BEC              mov bp,sp
 0000481e  83EC06            sub sp,byte +0x6
 00004821  57                push di
 00004822  56                push si
+
 00004823  BEB22C            mov si,0x2cb2
 00004826  56                push si
 00004827  9AED356F01        call 0x4cdd   ;0x16f:0x35ed
 0000482c  83C402            add sp,byte +0x2
+
 0000482f  8BF8              mov di,ax
 00004831  8D4608            lea ax,[bp+0x8]
+
 00004834  50                push ax
 00004835  FF7606            push word [bp+0x6]
 00004838  56                push si
 00004839  9AD8446F01        call 0x5bc8   ;0x16f:0x44d8
 0000483e  83C406            add sp,byte +0x6
+
 00004841  8946FA            mov [bp-0x6],ax
 00004844  56                push si
 00004845  57                push di
 00004846  9A8C366F01        call 0x4d7c   ;0x16f:0x368c
 0000484b  83C404            add sp,byte +0x4
 0000484e  8B46FA            mov ax,[bp-0x6]
+
 00004851  5E                pop si
 00004852  5F                pop di
 00004853  8BE5              mov sp,bp
 00004855  5D                pop bp
 00004856  CB                retf
 
+; This is "putchar" -- it uses direct console IO
+; to send a single character to the console
 00004857  55                push bp
 00004858  8BEC              mov bp,sp
-0000485a  8A5606            mov dl,[bp+0x6]
+0000485a  8A5606            mov dl,[bp+0x6]		; argument (char)
 0000485d  B406              mov ah,0x6
 0000485f  CD21              int 0x21			; direct console IO
 00004861  8BE5              mov sp,bp
@@ -8068,6 +8106,7 @@
 00004cdb  5D                pop bp
 00004cdc  CB                retf
 
+; subroutine
 00004cdd  55                push bp
 00004cde  8BEC              mov bp,sp
 00004ce0  57                push di
@@ -12268,7 +12307,7 @@
 0000742a  7503              jnz 0x742f
 0000742c  E91803            jmp 0x7747
 0000742f  FF76FE            push word [bp-0x2]
-00007432  9A67316F01        call 0x4857   ;0x16f:0x3167
+00007432  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 00007437  83C402            add sp,byte +0x2
 0000743a  837EFE59          cmp word [bp-0x2],byte +0x59
 0000743e  7421              jz 0x7461
@@ -12971,7 +13010,7 @@
 00007bce  3D0000            cmp ax,0x0
 00007bd1  7503              jnz 0x7bd6
 00007bd3  E92E00            jmp 0x7c04
-00007bd6  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
+00007bd6  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e		; kb input
 00007bdb  8846EC            mov [bp-0x14],al
 00007bde  3C1B              cmp al,0x1b
 00007be0  7403              jz 0x7be5
@@ -13606,7 +13645,7 @@
 00008387  7503              jnz 0x838c
 00008389  E9AA01            jmp 0x8536
 0000838c  FF76FE            push word [bp-0x2]
-0000838f  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000838f  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 00008394  83C402            add sp,byte +0x2
 00008397  837EFE59          cmp word [bp-0x2],byte +0x59
 0000839b  7421              jz 0x83be
@@ -13861,7 +13900,7 @@
 00008645  9ABC306F01        call 0x47ac   ;0x16f:0x30bc
 0000864a  0BC0              or ax,ax		; set flags
 0000864c  741F              jz 0x866d
-0000864e  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
+0000864e  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e		; kb input
 00008653  8946F6            mov [bp-0xa],ax
 00008656  3D1B00            cmp ax,0x1b
 00008659  7503              jnz 0x865e
@@ -14169,7 +14208,7 @@
 000089e3  9ABC306F01        call 0x47ac   ;0x16f:0x30bc
 000089e8  0BC0              or ax,ax		; set flags
 000089ea  7426              jz 0x8a12
-000089ec  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
+000089ec  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e		; kb input
 000089f1  3D1B00            cmp ax,0x1b
 000089f4  751C              jnz 0x8a12
 000089f6  9AEF10B80D        call 0xec6f   ;0xdb8:0x10ef
@@ -14204,7 +14243,7 @@
 00008a5b  50                push ax
 00008a5c  9A2B316F01        call 0x481b   ;0x16f:0x312b
 00008a61  83C402            add sp,byte +0x2
-00008a64  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
+00008a64  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e		; kb input
 00008a69  5E                pop si
 00008a6a  5F                pop di
 00008a6b  8BE5              mov sp,bp
@@ -14243,7 +14282,7 @@
 00008aba  7503              jnz 0x8abf
 00008abc  E95003            jmp 0x8e0f
 00008abf  FF76FE            push word [bp-0x2]
-00008ac2  9A67316F01        call 0x4857   ;0x16f:0x3167
+00008ac2  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 00008ac7  83C402            add sp,byte +0x2
 00008aca  837EFE59          cmp word [bp-0x2],byte +0x59
 00008ace  7421              jz 0x8af1
@@ -14605,7 +14644,7 @@
 00008e78  8A46FE            mov al,[bp-0x2]
 00008e7b  98                cbw
 00008e7c  50                push ax
-00008e7d  9A67316F01        call 0x4857   ;0x16f:0x3167
+00008e7d  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 00008e82  83C402            add sp,byte +0x2
 00008e85  807EFE59          cmp byte [bp-0x2],0x59
 00008e89  7421              jz 0x8eac
@@ -14889,7 +14928,7 @@
 00009196  9ABC306F01        call 0x47ac   ;0x16f:0x30bc
 0000919b  0BC0              or ax,ax		; set flags
 0000919d  7425              jz 0x91c4
-0000919f  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
+0000919f  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e		; kb input
 000091a4  8946F4            mov [bp-0xc],ax
 000091a7  3D1B00            cmp ax,0x1b
 000091aa  7507              jnz 0x91b3
@@ -15018,7 +15057,7 @@
 0000930d  7503              jnz 0x9312
 0000930f  E9D303            jmp 0x96e5
 00009312  50                push ax
-00009313  9A67316F01        call 0x4857   ;0x16f:0x3167
+00009313  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 00009318  83C402            add sp,byte +0x2
 0000931b  837EF059          cmp word [bp-0x10],byte +0x59
 0000931f  741E              jz 0x933f
@@ -15166,7 +15205,7 @@
 000094c6  9ABC306F01        call 0x47ac   ;0x16f:0x30bc
 000094cb  0BC0              or ax,ax		; set flags
 000094cd  741F              jz 0x94ee
-000094cf  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
+000094cf  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e		; kb input
 000094d4  8946F4            mov [bp-0xc],ax
 000094d7  3D1B00            cmp ax,0x1b
 000094da  7503              jnz 0x94df
@@ -15270,7 +15309,7 @@
 000095f7  9ABC306F01        call 0x47ac   ;0x16f:0x30bc
 000095fc  0BC0              or ax,ax		; set flags
 000095fe  7426              jz 0x9626
-00009600  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
+00009600  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e		; kb input
 00009605  3D1B00            cmp ax,0x1b
 00009608  751C              jnz 0x9626
 0000960a  9AEF10B80D        call 0xec6f   ;0xdb8:0x10ef
@@ -15344,7 +15383,7 @@
 000096d7  50                push ax
 000096d8  9A2B316F01        call 0x481b   ;0x16f:0x312b
 000096dd  83C402            add sp,byte +0x2
-000096e0  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
+000096e0  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e		; kb input
 000096e5  B84F00            mov ax,0x4f
 000096e8  50                push ax
 000096e9  B81700            mov ax,0x17
@@ -15392,7 +15431,7 @@
 0000974d  7503              jnz 0x9752
 0000974f  E91201            jmp 0x9864
 00009752  FF76FE            push word [bp-0x2]
-00009755  9A67316F01        call 0x4857   ;0x16f:0x3167
+00009755  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000975a  83C402            add sp,byte +0x2
 0000975d  837EFE59          cmp word [bp-0x2],byte +0x59
 00009761  7409              jz 0x976c
@@ -15577,7 +15616,7 @@
 0000994f  9ABC306F01        call 0x47ac   ;0x16f:0x30bc
 00009954  0BC0              or ax,ax		; set flags
 00009956  7426              jz 0x997e
-00009958  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
+00009958  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e		; kb input
 0000995d  8946F4            mov [bp-0xc],ax
 00009960  3D1B00            cmp ax,0x1b
 00009963  7508              jnz 0x996d
@@ -15915,7 +15954,7 @@
 00009d46  9ABC306F01        call 0x47ac   ;0x16f:0x30bc
 00009d4b  0BC0              or ax,ax		; set flags
 00009d4d  740A              jz 0x9d59
-00009d4f  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
+00009d4f  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e		; kb input
 00009d54  3D1B00            cmp ax,0x1b
 00009d57  740B              jz 0x9d64
 00009d59  8346F001          add word [bp-0x10],byte +0x1
@@ -15929,7 +15968,7 @@
 00009d73  50                push ax
 00009d74  9A2B316F01        call 0x481b   ;0x16f:0x312b
 00009d79  83C402            add sp,byte +0x2
-00009d7c  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
+00009d7c  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e		; kb input
 00009d81  8BE5              mov sp,bp
 00009d83  5D                pop bp
 00009d84  CB                retf
@@ -16008,7 +16047,7 @@
 00009e55  50                push ax
 00009e56  9A2B316F01        call 0x481b   ;0x16f:0x312b
 00009e5b  83C402            add sp,byte +0x2
-00009e5e  9A3A0CB209        call 0xa75a   ;0x9b2:0xc3a
+00009e5e  9A3A0CB209        call 0xa75a   ;0x9b2:0xc3a		; kb_read
 00009e63  B84F00            mov ax,0x4f
 00009e66  50                push ax
 00009e67  B81800            mov ax,0x18
@@ -16182,8 +16221,8 @@
 0000a020  9A2B316F01        call 0x481b   ;0x16f:0x312b
 0000a025  83C402            add sp,byte +0x2
 0000a028  EB05              jmp short 0xa02f
-0000a02a  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
-0000a02f  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
+0000a02a  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e		; kb input
+0000a02f  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e		; kb input
 0000a034  8946FE            mov [bp-0x2],ax
 0000a037  0BC0              or ax,ax		; set flags
 0000a039  74EF              jz 0xa02a
@@ -16445,7 +16484,7 @@
 0000a2a6  50                push ax
 0000a2a7  9A2B316F01        call 0x481b   ;0x16f:0x312b
 0000a2ac  83C402            add sp,byte +0x2
-0000a2af  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
+0000a2af  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e		; kb input
 0000a2b4  8BE5              mov sp,bp
 0000a2b6  5D                pop bp
 0000a2b7  CB                retf
@@ -16508,7 +16547,7 @@
 0000a342  50                push ax
 0000a343  9AA92DB209        call 0xc8c9   ;0x9b2:0x2da9
 0000a348  83C408            add sp,byte +0x8
-0000a34b  9A3A0CB209        call 0xa75a   ;0x9b2:0xc3a
+0000a34b  9A3A0CB209        call 0xa75a   ;0x9b2:0xc3a		; kb_read
 0000a350  8846F6            mov [bp-0xa],al
 0000a353  98                cbw
 0000a354  8BD8              mov bx,ax
@@ -16525,7 +16564,7 @@
 0000a36f  8A46F6            mov al,[bp-0xa]
 0000a372  98                cbw
 0000a373  50                push ax
-0000a374  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000a374  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000a379  83C402            add sp,byte +0x2
 0000a37c  807EF64E          cmp byte [bp-0xa],0x4e
 0000a380  7503              jnz 0xa385
@@ -16612,7 +16651,7 @@
 0000a459  50                push ax
 0000a45a  9AA92DB209        call 0xc8c9   ;0x9b2:0x2da9
 0000a45f  83C408            add sp,byte +0x8
-0000a462  9A3A0CB209        call 0xa75a   ;0x9b2:0xc3a
+0000a462  9A3A0CB209        call 0xa75a   ;0x9b2:0xc3a		; kb_read
 0000a467  8846F6            mov [bp-0xa],al
 0000a46a  3C0D              cmp al,0xd
 0000a46c  741F              jz 0xa48d
@@ -16959,20 +16998,27 @@
 0000a758  5D                pop bp
 0000a759  CB                retf
 
+; ---------------------------------------------------------
+; subroutine -- read a character to AX
 0000a75a  55                push bp
 0000a75b  8BEC              mov bp,sp
 0000a75d  B80200            mov ax,0x2
 0000a760  9A90266F01        call 0x3d80   ;0x16f:0x2690
 0000a765  EB05              jmp short 0xa76c
-0000a767  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
-0000a76c  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
+
+; loop
+0000a767  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e		; kb input
+0000a76c  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e		; kb input
 0000a771  8846FE            mov [bp-0x2],al
 0000a774  0AC0              or al,al
 0000a776  74EF              jz 0xa767
+
 0000a778  98                cbw
 0000a779  8BE5              mov sp,bp
 0000a77b  5D                pop bp
 0000a77c  CB                retf
+
+; ---------------------------------------------------------
 
 0000a77d  55                push bp
 0000a77e  8BEC              mov bp,sp
@@ -16994,7 +17040,7 @@
 0000a7b2  8A46F2            mov al,[bp-0xe]
 0000a7b5  98                cbw
 0000a7b6  50                push ax
-0000a7b7  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000a7b7  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000a7bc  83C402            add sp,byte +0x2
 0000a7bf  8A460C            mov al,[bp+0xc]
 0000a7c2  2AE4              sub ah,ah
@@ -17006,7 +17052,7 @@
 0000a7d1  8A46F6            mov al,[bp-0xa]
 0000a7d4  98                cbw
 0000a7d5  50                push ax
-0000a7d6  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000a7d6  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000a7db  83C402            add sp,byte +0x2
 0000a7de  8A4608            mov al,[bp+0x8]
 0000a7e1  2AE4              sub ah,ah
@@ -17018,7 +17064,7 @@
 0000a7f0  8A46FA            mov al,[bp-0x6]
 0000a7f3  98                cbw
 0000a7f4  50                push ax
-0000a7f5  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000a7f5  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000a7fa  83C402            add sp,byte +0x2
 0000a7fd  8A460C            mov al,[bp+0xc]
 0000a800  2AE4              sub ah,ah
@@ -17030,7 +17076,7 @@
 0000a80f  8A46FE            mov al,[bp-0x2]
 0000a812  98                cbw
 0000a813  50                push ax
-0000a814  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000a814  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000a819  83C402            add sp,byte +0x2
 0000a81c  8A4608            mov al,[bp+0x8]
 0000a81f  FEC0              inc al
@@ -17046,7 +17092,7 @@
 0000a838  8A46FC            mov al,[bp-0x4]
 0000a83b  98                cbw
 0000a83c  50                push ax
-0000a83d  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000a83d  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000a842  83C402            add sp,byte +0x2
 0000a845  8A46F8            mov al,[bp-0x8]
 0000a848  2AE4              sub ah,ah
@@ -17058,7 +17104,7 @@
 0000a857  8A46FC            mov al,[bp-0x4]
 0000a85a  98                cbw
 0000a85b  50                push ax
-0000a85c  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000a85c  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000a861  83C402            add sp,byte +0x2
 0000a864  FE46F8            inc byte [bp-0x8]
 0000a867  8A460C            mov al,[bp+0xc]
@@ -17078,7 +17124,7 @@
 0000a88b  8A46F4            mov al,[bp-0xc]
 0000a88e  98                cbw
 0000a88f  50                push ax
-0000a890  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000a890  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000a895  83C402            add sp,byte +0x2
 0000a898  8A460C            mov al,[bp+0xc]
 0000a89b  2AE4              sub ah,ah
@@ -17090,7 +17136,7 @@
 0000a8aa  8A46F4            mov al,[bp-0xc]
 0000a8ad  98                cbw
 0000a8ae  50                push ax
-0000a8af  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000a8af  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000a8b4  83C402            add sp,byte +0x2
 0000a8b7  FE46F8            inc byte [bp-0x8]
 0000a8ba  8A460A            mov al,[bp+0xa]
@@ -17198,14 +17244,14 @@
 0000a9c1  7425              jz 0xa9e8
 0000a9c3  FF4EFC            dec word [bp-0x4]
 0000a9c6  FF76FE            push word [bp-0x2]
-0000a9c9  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000a9c9  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000a9ce  83C402            add sp,byte +0x2
 0000a9d1  B82000            mov ax,0x20
 0000a9d4  50                push ax
-0000a9d5  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000a9d5  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000a9da  83C402            add sp,byte +0x2
 0000a9dd  FF76FE            push word [bp-0x2]
-0000a9e0  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000a9e0  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000a9e5  83C402            add sp,byte +0x2
 0000a9e8  9A7E2E6F01        call 0x456e   ;0x16f:0x2e7e
 0000a9ed  8946FE            mov [bp-0x2],ax
@@ -17249,7 +17295,7 @@
 0000aa4a  9A90266F01        call 0x3d80   ;0x16f:0x2690
 0000aa4f  B80700            mov ax,0x7
 0000aa52  50                push ax
-0000aa53  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000aa53  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000aa58  83C402            add sp,byte +0x2
 0000aa5b  B83200            mov ax,0x32
 0000aa5e  50                push ax
@@ -17257,7 +17303,7 @@
 0000aa64  83C402            add sp,byte +0x2
 0000aa67  B80700            mov ax,0x7
 0000aa6a  50                push ax
-0000aa6b  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000aa6b  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000aa70  83C402            add sp,byte +0x2
 0000aa73  B83200            mov ax,0x32
 0000aa76  50                push ax
@@ -17265,7 +17311,7 @@
 0000aa7c  83C402            add sp,byte +0x2
 0000aa7f  B80700            mov ax,0x7
 0000aa82  50                push ax
-0000aa83  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000aa83  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000aa88  8BE5              mov sp,bp
 0000aa8a  5D                pop bp
 0000aa8b  CB                retf
@@ -19297,7 +19343,7 @@
 0000c04e  7E03              jng 0xc053
 0000c050  E94D00            jmp 0xc0a0
 0000c053  FF76F8            push word [bp-0x8]
-0000c056  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000c056  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000c05b  83C402            add sp,byte +0x2
 0000c05e  836EF830          sub word [bp-0x8],byte +0x30
 0000c062  8B46EC            mov ax,[bp-0x14]
@@ -19330,7 +19376,7 @@
 0000c0ad  7E03              jng 0xc0b2
 0000c0af  E94F00            jmp 0xc101
 0000c0b2  FF76F8            push word [bp-0x8]
-0000c0b5  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000c0b5  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000c0ba  83C402            add sp,byte +0x2
 0000c0bd  8B46F8            mov ax,[bp-0x8]
 0000c0c0  2D3700            sub ax,0x37
@@ -20302,16 +20348,16 @@
 0000cb1a  8A46BA            mov al,[bp-0x46]
 0000cb1d  98                cbw
 0000cb1e  50                push ax
-0000cb1f  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000cb1f  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000cb24  83C402            add sp,byte +0x2
 0000cb27  B82000            mov ax,0x20
 0000cb2a  50                push ax
-0000cb2b  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000cb2b  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000cb30  83C402            add sp,byte +0x2
 0000cb33  8A46BA            mov al,[bp-0x46]
 0000cb36  98                cbw
 0000cb37  50                push ax
-0000cb38  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000cb38  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000cb3d  83C402            add sp,byte +0x2
 0000cb40  EB5A              jmp short 0xcb9c
 0000cb42  833ED63319        cmp word [0x33d6],byte +0x19
@@ -20319,7 +20365,7 @@
 0000cb49  8A46BA            mov al,[bp-0x46]
 0000cb4c  98                cbw
 0000cb4d  50                push ax
-0000cb4e  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000cb4e  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000cb53  83C402            add sp,byte +0x2
 0000cb56  8B36D633          mov si,[0x33d6]
 0000cb5a  8A46BA            mov al,[bp-0x46]
@@ -20631,7 +20677,7 @@
 0000ce81  83C406            add sp,byte +0x6
 0000ce84  B80700            mov ax,0x7
 0000ce87  50                push ax
-0000ce88  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000ce88  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000ce8d  83C402            add sp,byte +0x2
 0000ce90  9A13110000        call 0x1113   ;0x0:0x1113
 0000ce95  B80700            mov ax,0x7
@@ -21781,7 +21827,7 @@
 0000da8d  8A46F2            mov al,[bp-0xe]
 0000da90  98                cbw
 0000da91  50                push ax
-0000da92  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000da92  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000da97  83C402            add sp,byte +0x2
 0000da9a  FF760C            push word [bp+0xc]
 0000da9d  FF7606            push word [bp+0x6]
@@ -21790,7 +21836,7 @@
 0000daa8  8A46F6            mov al,[bp-0xa]
 0000daab  98                cbw
 0000daac  50                push ax
-0000daad  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000daad  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000dab2  83C402            add sp,byte +0x2
 0000dab5  FF7608            push word [bp+0x8]
 0000dab8  FF760A            push word [bp+0xa]
@@ -21799,7 +21845,7 @@
 0000dac3  8A46FA            mov al,[bp-0x6]
 0000dac6  98                cbw
 0000dac7  50                push ax
-0000dac8  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000dac8  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000dacd  83C402            add sp,byte +0x2
 0000dad0  FF760C            push word [bp+0xc]
 0000dad3  FF760A            push word [bp+0xa]
@@ -21808,7 +21854,7 @@
 0000dade  8A46FE            mov al,[bp-0x2]
 0000dae1  98                cbw
 0000dae2  50                push ax
-0000dae3  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000dae3  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000dae8  83C402            add sp,byte +0x2
 0000daeb  8B4608            mov ax,[bp+0x8]
 0000daee  40                inc ax
@@ -21821,7 +21867,7 @@
 0000db02  8A46FC            mov al,[bp-0x4]
 0000db05  98                cbw
 0000db06  50                push ax
-0000db07  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000db07  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000db0c  83C402            add sp,byte +0x2
 0000db0f  FF76F8            push word [bp-0x8]
 0000db12  FF760A            push word [bp+0xa]
@@ -21830,7 +21876,7 @@
 0000db1d  8A46FC            mov al,[bp-0x4]
 0000db20  98                cbw
 0000db21  50                push ax
-0000db22  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000db22  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000db27  83C402            add sp,byte +0x2
 0000db2a  FF46F8            inc word [bp-0x8]
 0000db2d  8B460C            mov ax,[bp+0xc]
@@ -21847,7 +21893,7 @@
 0000db4c  8A46F4            mov al,[bp-0xc]
 0000db4f  98                cbw
 0000db50  50                push ax
-0000db51  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000db51  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000db56  83C402            add sp,byte +0x2
 0000db59  FF760C            push word [bp+0xc]
 0000db5c  FF76F8            push word [bp-0x8]
@@ -21856,7 +21902,7 @@
 0000db67  8A46F4            mov al,[bp-0xc]
 0000db6a  98                cbw
 0000db6b  50                push ax
-0000db6c  9A67316F01        call 0x4857   ;0x16f:0x3167
+0000db6c  9A67316F01        call 0x4857   ;0x16f:0x3167		; putchar
 0000db71  83C402            add sp,byte +0x2
 0000db74  FF46F8            inc word [bp-0x8]
 0000db77  8B460A            mov ax,[bp+0xa]

@@ -467,12 +467,47 @@ chase ( int start, struct line *from, int is_call, int verbose )
 	}
 }
 
+/* Report on address ranges visited and not visited */
+static void
+report ( void )
+{
+	int i;
+	struct line *lp;
+	struct line *start;
+	struct line *last;
+	int nvisit = 0;
+	int state = 0;
+
+	for ( i=0; i<nlines; i++ ) {
+		lp = &lines[i];
+		if ( lp->visited )
+			nvisit++;
+	}
+
+	printf ( "\n\n" );
+	printf ( "%d lines of %d visited\n", nvisit, nlines );
+
+	for ( i=0; i<nlines; i++ ) {
+		lp = &lines[i];
+		if ( lp->visited != state ) {
+			if ( lp->visited ) {
+				start = lp;
+			} else {
+				printf ( "Visited: %x to %x\n", start->addr, last->addr );
+			}
+			state = lp->visited;
+		}
+		last = lp;
+	}
+}
+
 int
 main ( int argc, char **argv )
 {
 	loadfile ( infile );
 	// alljumps ();
 	chase ( 0x3da4, NULL, 1, 0 );
+	report ();
 
 	exit (0);
 }
