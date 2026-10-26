@@ -1,0 +1,34 @@
+#!/bin/python
+
+# fixdog
+
+# Tom Trebisky   10-26-2026
+
+import re
+
+# A last minute hack after running fixseg.
+# This converts a 5 digit linear address
+# in the first column to a right justified
+# 0x7df sort of thing, which will match searches
+# based on what is in call statements.
+
+infile = "epp.txt"
+
+def fixline ( ll ) :
+    (a,rest) = ll.split(None,1)
+    addr = int ( a, 16 )
+    haddr = f'0x{addr:x}'
+    print ( f'{haddr: >7}  {rest}' )
+
+pattern = r'^[0-9a-f]'
+
+with open ( infile, "r") as file:
+    for rline in file:
+        line = rline.rstrip()
+        #if line.startswith ( "000" ) :
+        if re.search(pattern, line):
+            fixline ( line )
+        else :
+            print ( line )
+
+# THE END
