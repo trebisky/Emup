@@ -1,0 +1,121 @@
+#!/bin/python
+
+# Tom Trebisky   10-26-2026
+
+# The idea here is to add a seg:off
+# column to the left side of the disassembly
+
+# This program needs to work on my already extensively
+# annotated file, preserving the annotation, which
+# should not be too hard, since it is just adding
+# a fixed width column on the left.
+
+# What is difficult is that the mapping from a linear
+# address to seg:offset is not unique!  We want the
+# value to be correct in order to match call instructions
+
+infile = "epp512.txt"
+
+maxaddr = 0x12d35
+
+myset = set ()
+
+# using a set eliminates duplicates
+def addset ( x ) :
+    if x == ';' :
+        return
+    if x.startswith ( "[" ) :
+        return
+    myset.add ( x )
+
+def pullline ( line ) :
+  if not line.startswith ( "000" ) :
+    return
+  words = line.split()
+#  if len(words) < 3 :
+  if len(words) < 5 :
+    return
+  if words[2] == "call" :
+      # print ( line )
+      addset ( words[4] )
+
+with open ( infile, "r") as file:
+    for line in file:
+        pullline ( line.rstrip() )
+
+# Add zerosub by hand
+addset ( ";0x0:0x0" )
+
+lines = []
+
+#for x in sorted(myset) :
+for x in myset :
+    (ss,oh) = x.split ( ":" )
+    sh = ss[1:]
+    s = int ( sh, 16 )
+    o = int ( oh, 16 )
+    a = s*16 + o
+    #addr = hex ( a )
+
+    if a <= maxaddr :
+        xline = f"{a:04x} {sh}:{oh}"
+        lines.append ( xline )
+        # print ( addr, sh, oh )
+        # print ( xline )
+
+table = {}
+
+for ll in sorted(lines) :
+    #print ( ll )
+    (aa, b) = ll.split ()
+    a = int ( aa, 16 )
+    table[a] = b
+
+#exit ()
+
+# ------------------------------------------------
+
+# A typical line:
+#
+#00000051  B8B107            mov ax,0x7b1
+
+nfixed = 0
+last_tag = None
+
+def gentag ( addr ) :
+    (hseg,xxx) = last_tag.split ( ":" )
+    seg = int ( hseg, 16 )
+    off = addr - seg*16
+    hoff = f'0x{off:x}'
+    return hseg + ":" + hoff
+
+def fixline ( ll ) :
+    global nfixed
+    global last_tag
+    (a,rest) = ll.split(None,1)
+    #tag = "0x1234:0x7899"
+    addr = int ( a, 16 )
+    tag = table.get ( addr )
+    if tag == None :
+        #tag = "----:----"
+        tag = gentag ( addr )
+    else :
+        last_tag = tag
+        nfixed += 1
+
+    #print ( f'{addr:7} {tag:13}  {rest}' )
+    haddr = f'0x{addr:x}'
+    print ( f'{haddr: >7}  {tag:13}  {rest}' )
+
+with open ( infile, "r") as file:
+    for rline in file:
+        line = rline.rstrip()
+        if line.startswith ( "000" ) :
+            fixline ( line )
+        else :
+            print ( line )
+
+# This shows 240, which is correct
+# print ( nfixed, "calls fixed" )
+
+# THE END

@@ -1,5 +1,23 @@
 #!/bin/ruby
 
+# Tom Trebisky October 26, 2026
+
+# The original "fixadd" script.
+
+# ndisasm generates a linear address list as the
+# leftmost column.  However jumps and calls are
+# disassembled as things like:
+#   call 0x9b2:0x3e54
+#
+# To make any sense of where they are going, I convert
+# these to linear addresses to match the left column.
+#
+# Later versions of ndisasm began emitting code like:
+#   call word 0x16f:word 0x311d
+#
+# This program would need to be modified to deal with this.
+
+
 infile = "epp512_lm.raw"
 #infile = "epp512_lm.dis"
 

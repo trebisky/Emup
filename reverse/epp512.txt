@@ -6342,11 +6342,15 @@
 
 ; ===============================================
 ; ===============================================
+;
 ; START
 ; This is the starting address
 ; -- it gets relocated at runtime, so these addresses are
 ; -- useless for working with the debugger, but they are
 ; -- consistent within this disassembly (for the most part)
+;
+; This code does general setup for the DOS environment,
+; then call the code at address 0 to actually run the application.
 
 00003da4  B430              mov ah,0x30
 00003da6  CD21              int 0x21		; get DOS version
@@ -6357,15 +6361,45 @@
 00003daa  7310              jnc 0x3dbc
 
 ; That DOS version just won't do.
+;   the message will be:
+;
+; "error 2004: DOS 2.0 or later required"
+
 00003dac  B80400            mov ax,0x4
 00003daf  50                push ax
-00003db0  9A7D446F01        call 0x5b6d   ;0x16f:0x447d
+00003db0  9A7D446F01        call 0x5b6d   ;0x16f:0x447d		;fetch error string 4
 00003db5  92                xchg ax,dx
 00003db6  B409              mov ah,0x9
 00003db8  CD21              int 0x21	; display string
+
 00003dba  CD20              int 0x20	; terminate process
 
 ; That DOS version is ok
+; Note that the DS setting of 0xfbe "works" to fetch those
+;  error strings at the end of this executable.
+
+; All of this won't be clear until I learn what changes were
+; made by program relocation.  I suspect that the 0xfbe value
+; that follows gets modified during relocation.
+
+; Reading address 0x2 must be fetching from the PSP
+; offset 2 gives the segment of the first byte beyond the
+; memory allocated to the program
+
+; When a DOS EXE starts up, the segment registers are as follows:
+;
+;  CS - actual entry segment as given in the EXE header
+;  DS points to base of PSP
+;  ES points to base of PSP
+;  SS - the stack segment allocated by the header
+;    (the SP is set to the size of that stack segment)
+;
+; When I start the program in dosemu and use debug, I see:
+;
+;  CS = 0x0957
+;  DS = ES = 0x07d8
+;  SS = 0x1b60 --- SP = 0x0800
+
 00003dbc  BFBE0F            mov di,0xfbe	; << gets relocated to 17a6
 00003dbf  8B360200          mov si,[0x2]	; << fetches 9fff
 00003dc3  2BF7              sub si,di
@@ -9654,7 +9688,7 @@
 00005b9e  8BEC              mov bp,sp
 00005ba0  57                push di
 00005ba1  FF7606            push word [bp+0x6]
-00005ba4  9A7D446F01        call 0x5b6d   ;0x16f:0x447d
+00005ba4  9A7D446F01        call 0x5b6d   ;0x16f:0x447d		;fetch error string
 00005ba9  0BC0              or ax,ax		; set flags
 00005bab  7414              jz 0x5bc1
 00005bad  92                xchg ax,dx		; dx = ax
@@ -23675,6 +23709,15 @@
 0000eeb4  8BE5              mov sp,bp
 0000eeb6  5D                pop bp
 0000eeb7  CB                retf
+
+; ---------------------------------------------------------------
+; ---------------------------------------------------------------
+; ---------------------------------------------------------------
+; my call tree search indicates that no code below here is accessed.
+; ---------------------------------------------------------------
+; ---------------------------------------------------------------
+; ---------------------------------------------------------------
+
 
 ; ---------------------------------------------------------------
 ; subroutine
