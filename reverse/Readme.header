@@ -57,8 +57,7 @@
 
 ; Here is the relocation table
 ;  Each relocation entry is described as a pair of words.
-;  (This is ambiguous and stupid, what is a word?)
-;  It turns out that a word is a 16 bit item.
+;   (each "word" is 2 bytes in this world)
 ;  So each reloc entry is 4 bytes.
 ; 
 ;  Alternately, we have 0x6ff relocation items.

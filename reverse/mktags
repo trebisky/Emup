@@ -20,6 +20,9 @@
 # tags file with all the addresses in the code.
 # Then you can click on an address and go there.
 
+# This makes sure the script won't run
+FAIL
+
 import re
 
 infile = "epp.txt"
