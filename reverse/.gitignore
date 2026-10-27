@@ -3,6 +3,8 @@
 *.odx
 *.swp
 tagtmp
+exedump
+vim_string
 *.raw1
 zzz
 *OLD

@@ -11,6 +11,11 @@ all2:	access_lm.dis access.odx
 
 fetch: epp512.exe access.exe
 
+# Get our vim helpers for strings
+vim:
+	cp ../exedump/exedump .
+	cp ../exedump/vim_string .
+
 epp512.exe: ../../EMUP/epp512.exe
 	cp ../EMUP/epp512.exe .
 
