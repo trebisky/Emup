@@ -1,0 +1,54 @@
+#!/bin/python
+
+# Tom Trebisky  10/27/2026
+
+# vim_swap
+
+# inspired by vim_string
+
+# swap bytes in the last word of a line
+#  handle a line like this:
+
+# 0x776  0x0:0x776      9407
+# 0x776  0x0:0x776      9407    ; 0x794
+
+# This is a "helper" intended to be invoked as
+# a vim filter from a line in my .vimrc
+# that looks like this:
+#   nnoremap <leader>t :.!./vim_string<CR>
+
+# currently the vim leader is "-", so put the cursor
+# on the line of interest and type -t
+
+import sys
+import os
+import re
+import subprocess
+
+# ---------------------------------------------------------------
+# The game starts here.  Vim gives us the entire original line
+
+orig_line = sys.stdin.readline().rstrip()
+strip_line = orig_line.strip()
+
+ww = strip_line.split ()
+
+if len(ww) < 1 :
+    print ( " --- Sorry" )
+    exit ()
+
+hval = ww[-1]
+
+if len(hval) != 4 :
+    print ( " --- Sorry 2" )
+    exit ()
+
+value = int ( hval, 16 );
+
+v = ((value & 0xFF) << 8) | ((value >> 8) & 0xFF)
+
+newval = f'0x{v:x}'
+
+print ( orig_line + "\t; " + newval )
+
+# THE END
