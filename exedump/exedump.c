@@ -235,6 +235,13 @@ dump_one ( int off, char *dp )
 		return ns + 1;
 	}
 
+	/* If it is odd, just dump one byte */
+	if ( addr & 1 ) {
+		printf ( "Data    %08x %04x: %02x\n", addr, off, *dp );
+		return 1;
+	}
+
+	/* fall through to dump 2 bytes */
 	data = *(unsigned short *) dp;
 	printf ( "Data    %08x %04x: ", addr, off );
 	dump_short ( data );

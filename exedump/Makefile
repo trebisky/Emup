@@ -9,4 +9,7 @@ fetch: epp512.exe
 epp512.exe: ../../EMUP/epp512.exe
 	cp ../../EMUP/epp512.exe .
 
+data:
+	./exedump -d >data
+
 # THE END
