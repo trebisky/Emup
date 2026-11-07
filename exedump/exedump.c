@@ -46,8 +46,8 @@ int lm_offset;
 int dsval;
 
 /* random global variables */
-// int verbose = 0;
-int verbose = 1;
+int verbose = 0;
+// int verbose = 1;
 
 static void
 error ( char *msg )
@@ -273,7 +273,45 @@ dump_data ( void )
 	}
 }
 
-enum mode { STRING, DATA };
+/*
+ * The following turns these 4 lines:
+ 0x188c  0x16f:0x19c    D201              ; 0x1d2
+ 0x188e  0x16f:0x19e    F901              ; 0x1f9
+ 0x188f  0x16f:0x1a0    1E0239
+ 0x1893  0x16f:0x1a3    024C02            add cl,[si+0x2]
+
+ * Into this:
+
+ 0x188c  0x16f:0x19c: d201
+ 0x188e  0x16f:0x19e: f901
+ 0x1890  0x16f:0x1a0: 1e02
+ 0x1892  0x16f:0x1a2: 3902
+*/
+
+void
+dump_edata ( int addr, int num )
+{
+	int i;
+	char *lm_base;
+	unsigned short *dp;
+	int data;
+	int seg, off;
+
+	lm_base = &exebuf[lm_offset];
+	seg = 0x16f;
+
+	for ( i=0; i<num; i++ ) {
+		dp = (unsigned short *) &lm_base[addr];
+		data = *dp;
+		off = addr - seg*16;
+		printf ( " 0x%x  0x%x:0x%x: ", addr, seg, off );
+		dump_short ( data );
+		printf ( "    ; 0x%x\n", data );
+		addr += 2;
+	}
+}
+
+enum mode { STRING, DATA, EDATA };
 
 int
 main ( int argc, char **argv )
@@ -285,7 +323,9 @@ main ( int argc, char **argv )
 	if ( argc < 2 )
 		usage ();
 
-	if ( strcmp ( argv[1], "-d" ) == 0 )
+	if ( argc == 3 && strcmp ( argv[1], "-e" ) == 0 ) {
+		mode = EDATA;
+	} else if ( strcmp ( argv[1], "-d" ) == 0 )
 		mode = DATA;
 	else {
 		// printf ( "arg: %s\n", argv[1] );
@@ -306,6 +346,10 @@ main ( int argc, char **argv )
 
 	if ( mode == DATA )
 		dump_data ();
+
+	// 32 is a guess
+	if ( mode == EDATA )
+		dump_edata ( hex ( argv[2] ), 32 );
 }
 
 /* THE END */

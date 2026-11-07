@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# redo a section
+
+ndisasm -a -s $1 epp512.lm

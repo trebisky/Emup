@@ -47,7 +47,7 @@ value = int ( hval, 16 );
 
 v = ((value & 0xFF) << 8) | ((value >> 8) & 0xFF)
 
-newval = f'0x{v:x}'
+newval = f'0x{v:x}  ({v})'
 
 print ( orig_line + "\t; " + newval )
 

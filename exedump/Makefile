@@ -12,4 +12,7 @@ epp512.exe: ../../EMUP/epp512.exe
 data:
 	./exedump -d >data
 
+install: exedump
+	cp exedump /home/tom/bin
+
 # THE END
