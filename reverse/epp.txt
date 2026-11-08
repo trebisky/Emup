@@ -46,6 +46,15 @@
 
 0x31a8 - the actual EMUP base 0x2e0
 
+Great mysteries:
+	-- where are the LED turned on/off
+	-- where is the button read
+	-- how is the secret protocol handled
+	-- how is the programming pulse handled/timed
+	  (this originally ran on 25 Mhz processors, but I am
+	  now running it on a 600 Mhz processor - and it works,
+	  at least for EPROMs)
+
 ; -----------------------------------------------------------
 ;
 ; According to some notes from the MOD-EMUP over USB project,
@@ -4879,7 +4888,7 @@ zerosub:
 
 ; subroutine sherman
 ; many calls
-; a table driven thing
+; another table driven routine
 
  0x2b98  0x16f:0x14a8   8B1E0C0B          mov bx,[0xb0c]	; get manufacturer code
  0x2b9c  0x16f:0x14ac   03DB              add bx,bx
@@ -4917,7 +4926,7 @@ zerosub:
  0x2bd5  0x16f:0x14e5: 5817    ; 0x1758
  0x2bd7  0x16f:0x14e7: 6917    ; 0x1769
 
- 0x2bd9  0x16f:0x14e9: 8B1E0E0B          mov bx,[0xb0e]
+ 0x2bd9  0x16f:0x14e9: 8B1E0E0B          mov bx,[0xb0e]		; get type code
  0x2bdd  0x16f:0x14e-: 03DB              add bx,bx
  0x2bdf  0x16f:0x14e-: 2EFFA7F414        jmp word near [cs:bx+0x14f4]
 
@@ -4955,6 +4964,7 @@ zerosub:
  0x2c1f  0x16f:0x152f   E017              loopne 0x2c38
  0x2c21  0x16f:0x1531   7817              js 0x2c3a
  0x2c23  0x16f:0x1533   7817              js 0x2c3c
+
  0x2c25  0x16f:0x1535   8B1E0E0B          mov bx,[0xb0e]		; get type code
  0x2c29  0x16f:0x1539   03DB              add bx,bx
  0x2c2b  0x16f:0x153b   2EFFA74015        jmp [cs:bx+0x1540]

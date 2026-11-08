@@ -22,7 +22,7 @@ n_man = 27
 #ndisasm -a -s $1 epp512.lm
 #ndisasm -s $1 epp512.lm
 
-# next table
+# next table will be ...
 # exedump -e 2be4
 
 def get_data ( addr ) :
@@ -31,9 +31,13 @@ def get_data ( addr ) :
     result = subprocess.run(['exedump', '-e', addr], capture_output=True, text=True)
     raw_lines = result.stdout
     lines = raw_lines.split ( "\n" )
-    lines = lines[:27]
-    for l in lines :
+    tlines = lines[:27]
+    # XXX - keep the first table as a master index
+    for l in tlines :
         print ( l )
-    print ( len(lines) )
+    #print ( len(lines) )
+
+    # We can extract next address from the following:
+    print ( "Next: ", lines[27] )
 
 get_data ( start )
