@@ -1,0 +1,39 @@
+#!/bin/python
+
+# This is the "sherman" script.
+# I hand did one of these mixed data/asm routines
+#  implementing table driven code, and when I
+#  found another decided I would write this.
+
+import subprocess
+
+start = "0x2ba3"
+n_man = 27
+
+#  0x2b98  0x16f:0x14a8   8B1E0C0B          mov bx,[0xb0c]    ; get manufacturer code
+#  0x2b9c  0x16f:0x14ac   03DB              add bx,bx
+#  0x2b9e  0x16f:0x14ae   2EFFA7B314        jmp [cs:bx+0x14b3]
+
+#  0x2ba3  0x16f:0x14b3: e914    ; 0x14e9
+
+# we can just run ndisasm on the whole file
+# and find the 3 lines we want in the mess
+
+#ndisasm -a -s $1 epp512.lm
+#ndisasm -s $1 epp512.lm
+
+# next table
+# exedump -e 2be4
+
+def get_data ( addr ) :
+    # exedump -e 2ba3
+    # at this time, exedump always gives us 32 lines.
+    result = subprocess.run(['exedump', '-e', addr], capture_output=True, text=True)
+    raw_lines = result.stdout
+    lines = raw_lines.split ( "\n" )
+    lines = lines[:27]
+    for l in lines :
+        print ( l )
+    print ( len(lines) )
+
+get_data ( start )

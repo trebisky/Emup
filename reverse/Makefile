@@ -6,7 +6,10 @@
 #  the executable code with the header and relocation
 #  info stripped off the front of it.
 
-all:	epp512_lm.dis epp512.odx
+all:
+	@echo "Sorry"
+
+xxall:	epp512_lm.dis epp512.odx
 all2:	access_lm.dis access.odx
 
 fetch: epp512.exe access.exe
