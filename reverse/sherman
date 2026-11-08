@@ -10,6 +10,9 @@ import subprocess
 start = "0x2ba3"
 n_man = 27
 
+cs = 0x16f
+
+# The following 3 lines are 11 bytes
 #  0x2b98  0x16f:0x14a8   8B1E0C0B          mov bx,[0xb0c]    ; get manufacturer code
 #  0x2b9c  0x16f:0x14ac   03DB              add bx,bx
 #  0x2b9e  0x16f:0x14ae   2EFFA7B314        jmp [cs:bx+0x14b3]
@@ -25,8 +28,61 @@ n_man = 27
 # next table will be ...
 # exedump -e 2be4
 
+# ====================================================
+
+# ndisasm has several potentially useful options:
+#
+#   -o specify origin for first thing disassembled
+#   -e skips <bytes> bytes of header
+#   -k avoids disassembling <bytes> bytes from position <start>
+#
+#  The way -k is supposed to work is you give -k start,bytes
+#  It is broken.
+#  It disassembles up to (not including)  start,
+#     then announces skipping and never resumes disassembly
+#
+# numbers are assumed decimal, use 0x for hex
+#
+# our file (epp512.exe) has 15*512 bytes of header and relocation
+#  this is 7680 bytes decimal
+
+# We get this:
+#00002BD9  8B1E0E0B          mov bx,[0xb0e]
+#00002BDD  03DB              add bx,bx
+#00002BDF  2EFFA7F414        jmp word near [cs:bx+0x14f4]
+# We want this:
+# 0x2bd9  0x16f:0x14e9: 8B1E0E0B          mov bx,[0xb0e]
+# 0x2bdd  0x16f:0x14e-: 03DB              add bx,bx
+# 0x2bdf  0x16f:0x14e-: 2EFFA7F414        jmp word near [cs:bx+0x14f4]
+
+def fix_line ( ll ) :
+    ss = ll.split(None,1)
+    addr = int ( ss[0], 16 )
+    off = addr - cs*16
+    saddr = hex(cs) + ":" + hex(off) + ": "
+    xaddr = hex(addr)
+    return " " + xaddr + "  " + saddr + ss[1]
+
+#
+# The following is a total hack, but gives us the 3 lines we want
+
+def dis ( off ) :
+    sopt = hex(off)
+    # bug - any count ends the disassembly, we use 2
+    kopt = hex(off+11) + ",2"
+    result = subprocess.run(['ndisasm', 'epp512.exe', '-e', str(7680), "-s", sopt, "-k", kopt], capture_output=True, text=True)
+    raw_lines = result.stdout
+    lines = raw_lines.split ( "\n" )
+    #print ( "Lines: ", len(lines) )
+
+    # We get 2 lines at the end to skip. a skipping announcement and a blank line
+    #for l in lines[-8:] :
+    for l in lines[-5:-2] :
+        # print ( l )
+        fix = fix_line ( l )
+        print ( fix )
+
 def get_data ( addr ) :
-    # exedump -e 2ba3
     # at this time, exedump always gives us 32 lines.
     result = subprocess.run(['exedump', '-e', addr], capture_output=True, text=True)
     raw_lines = result.stdout
@@ -35,9 +91,14 @@ def get_data ( addr ) :
     # XXX - keep the first table as a master index
     for l in tlines :
         print ( l )
-    #print ( len(lines) )
 
+    next = lines[27]
     # We can extract next address from the following:
-    print ( "Next: ", lines[27] )
+    #print ( "Next: ", next )
+    wnext = next.split()
+    code_addr = int ( wnext[0], 16 )
+    #print ( "Code starts at: ", code_addr )
+    dis ( code_addr )
+
 
 get_data ( start )
