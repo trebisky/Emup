@@ -7,10 +7,9 @@
 
 import subprocess
 
-start = "0x2ba3"
-n_man = 27
+start = 0x2ba3
 
-cs = 0x16f
+cseg = 0x16f
 
 # The following 3 lines are 11 bytes
 #  0x2b98  0x16f:0x14a8   8B1E0C0B          mov bx,[0xb0c]    ; get manufacturer code
@@ -27,6 +26,41 @@ cs = 0x16f
 
 # next table will be ...
 # exedump -e 2be4
+
+mans = \
+"27/27C,AMD/MMI,ATMEL,CATALYST,CYPRESS,FUJITSU,HITACHI,HYUNDAI," \
+"INTEL,MATSUSHITA,MICROCHIP,MITSUBISHI,MOSTEK,MOTOROLA,NEC,NS,OKI," \
+"RICOH,SIGNETICS,SMOS,SGS_THOMSON,TI,TOSHIBA,WSI,VLSI,SEEQ,MXIC"
+
+types = \
+"x16,x16B,x32,x32A,x32B,x64,x64A,x128,x128A,x256,x256HV,x512,x512HV,x513,2716,2716B,2732," \
+"2732A,2732B,2764,2764A/AP/C64,27128,27128A/AP/C128,27C256/P,27256HV,27512/C512,27512HV," \
+"AT27HC64/L,AT27C128,AT27C/HC256/L,AT27C512,AT27C513,AT27C256R,AT27C512R,AT27C513R,CSI2764A," \
+"CSI27128A,CSI27/HC256,CSI27512,CY7C261,CY7C263,CY7C264,CY7C251,CY7C253,CY7C254,CY7C271," \
+"MBM8516,MBM2732/8532,MBM27/C32A,MBM2764,MBM27C64,MBM27128,MBM27C128,MBM27256/C256A,MBM27C256H," \
+"MBM27C512,462716,462732,48/462732A,HN27C64,427128P,HN27128AG,27/C256G/AG/HG,27512P/G/C512G,27C64," \
+"B2716,D2732,D2732A,D2764,D2764A/C64,D27128,D27128A,D27/C256,D27/C512,D27/C513,D87C64,D87C256," \
+"D87C257,2764,27128,27C64/HC64,27C128,27C256/HC256,27C512,27C513,M5L2716,M5L2732,M5L2764,27128/27C128K," \
+"M5L27C128,27K/C256/AK,27512/C512AK,2716,MCM68764,MCM68766,D2716,D2732,D2732A,D2732B,D2764,D27C64," \
+"D27128,D27/C256,D27C512,NMC2716/C16,NMC27C16B,NMC27C32,MNC27C32B,NMC27C64,NMC27C128/B,NMC27CP128," \
+"NMC27C256,NMC27C256B,NMC27C512,NMC27C512A,MSM2716,MSM2764AS,MSM2764A,MSM27128AS,MSM27128A,MSM27256AS," \
+"MSM27512AS,27C32,27C64,27C256,27C64A,27C128,27C256,27C512,27C64H,27128H,27C256H,2716/C16,TS27/C32," \
+"M2732A,TS2764,27/C64A,M27128A,M27/C256,M27/C512,2732,2732A,27C32/PC32,2764,27C64/PC64,27128," \
+"27C128/PC128,27C/PC256/87C257,27C512/PC512,2516,2532,2532A,2564,TMM2732,TMM2764,TMM2764A," \
+"TMM27128,TMM27128A,27256/A/57256AD,TMM27512,WS27C64FM,WS57C64F,WS27C128FM,WS57C128F,WS27C256FM," \
+"WS57C256F-55,WS57C256F-35,WS27C256L,WS27C256F,WS27C512F,VT27C64,VT27C128,VT27C256,VT27C512," \
+"DQ2764,DQ27128,DQ27C256,MX27C256,MX27C512"
+
+man_list = mans.split(",")
+n_man = len ( man_list )
+type_list = types.split(",")
+n_type = len ( type_list )
+
+# print ( len(man_list), " manufacturers" )
+# print ( len(type_list), " types" )
+
+#for m in man_list :
+#    print ( m )
 
 # ====================================================
 
@@ -58,8 +92,8 @@ cs = 0x16f
 def fix_line ( ll ) :
     ss = ll.split(None,1)
     addr = int ( ss[0], 16 )
-    off = addr - cs*16
-    saddr = hex(cs) + ":" + hex(off) + ": "
+    off = addr - cseg*16
+    saddr = hex(cseg) + ":" + hex(off) + ": "
     xaddr = hex(addr)
     return " " + xaddr + "  " + saddr + ss[1]
 
@@ -82,23 +116,60 @@ def dis ( off ) :
         fix = fix_line ( l )
         print ( fix )
 
-def get_data ( addr ) :
+def get_jump_list ( addr, num ) :
+    haddr = hex(addr)
+
     # at this time, exedump always gives us 32 lines.
-    result = subprocess.run(['exedump', '-e', addr], capture_output=True, text=True)
+    result = subprocess.run(['exedump', '-e', haddr], capture_output=True, text=True)
     raw_lines = result.stdout
     lines = raw_lines.split ( "\n" )
-    tlines = lines[:27]
-    # XXX - keep the first table as a master index
-    for l in tlines :
-        print ( l )
+    return lines[:num]
 
-    next = lines[27]
-    # We can extract next address from the following:
-    #print ( "Next: ", next )
-    wnext = next.split()
-    code_addr = int ( wnext[0], 16 )
-    #print ( "Code starts at: ", code_addr )
+# pull the first address from the last data item dumped
+# bump it by 2 to get the start of the code that follows
+def get_next ( line ) :
+    wnext = line.split()
+    return 2 + int ( wnext[0], 16 )
+
+# ---------------------------------
+
+man_table = get_jump_list ( start, n_man )
+for l in man_table :
+    print ( l )
+
+# extract jump addresses
+jumps = []
+for l in man_table :
+    w = l.split()
+    jumps.append ( cseg*16 + int(w[-1], 16 ) )
+
+#code_addr = get_next ( man_table[n_man-1] )
+code_addr = get_next ( man_table[-1] )
+
+type_index = 0
+
+for index in range(n_man) :
     dis ( code_addr )
 
+    # first man
+    data_addr = code_addr + 11
 
-get_data ( start )
+    # index+1 won't work on last data table
+    # last manu is MXIC and has only 2 types
+    if index == n_man - 1 :
+        n_data = 2
+    else :
+        n_data = (jumps[index+1] - data_addr) // 2
+    # Stupid python defaults to floating point on addition
+
+    #print ( "DATA addr ", hex(data_addr) )
+    #print ( "DATA count ", n_data )
+
+    type_table = get_jump_list ( data_addr, n_data )
+    for l in type_table :
+        ll = l + "  " + type_list[type_index] + "(" + man_list[index] + ")"
+        type_index += 1
+        print ( ll )
+    code_addr = get_next ( type_table[-1] )
+
+# THE END
