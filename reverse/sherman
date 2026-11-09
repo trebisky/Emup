@@ -1,13 +1,29 @@
 #!/bin/python
 
+# Tom Trebisky  11-8-2026
+# A helper for the epp512.exe disassembly
+
 # This is the "sherman" script.
-# I hand did one of these mixed data/asm routines
-#  implementing table driven code, and when I
-#  found another decided I would write this.
+
+# I encountered one of these mixed data/asm routines
+# and handled it by hand.  Then I discovered a second
+# and then a third.
+# They implement table driven code, driven by the
+#  manufacturer and type.
+# It was very helpful to add the type/manu to
+# the "comment" line on each resulting call.
 
 import subprocess
 
-start = 0x2ba3
+# This is the address where we start the game.
+# This is the address of the data table, not the
+# 3 lines of code that start the routine
+#start = 0x2ba3
+#start = 0x2edc
+#start = 0x3214
+#start = 0x360c
+#start = 0x188c
+start = 0x24c2
 
 cseg = 0x16f
 
@@ -167,7 +183,10 @@ for index in range(n_man) :
 
     type_table = get_jump_list ( data_addr, n_data )
     for l in type_table :
-        ll = l + "  " + type_list[type_index] + "(" + man_list[index] + ")"
+        ww = l.split ( "; " )
+        jaddr = 16*cseg + int ( ww[-1], 16 )
+        lll = ww[0] + "; " + hex(jaddr)
+        ll = lll + "     " + type_list[type_index] + "(" + man_list[index] + ")"
         type_index += 1
         print ( ll )
     code_addr = get_next ( type_table[-1] )
