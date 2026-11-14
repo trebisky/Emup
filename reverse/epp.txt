@@ -302,7 +302,7 @@ zerosub:
   0x17c  0x0:0x17c      9AAB286F01        call 0x3f9b   ;0x16f:0x28ab
   0x181  0x0:0x181      83C402            add sp,byte +0x2
 
-  0x184  0x0:0x184      9AB5226F01        call 0x39a5   ;0x16f:0x22b5
+  0x184  0x0:0x184      9AB5226F01        call 0x39a5   		; calibrate_delays
 
   0x189  0x0:0x189      A10A0B            mov ax,[0xb0a]		; get emac_base_code (0x000e)
   0x18c  0x0:0x18c      B104              mov cl,0x4
@@ -6393,86 +6393,138 @@ zerosub:
 
 ; -------------------------------------------------------------------
 
-; subroutine
+; subroutine calibrate_delays()
+; -- called once during initialization.
+; this "calibrates" the "delay_table", which is referenced immediately below
 
- 0x39a5  0x16f:0x22b5   C606461A01        mov byte [0x1a46],0x1
+; This depends on the DOS int 0x1a with ah=0
+; This returns the value of the system clock timer.
+; We get cx as the high word, dx as the low, i.e. cx:dx.
+; al is non-zero if midnight has passed since the last call
+;
+; The tick rate is driven by a "system timer" on IRQ-0 (int 8)
+; and it ticks at approximately 18.2065 times per second (roughly once every 54.925 milliseconds)
+; What idiot established this time base?
+; It probably dates back to the original IBM PC,
+;  and of course Microsoft never changes anything ....
+;
+; This hardly sounds like a useful time base for high resolution timing, but ..
+; It is a known thing independent of the CPU clock rate.
+; 
+
+ 0x39a5  0x16f:0x22b5   C606461A01        mov byte [0x1a46],0x1		; set flag (used below)
+
  0x39aa  0x16f:0x22ba   B400              mov ah,0x0
  0x39ac  0x16f:0x22bc   CD1A              int 0x1a			; get sys timer tick count
  0x39ae  0x16f:0x22be   890E421A          mov [0x1a42],cx
  0x39b2  0x16f:0x22c2   8916441A          mov [0x1a44],dx
+
  0x39b6  0x16f:0x22c6   B400              mov ah,0x0
  0x39b8  0x16f:0x22c8   CD1A              int 0x1a			; get sys timer tick count
  0x39ba  0x16f:0x22ca   3B16441A          cmp dx,[0x1a44]
  0x39be  0x16f:0x22ce   7506              jnz 0x39c6
+
  0x39c0  0x16f:0x22d0   3B0E421A          cmp cx,[0x1a42]
- 0x39c4  0x16f:0x22d4   74F0              jz 0x39b6
+ 0x39c4  0x16f:0x22d4   74F0              jz 0x39b6			; loop until cx rolls over
+
  0x39c6  0x16f:0x22d6   890E421A          mov [0x1a42],cx
  0x39ca  0x16f:0x22da   8916441A          mov [0x1a44],dx
+
  0x39ce  0x16f:0x22de   33DB              xor bx,bx
+
  0x39d0  0x16f:0x22e0   B400              mov ah,0x0
  0x39d2  0x16f:0x22e2   CD1A              int 0x1a			; get sys timer tick count
+
  0x39d4  0x16f:0x22e4   3B16441A          cmp dx,[0x1a44]
  0x39d8  0x16f:0x22e8   7509              jnz 0x39e3
  0x39da  0x16f:0x22ea   3B0E421A          cmp cx,[0x1a42]
  0x39de  0x16f:0x22ee   7503              jnz 0x39e3
+
  0x39e0  0x16f:0x22f0   43                inc bx
- 0x39e1  0x16f:0x22f1   EBED              jmp short 0x39d0
+ 0x39e1  0x16f:0x22f1   EBED              jmp short 0x39d0	; loop until some change
+
+; bx now counts how many calls in one tick
+
+; The "div bx" instruction divides the 32 bit word in DX:AX by the 16 bit value in BX
+; The 16 bit result goes to AX and the remainder to DX
+
  0x39e3  0x16f:0x22f3   8BC3              mov ax,bx
- 0x39e5  0x16f:0x22f5   40                inc ax
+ 0x39e5  0x16f:0x22f5   40                inc ax			; N = bx + 1
  0x39e6  0x16f:0x22f6   BA0000            mov dx,0x0
- 0x39e9  0x16f:0x22f9   BB3200            mov bx,0x32
+ 0x39e9  0x16f:0x22f9   BB3200            mov bx,0x32		; 50
  0x39ec  0x16f:0x22fc   F7F3              div bx
  0x39ee  0x16f:0x22fe   3D0000            cmp ax,0x0
  0x39f1  0x16f:0x2301   7503              jnz 0x39f6
- 0x39f3  0x16f:0x2303   E9E400            jmp 0x3ada		; go return
+ 0x39f3  0x16f:0x2303   E9E400            jmp 0x3ada		; go return (disaster)
 
- 0x39f6  0x16f:0x2306   A35B1A            mov [0x1a5b],ax
+; We how have bx = N (number of times we call sys-clock to get rollover)
+; So each sys-clock call takes 54.925 / N milliseconds
+;
+; dividing this by 50 gives 1.0985 ms (sort of 1 ms)
+
+; The "mul bx" instruction multiplies the 16 bit value in AX
+;  by the 16 bit value in BX -- the result goes to DX:AX
+
+ 0x39f6  0x16f:0x2306   A35B1A            mov [0x1a5b],ax		; to get 1.1 ms
+
  0x39f9  0x16f:0x2309   50                push ax
  0x39fa  0x16f:0x230a   58                pop ax
- 0x39fb  0x16f:0x230b   50                push ax
- 0x39fc  0x16f:0x230c   BB3200            mov bx,0x32
+ 0x39fb  0x16f:0x230b   50                push ax				; save ax
+ 0x39fc  0x16f:0x230c   BB3200            mov bx,0x32			; *50 --> 50 ms
  0x39ff  0x16f:0x230f   F7E3              mul bx
  0x3a01  0x16f:0x2311   A36D1A            mov [0x1a6d],ax
+
  0x3a04  0x16f:0x2314   58                pop ax
  0x3a05  0x16f:0x2315   50                push ax
- 0x3a06  0x16f:0x2316   BB2800            mov bx,0x28
+ 0x3a06  0x16f:0x2316   BB2800            mov bx,0x28			; *40 --> 40 ms
  0x3a09  0x16f:0x2319   F7E3              mul bx
  0x3a0b  0x16f:0x231b   A36B1A            mov [0x1a6b],ax
+
  0x3a0e  0x16f:0x231e   58                pop ax
  0x3a0f  0x16f:0x231f   50                push ax
- 0x3a10  0x16f:0x2320   BB1E00            mov bx,0x1e
+ 0x3a10  0x16f:0x2320   BB1E00            mov bx,0x1e			; *30 --> 30 ms
  0x3a13  0x16f:0x2323   F7E3              mul bx
  0x3a15  0x16f:0x2325   A3691A            mov [0x1a69],ax
+
  0x3a18  0x16f:0x2328   58                pop ax
  0x3a19  0x16f:0x2329   50                push ax
- 0x3a1a  0x16f:0x232a   BB1400            mov bx,0x14
+ 0x3a1a  0x16f:0x232a   BB1400            mov bx,0x14			; *20 --> 20 ms
  0x3a1d  0x16f:0x232d   F7E3              mul bx
  0x3a1f  0x16f:0x232f   A3671A            mov [0x1a67],ax
+
  0x3a22  0x16f:0x2332   58                pop ax
  0x3a23  0x16f:0x2333   50                push ax
- 0x3a24  0x16f:0x2334   BB0A00            mov bx,0xa
+ 0x3a24  0x16f:0x2334   BB0A00            mov bx,0xa			; *10 --> 10 ms
  0x3a27  0x16f:0x2337   F7E3              mul bx
  0x3a29  0x16f:0x2339   A3651A            mov [0x1a65],ax
+
  0x3a2c  0x16f:0x233c   58                pop ax
  0x3a2d  0x16f:0x233d   50                push ax
- 0x3a2e  0x16f:0x233e   BB0500            mov bx,0x5
+ 0x3a2e  0x16f:0x233e   BB0500            mov bx,0x5			; 5 ms
  0x3a31  0x16f:0x2341   F7E3              mul bx
  0x3a33  0x16f:0x2343   A3631A            mov [0x1a63],ax
+
  0x3a36  0x16f:0x2346   58                pop ax
  0x3a37  0x16f:0x2347   50                push ax
- 0x3a38  0x16f:0x2348   BB0400            mov bx,0x4
+ 0x3a38  0x16f:0x2348   BB0400            mov bx,0x4			; 4 ms
  0x3a3b  0x16f:0x234b   F7E3              mul bx
  0x3a3d  0x16f:0x234d   A3611A            mov [0x1a61],ax
+
  0x3a40  0x16f:0x2350   58                pop ax
  0x3a41  0x16f:0x2351   50                push ax
- 0x3a42  0x16f:0x2352   BB0300            mov bx,0x3
+ 0x3a42  0x16f:0x2352   BB0300            mov bx,0x3			; 3 ms
  0x3a45  0x16f:0x2355   F7E3              mul bx
  0x3a47  0x16f:0x2357   A35F1A            mov [0x1a5f],ax
+
  0x3a4a  0x16f:0x235a   58                pop ax
  0x3a4b  0x16f:0x235b   50                push ax
- 0x3a4c  0x16f:0x235c   BB0200            mov bx,0x2
+ 0x3a4c  0x16f:0x235c   BB0200            mov bx,0x2			; 2 ms
  0x3a4f  0x16f:0x235f   F7E3              mul bx
  0x3a51  0x16f:0x2361   A35D1A            mov [0x1a5d],ax
+
+; The "div bx" instruction divides the 32 bit word in DX:AX by the 16 bit value in BX
+; The 16 bit result goes to AX and the remainder to DX
+
  0x3a54  0x16f:0x2364   58                pop ax
  0x3a55  0x16f:0x2365   50                push ax
  0x3a56  0x16f:0x2366   BA0000            mov dx,0x0
@@ -6483,7 +6535,9 @@ zerosub:
  0x3a63  0x16f:0x2373   58                pop ax
  0x3a64  0x16f:0x2374   EB74              jmp short 0x3ada	; go return
  0x3a66  0x16f:0x2376   90                nop
- 0x3a67  0x16f:0x2377   A3591A            mov [0x1a59],ax
+
+ 0x3a67  0x16f:0x2377   A3591A            mov [0x1a59],ax		; 0.5 ms
+
  0x3a6a  0x16f:0x237a   58                pop ax
  0x3a6b  0x16f:0x237b   50                push ax
  0x3a6c  0x16f:0x237c   BA0000            mov dx,0x0
@@ -6494,7 +6548,9 @@ zerosub:
  0x3a79  0x16f:0x2389   58                pop ax
  0x3a7a  0x16f:0x238a   EB5E              jmp short 0x3ada	; go return
  0x3a7c  0x16f:0x238c   90                nop
- 0x3a7d  0x16f:0x238d   A3531A            mov [0x1a53],ax
+
+ 0x3a7d  0x16f:0x238d   A3531A            mov [0x1a53],ax		; 0.2 ms
+
  0x3a80  0x16f:0x2390   58                pop ax
  0x3a81  0x16f:0x2391   50                push ax
  0x3a82  0x16f:0x2392   BA0000            mov dx,0x0
@@ -6505,8 +6561,10 @@ zerosub:
  0x3a8f  0x16f:0x239f   58                pop ax
  0x3a90  0x16f:0x23a0   EB48              jmp short 0x3ada	; go return
  0x3a92  0x16f:0x23a2   90                nop
+
  0x3a93  0x16f:0x23a3   40                inc ax
- 0x3a94  0x16f:0x23a4   A3511A            mov [0x1a51],ax
+ 0x3a94  0x16f:0x23a4   A3511A            mov [0x1a51],ax		; 0.1 ms
+
  0x3a97  0x16f:0x23a7   58                pop ax
  0x3a98  0x16f:0x23a8   50                push ax
  0x3a99  0x16f:0x23a9   BA0000            mov dx,0x0
@@ -6517,7 +6575,9 @@ zerosub:
  0x3aa6  0x16f:0x23b6   58                pop ax
  0x3aa7  0x16f:0x23b7   EB31              jmp short 0x3ada	; go return
  0x3aa9  0x16f:0x23b9   90                nop
- 0x3aaa  0x16f:0x23ba   A34F1A            mov [0x1a4f],ax
+
+ 0x3aaa  0x16f:0x23ba   A34F1A            mov [0x1a4f],ax		; 0.05 ms
+
  0x3aad  0x16f:0x23bd   58                pop ax
  0x3aae  0x16f:0x23be   50                push ax
  0x3aaf  0x16f:0x23bf   BA0000            mov dx,0x0
@@ -6528,7 +6588,9 @@ zerosub:
  0x3abc  0x16f:0x23cc   58                pop ax
  0x3abd  0x16f:0x23cd   EB1B              jmp short 0x3ada	; go return
  0x3abf  0x16f:0x23cf   90                nop
- 0x3ac0  0x16f:0x23d0   A3491A            mov [0x1a49],ax
+
+ 0x3ac0  0x16f:0x23d0   A3491A            mov [0x1a49],ax		; 0.02 ms
+
  0x3ac3  0x16f:0x23d3   58                pop ax
  0x3ac4  0x16f:0x23d4   50                push ax
  0x3ac5  0x16f:0x23d5   BA0000            mov dx,0x0
@@ -6539,8 +6601,10 @@ zerosub:
  0x3ad2  0x16f:0x23e2   58                pop ax
  0x3ad3  0x16f:0x23e3   EB05              jmp short 0x3ada	; go return
  0x3ad5  0x16f:0x23e5   90                nop
- 0x3ad6  0x16f:0x23e6   A3471A            mov [0x1a47],ax
+
+ 0x3ad6  0x16f:0x23e6   A3471A            mov [0x1a47],ax		; 0.01
  0x3ad9  0x16f:0x23e9   58                pop ax
+
  0x3ada  0x16f:0x23ea   CB                retf
 
 ; -------------------------------------------------------------------
@@ -6573,48 +6637,48 @@ zerosub:
 ;  at any offset, then proceed to the delay scheme at
 ;  the end of the routine
 
-; ZZ_delay (2 calls)
- 0x3adb  0x16f:0x23eb   8B1E6D1A          mov bx,[0x1a6d]
+; delay_50ms (2 calls)
+ 0x3adb  0x16f:0x23eb   8B1E6D1A          mov bx,[0x1a6d]			; 50 ms
  0x3adf  0x16f:0x23ef   EB70              jmp short 0x3b51
 
 ; ------ not used
- 0x3ae1  0x16f:0x23f1   8B1E6B1A          mov bx,[0x1a6b]
+ 0x3ae1  0x16f:0x23f1   8B1E6B1A          mov bx,[0x1a6b]			; 40 ms
  0x3ae5  0x16f:0x23f5   EB6A              jmp short 0x3b51
 
 ; ------ not used
- 0x3ae7  0x16f:0x23f7   8B1E691A          mov bx,[0x1a69]
+ 0x3ae7  0x16f:0x23f7   8B1E691A          mov bx,[0x1a69]			; 30 ms
  0x3aeb  0x16f:0x23fb   EB64              jmp short 0x3b51
 
 ; ------ not used
- 0x3aed  0x16f:0x23fd   8B1E671A          mov bx,[0x1a67]
+ 0x3aed  0x16f:0x23fd   8B1E671A          mov bx,[0x1a67]			; 20 ms
  0x3af1  0x16f:0x2401   EB5E              jmp short 0x3b51
 
-; YY_delay
+; delay_10ms
  0x3af3  0x16f:0x2403   8B1E651A          mov bx,[0x1a65]
- 0x3af7  0x16f:0x2407   EB58              jmp short 0x3b51
+ 0x3af7  0x16f:0x2407   EB58              jmp short 0x3b51			; 10 ms
 
 ; ------ not used
- 0x3af9  0x16f:0x2409   8B1E631A          mov bx,[0x1a63]
+ 0x3af9  0x16f:0x2409   8B1E631A          mov bx,[0x1a63]			; 5 ms
  0x3afd  0x16f:0x240d   EB52              jmp short 0x3b51
 
 ; ------ not used
- 0x3aff  0x16f:0x240f   8B1E611A          mov bx,[0x1a61]
+ 0x3aff  0x16f:0x240f   8B1E611A          mov bx,[0x1a61]			; 4 ms
  0x3b03  0x16f:0x2413   EB4C              jmp short 0x3b51
 
 ; ------ not used
- 0x3b05  0x16f:0x2415   8B1E5F1A          mov bx,[0x1a5f]
+ 0x3b05  0x16f:0x2415   8B1E5F1A          mov bx,[0x1a5f]			; 3 ms
  0x3b09  0x16f:0x2419   EB46              jmp short 0x3b51
 
 ; ------ not used
- 0x3b0b  0x16f:0x241b   8B1E5D1A          mov bx,[0x1a5d]
+ 0x3b0b  0x16f:0x241b   8B1E5D1A          mov bx,[0x1a5d]			; 2 ms
  0x3b0f  0x16f:0x241f   EB40              jmp short 0x3b51
 
-; AA_delay --- Common to call here
- 0x3b11  0x16f:0x2421   8B1E5B1A          mov bx,[0x1a5b]
+; delay_1ms --- Common to call here
+ 0x3b11  0x16f:0x2421   8B1E5B1A          mov bx,[0x1a5b]			: 1 ms (1.1)
  0x3b15  0x16f:0x2425   EB3A              jmp short 0x3b51
 
-;  BB_delay (1 call)
- 0x3b17  0x16f:0x2427   8B1E591A          mov bx,[0x1a59]
+;  delay_0.5ms (1 call)
+ 0x3b17  0x16f:0x2427   8B1E591A          mov bx,[0x1a59]			; 0.5 ms
  0x3b1b  0x16f:0x242b   EB34              jmp short 0x3b51
 
 ; ------- not used
@@ -6625,16 +6689,16 @@ zerosub:
  0x3b23  0x16f:0x2433   8B1E551A          mov bx,[0x1a55]
  0x3b27  0x16f:0x2437   EB28              jmp short 0x3b51
 
-; DD_delay  (1 call)
- 0x3b29  0x16f:0x2439   8B1E531A          mov bx,[0x1a53]
+; delay_0.2ms
+ 0x3b29  0x16f:0x2439   8B1E531A          mov bx,[0x1a53]			; 0.2 ms
  0x3b2d  0x16f:0x243d   EB22              jmp short 0x3b51
 
-; EE_delay
- 0x3b2f  0x16f:0x243f   8B1E511A          mov bx,[0x1a51]
+; delay_0.01ms
+ 0x3b2f  0x16f:0x243f   8B1E511A          mov bx,[0x1a51]			; 0.01 ms
  0x3b33  0x16f:0x2443   EB1C              jmp short 0x3b51
 
 ; not used
- 0x3b35  0x16f:0x2445   8B1E4F1A          mov bx,[0x1a4f]
+ 0x3b35  0x16f:0x2445   8B1E4F1A          mov bx,[0x1a4f]			; 0.05 ms
  0x3b39  0x16f:0x2449   EB16              jmp short 0x3b51
 
 ; not used
@@ -6646,11 +6710,11 @@ zerosub:
  0x3b45  0x16f:0x2455   EB0A              jmp short 0x3b51
 
 ; not used
- 0x3b47  0x16f:0x2457   8B1E491A          mov bx,[0x1a49]
+ 0x3b47  0x16f:0x2457   8B1E491A          mov bx,[0x1a49]			; 0.02 ms
  0x3b4b  0x16f:0x245b   EB04              jmp short 0x3b51
 
 ; not used
- 0x3b4d  0x16f:0x245d   8B1E471A          mov bx,[0x1a47]
+ 0x3b4d  0x16f:0x245d   8B1E471A          mov bx,[0x1a47]			; 0.01 ms
 
 ; come here with some value in bx
 
@@ -6661,12 +6725,14 @@ zerosub:
 
 ; INT 0x1a with ah == 00 is "get time of day"
 ;  it returns the clock count in CX:DX
+;  but those values are never used.
 ;  other than adding delay for making the call,
 ;  I cannot see what this would do.
-;  but what is the setting of 0x1a46?
-; Data    00011626 1a46: 0007
-;  The byte here is 00 (we can ignore the 07)
-;  and I never see this variable get modified.
+;
+;  What is the setting of 0x1a46?
+;	 note that this is a single byte
+;    it is initially zero as the code is compiled,
+;    but it gets set to 1 above when the delays get initialized.
 
  0x3b5b  0x16f:0x246b   B400              mov ah,0x0
  0x3b5d  0x16f:0x246d   CD1A              int 0x1a			; get sys timer tick count
@@ -13491,7 +13557,7 @@ ALLOC
  0x7584  0x73d:0x1b4    837EFA14          cmp word [bp-0x6],byte +0x14
  0x7588  0x73d:0x1b8    7D28              jnl 0x75b2
 
- 0x758a  0x73d:0x1ba    9AEB236F01        call 0x3adb   ; ZZ_delay
+ 0x758a  0x73d:0x1ba    9AEB236F01        call 0x3adb   ; delay_50ms
 
  0x758f  0x73d:0x1bf    FF46FA            inc word [bp-0x6]
  0x7592  0x73d:0x1c2    EBF0              jmp short 0x7584
@@ -14229,12 +14295,12 @@ ALLOC
  0x7c7c  0x73d:0x8ac    833E0E0B00        cmp word [0xb0e],byte +0x0		; get type code
  0x7c81  0x73d:0x8b1    7403              jz 0x7c86
  0x7c83  0x73d:0x8b3    E90800            jmp 0x7c8e
- 0x7c86  0x73d:0x8b6    9AEB236F01        call 0x3adb   ; ZZ_delay
+ 0x7c86  0x73d:0x8b6    9AEB236F01        call 0x3adb   ; delay_50ms
  0x7c8b  0x73d:0x8bb    E90500            jmp 0x7c93
- 0x7c8e  0x73d:0x8be    9A03246F01        call 0x3af3   ; YY_delay
+ 0x7c8e  0x73d:0x8be    9A03246F01        call 0x3af3   ; delay_10ms
  0x7c93  0x73d:0x8c3    9A111F6F01        call 0x3601   ; Buell
  0x7c98  0x73d:0x8c8    9AE1176F01        call 0x2ed1   ; Lincoln
- 0x7c9d  0x73d:0x8cd    9A39246F01        call 0x3b29   ; DD_delay
+ 0x7c9d  0x73d:0x8cd    9A39246F01        call 0x3b29   ; delay_0.2ms
  0x7ca2  0x73d:0x8d2    E90501            jmp 0x7daa
  0x7ca5  0x73d:0x8d5    8A46FC            mov al,[bp-0x4]
  0x7ca8  0x73d:0x8d8    2AE4              sub ah,ah
@@ -14243,6 +14309,11 @@ ALLOC
  0x7cb0  0x73d:0x8e0    83C402            add sp,byte +0x2
  0x7cb3  0x73d:0x8e3    9AA8146F01        call 0x2b98   ; Sherman
  0x7cb8  0x73d:0x8e8    9A191B6F01        call 0x3209   ; Hood
+
+; The following repetition of 6 copies of the table lookup
+;  and call to the far_delay table, just multiplies the
+;  delay duration by 6
+
  0x7cbd  0x73d:0x8ed    8B1E0C0B          mov bx,[0xb0c]	; get manufacturer code
  0x7cc1  0x73d:0x8f1    D1E3              shl bx,1
  0x7cc3  0x73d:0x8f3    D1E3              shl bx,1
@@ -14256,7 +14327,8 @@ ALLOC
  0x7cd7  0x73d:0x907    8B5808            mov bx,[bx+si+0x8]
  0x7cda  0x73d:0x90a    D1E3              shl bx,1
  0x7cdc  0x73d:0x90c    D1E3              shl bx,1
- 0x7cde  0x73d:0x90e    FF9F3A1C          call far [bx+0x1c3a]
+ 0x7cde  0x73d:0x90e    FF9F3A1C          call far [bx+0x1c3a]		; far_delay
+
  0x7ce2  0x73d:0x912    8B1E0C0B          mov bx,[0xb0c]	; get manufacturer code
  0x7ce6  0x73d:0x916    D1E3              shl bx,1
  0x7ce8  0x73d:0x918    D1E3              shl bx,1
@@ -14270,7 +14342,8 @@ ALLOC
  0x7cfc  0x73d:0x92c    8B5808            mov bx,[bx+si+0x8]
  0x7cff  0x73d:0x92f    D1E3              shl bx,1
  0x7d01  0x73d:0x931    D1E3              shl bx,1
- 0x7d03  0x73d:0x933    FF9F3A1C          call far [bx+0x1c3a]
+ 0x7d03  0x73d:0x933    FF9F3A1C          call far [bx+0x1c3a]		; far_delay
+
  0x7d07  0x73d:0x937    8B1E0C0B          mov bx,[0xb0c]	; get manufacturer code
  0x7d0b  0x73d:0x93b    D1E3              shl bx,1
  0x7d0d  0x73d:0x93d    D1E3              shl bx,1
@@ -14284,7 +14357,8 @@ ALLOC
  0x7d21  0x73d:0x951    8B5808            mov bx,[bx+si+0x8]
  0x7d24  0x73d:0x954    D1E3              shl bx,1
  0x7d26  0x73d:0x956    D1E3              shl bx,1
- 0x7d28  0x73d:0x958    FF9F3A1C          call far [bx+0x1c3a]
+ 0x7d28  0x73d:0x958    FF9F3A1C          call far [bx+0x1c3a]		; far_delay
+
  0x7d2c  0x73d:0x95c    8B1E0C0B          mov bx,[0xb0c]	; get manufacturer code
  0x7d30  0x73d:0x960    D1E3              shl bx,1
  0x7d32  0x73d:0x962    D1E3              shl bx,1
@@ -14298,7 +14372,7 @@ ALLOC
  0x7d46  0x73d:0x976    8B5808            mov bx,[bx+si+0x8]
  0x7d49  0x73d:0x979    D1E3              shl bx,1
  0x7d4b  0x73d:0x97b    D1E3              shl bx,1
- 0x7d4d  0x73d:0x97d    FF9F3A1C          call far [bx+0x1c3a]
+ 0x7d4d  0x73d:0x97d    FF9F3A1C          call far [bx+0x1c3a]		; far_delay
 
  0x7d51  0x73d:0x981    8B1E0C0B          mov bx,[0xb0c]	; get manufacturer code
  0x7d55  0x73d:0x985    D1E3              shl bx,1
@@ -14311,10 +14385,9 @@ ALLOC
  0x7d67  0x73d:0x997    D1E3              shl bx,1
  0x7d69  0x73d:0x999    D1E3              shl bx,1
  0x7d6b  0x73d:0x99b    8B5808            mov bx,[bx+si+0x8]
-
  0x7d6e  0x73d:0x99e    D1E3              shl bx,1
  0x7d70  0x73d:0x9a0    D1E3              shl bx,1
- 0x7d72  0x73d:0x9a2    FF9F3A1C          call far [bx+0x1c3a]
+ 0x7d72  0x73d:0x9a2    FF9F3A1C          call far [bx+0x1c3a]		; far_delay
 
  0x7d76  0x73d:0x9a6    8B1E0C0B          mov bx,[0xb0c]	; get manufacturer code
  0x7d7a  0x73d:0x9aa    D1E3              shl bx,1
@@ -14329,10 +14402,11 @@ ALLOC
  0x7d90  0x73d:0x9c0    8B5808            mov bx,[bx+si+0x8]
  0x7d93  0x73d:0x9c3    D1E3              shl bx,1
  0x7d95  0x73d:0x9c5    D1E3              shl bx,1
- 0x7d97  0x73d:0x9c7    FF9F3A1C          call far [bx+0x1c3a]
+ 0x7d97  0x73d:0x9c7    FF9F3A1C          call far [bx+0x1c3a]		; far_delay
+
  0x7d9b  0x73d:0x9cb    9A111F6F01        call 0x3601   ; Buell
  0x7da0  0x73d:0x9d0    9AE1176F01        call 0x2ed1   ; Lincoln
- 0x7da5  0x73d:0x9d5    9A3F246F01        call 0x3b2f   ; EE_delay
+ 0x7da5  0x73d:0x9d5    9A3F246F01        call 0x3b2f   ; delay_0.01ms
  0x7daa  0x73d:0x9da    E9D201            jmp 0x7f7f
  0x7dad  0x73d:0x9dd    833E0C0B17        cmp word [0xb0c],byte +0x17	; get manufacturer code
  0x7db2  0x73d:0x9e2    7403              jz 0x7db7
@@ -14366,6 +14440,7 @@ ALLOC
  0x7e0b  0x73d:0xa3b    83C402            add sp,byte +0x2
  0x7e0e  0x73d:0xa3e    9AA8146F01        call 0x2b98   ; Sherman
  0x7e13  0x73d:0xa43    9A191B6F01        call 0x3209   ; Hood
+
  0x7e18  0x73d:0xa48    8B1E0C0B          mov bx,[0xb0c]	; get manufacturer code
  0x7e1c  0x73d:0xa4c    D1E3              shl bx,1
  0x7e1e  0x73d:0xa4e    D1E3              shl bx,1
@@ -14379,7 +14454,8 @@ ALLOC
  0x7e32  0x73d:0xa62    8B5806            mov bx,[bx+si+0x6]
  0x7e35  0x73d:0xa65    D1E3              shl bx,1
  0x7e37  0x73d:0xa67    D1E3              shl bx,1
- 0x7e39  0x73d:0xa69    FF9F3A1C          call far [bx+0x1c3a]
+ 0x7e39  0x73d:0xa69    FF9F3A1C          call far [bx+0x1c3a]		; far_delay
+
  0x7e3d  0x73d:0xa6d    9A111F6F01        call 0x3601   ; Buell
  0x7e42  0x73d:0xa72    9AE1176F01        call 0x2ed1   ; Lincoln
  0x7e47  0x73d:0xa77    9A8D0D6F01        call 0x247d   ; Jackson
@@ -14398,7 +14474,7 @@ ALLOC
  0x7e6e  0x73d:0xa9e    83C402            add sp,byte +0x2
  0x7e71  0x73d:0xaa1    9AA8146F01        call 0x2b98   ; Sherman
  0x7e76  0x73d:0xaa6    9A191B6F01        call 0x3209   ; Hood
- 0x7e7b  0x73d:0xaab    9A21246F01        call 0x3b11   ; AA_delay
+ 0x7e7b  0x73d:0xaab    9A21246F01        call 0x3b11   ; delay_1ms
  0x7e80  0x73d:0xab0    9A111F6F01        call 0x3601   ; Buell
  0x7e85  0x73d:0xab5    9AE1176F01        call 0x2ed1   ; Lincoln
  0x7e8a  0x73d:0xaba    E90800            jmp 0x7e95
@@ -14425,14 +14501,14 @@ ALLOC
  0x7ed1  0x73d:0xb01    833E0E0B07        cmp word [0xb0e],byte +0x7		; get type code
  0x7ed6  0x73d:0xb06    7403              jz 0x7edb
  0x7ed8  0x73d:0xb08    E90800            jmp 0x7ee3
- 0x7edb  0x73d:0xb0b    9A27246F01        call 0x3b17   ; BB_delay
+ 0x7edb  0x73d:0xb0b    9A27246F01        call 0x3b17   ; delay_0.5ms
  0x7ee0  0x73d:0xb10    E90F00            jmp 0x7ef2
- 0x7ee3  0x73d:0xb13    9A21246F01        call 0x3b11   ; AA_delay
- 0x7ee8  0x73d:0xb18    9A21246F01        call 0x3b11   ; AA_delay
- 0x7eed  0x73d:0xb1d    9A21246F01        call 0x3b11   ; AA_delay
+ 0x7ee3  0x73d:0xb13    9A21246F01        call 0x3b11   ; delay_1ms
+ 0x7ee8  0x73d:0xb18    9A21246F01        call 0x3b11   ; delay_1ms
+ 0x7eed  0x73d:0xb1d    9A21246F01        call 0x3b11   ; delay_1ms
  0x7ef2  0x73d:0xb22    9A111F6F01        call 0x3601   ; Buell
  0x7ef7  0x73d:0xb27    9AE1176F01        call 0x2ed1   ; Lincoln
- 0x7efc  0x73d:0xb2c    9A3F246F01        call 0x3b2f   ; EE_delay
+ 0x7efc  0x73d:0xb2c    9A3F246F01        call 0x3b2f   ; delay_0.01ms
  0x7f01  0x73d:0xb31    9A8D0D6F01        call 0x247d   ; Jackson
  0x7f06  0x73d:0xb36    3A46FC            cmp al,[bp-0x4]
  0x7f09  0x73d:0xb39    7403              jz 0x7f0e
@@ -14452,7 +14528,7 @@ ALLOC
  0x7f32  0x73d:0xb62    83C402            add sp,byte +0x2
  0x7f35  0x73d:0xb65    9AA8146F01        call 0x2b98   ; Sherman
  0x7f3a  0x73d:0xb6a    9A191B6F01        call 0x3209   ; Hood
- 0x7f3f  0x73d:0xb6f    9A21246F01        call 0x3b11   ; AA_delay
+ 0x7f3f  0x73d:0xb6f    9A21246F01        call 0x3b11   ; delay_1ms
  0x7f44  0x73d:0xb74    9A111F6F01        call 0x3601   ; Buell
  0x7f49  0x73d:0xb79    9AE1176F01        call 0x2ed1   ; Lincoln
  0x7f4e  0x73d:0xb7e    E90800            jmp 0x7f59
@@ -14497,6 +14573,7 @@ ALLOC
  0x7fce  0x73d:0xbfe    83C402            add sp,byte +0x2
  0x7fd1  0x73d:0xc01    9AA8146F01        call 0x2b98   ; Sherman
  0x7fd6  0x73d:0xc06    9A191B6F01        call 0x3209   ; Hood
+
  0x7fdb  0x73d:0xc0b    8B1E0C0B          mov bx,[0xb0c]	; get manufacturer code
  0x7fdf  0x73d:0xc0f    D1E3              shl bx,1
  0x7fe1  0x73d:0xc11    D1E3              shl bx,1
@@ -14510,10 +14587,11 @@ ALLOC
  0x7ff5  0x73d:0xc25    8B5808            mov bx,[bx+si+0x8]
  0x7ff8  0x73d:0xc28    D1E3              shl bx,1
  0x7ffa  0x73d:0xc2a    D1E3              shl bx,1
- 0x7ffc  0x73d:0xc2c    FF9F3A1C          call far [bx+0x1c3a]
+ 0x7ffc  0x73d:0xc2c    FF9F3A1C          call far [bx+0x1c3a]		; far_delay
+
  0x8000  0x73d:0xc30    9A111F6F01        call 0x3601   ; Buell
  0x8005  0x73d:0xc35    9AE1176F01        call 0x2ed1   ; Lincoln
- 0x800a  0x73d:0xc3a    9A3F246F01        call 0x3b2f   ; EE_delay
+ 0x800a  0x73d:0xc3a    9A3F246F01        call 0x3b2f   ; delay_0.01ms
  0x800f  0x73d:0xc3f    8B46E4            mov ax,[bp-0x1c]
  0x8012  0x73d:0xc42    99                cwd
  0x8013  0x73d:0xc43    0346F8            add ax,[bp-0x8]
@@ -14560,6 +14638,7 @@ ALLOC
  0x8090  0x73d:0xcc0    83C402            add sp,byte +0x2
  0x8093  0x73d:0xcc3    9AA8146F01        call 0x2b98   ; Sherman
  0x8098  0x73d:0xcc8    9A191B6F01        call 0x3209   ; Hood
+
  0x809d  0x73d:0xccd    8B1E0C0B          mov bx,[0xb0c]	; get manufacturer code
  0x80a1  0x73d:0xcd1    D1E3              shl bx,1
  0x80a3  0x73d:0xcd3    D1E3              shl bx,1
@@ -14573,10 +14652,11 @@ ALLOC
  0x80b7  0x73d:0xce7    8B5808            mov bx,[bx+si+0x8]
  0x80ba  0x73d:0xcea    D1E3              shl bx,1
  0x80bc  0x73d:0xcec    D1E3              shl bx,1
- 0x80be  0x73d:0xcee    FF9F3A1C          call far [bx+0x1c3a]
+ 0x80be  0x73d:0xcee    FF9F3A1C          call far [bx+0x1c3a]		; far_delay
+
  0x80c2  0x73d:0xcf2    9A111F6F01        call 0x3601   ; Buell
  0x80c7  0x73d:0xcf7    9AE1176F01        call 0x2ed1   ; Lincoln
- 0x80cc  0x73d:0xcfc    9A3F246F01        call 0x3b2f   ; EE_delay
+ 0x80cc  0x73d:0xcfc    9A3F246F01        call 0x3b2f   ; delay_0.01ms
  0x80d1  0x73d:0xd01    E90300            jmp 0x80d7
  0x80d4  0x73d:0xd04    E90300            jmp 0x80da
  0x80d7  0x73d:0xd07    E998FF            jmp 0x8072
@@ -14600,6 +14680,7 @@ ALLOC
  0x8110  0x73d:0xd40    83C402            add sp,byte +0x2
  0x8113  0x73d:0xd43    9AA8146F01        call 0x2b98   ; Sherman
  0x8118  0x73d:0xd48    9A191B6F01        call 0x3209   ; Hood
+
  0x811d  0x73d:0xd4d    8B1E0C0B          mov bx,[0xb0c]	; get manufacturer code
  0x8121  0x73d:0xd51    D1E3              shl bx,1
  0x8123  0x73d:0xd53    D1E3              shl bx,1
@@ -14613,10 +14694,11 @@ ALLOC
  0x8137  0x73d:0xd67    8B5808            mov bx,[bx+si+0x8]
  0x813a  0x73d:0xd6a    D1E3              shl bx,1
  0x813c  0x73d:0xd6c    D1E3              shl bx,1
- 0x813e  0x73d:0xd6e    FF9F3A1C          call far [bx+0x1c3a]
+ 0x813e  0x73d:0xd6e    FF9F3A1C          call far [bx+0x1c3a]		; far_delay
+
  0x8142  0x73d:0xd72    9A111F6F01        call 0x3601   ; Buell
  0x8147  0x73d:0xd77    9AE1176F01        call 0x2ed1   ; Lincoln
- 0x814c  0x73d:0xd7c    9A3F246F01        call 0x3b2f   ; EE_delay
+ 0x814c  0x73d:0xd7c    9A3F246F01        call 0x3b2f   ; delay_0.01ms
  0x8151  0x73d:0xd81    9A8D0D6F01        call 0x247d   ; Jackson
  0x8156  0x73d:0xd86    3A46FC            cmp al,[bp-0x4]
  0x8159  0x73d:0xd89    7403              jz 0x815e
@@ -14642,6 +14724,7 @@ ALLOC
  0x8197  0x73d:0xdc7    837EE807          cmp word [bp-0x18],byte +0x7
  0x819b  0x73d:0xdcb    7403              jz 0x81a0
  0x819d  0x73d:0xdcd    E92800            jmp 0x81c8
+
  0x81a0  0x73d:0xdd0    8B1E0C0B          mov bx,[0xb0c]	; get manufacturer code
  0x81a4  0x73d:0xdd4    D1E3              shl bx,1
  0x81a6  0x73d:0xdd6    D1E3              shl bx,1
@@ -14655,8 +14738,10 @@ ALLOC
  0x81ba  0x73d:0xdea    8B5808            mov bx,[bx+si+0x8]
  0x81bd  0x73d:0xded    D1E3              shl bx,1
  0x81bf  0x73d:0xdef    D1E3              shl bx,1
- 0x81c1  0x73d:0xdf1    FF9F3A1C          call far [bx+0x1c3a]
+ 0x81c1  0x73d:0xdf1    FF9F3A1C          call far [bx+0x1c3a]		; far_delay
+
  0x81c5  0x73d:0xdf5    E94800            jmp 0x8210
+
  0x81c8  0x73d:0xdf8    C746F40000        mov word [bp-0xc],0x0
  0x81cd  0x73d:0xdfd    8B46EA            mov ax,[bp-0x16]
  0x81d0  0x73d:0xe00    D1E0              shl ax,1
@@ -14668,6 +14753,7 @@ ALLOC
  0x81df  0x73d:0xe0f    E90600            jmp 0x81e8
  0x81e2  0x73d:0xe12    FF46F4            inc word [bp-0xc]
  0x81e5  0x73d:0xe15    E9E5FF            jmp 0x81cd
+
  0x81e8  0x73d:0xe18    8B1E0C0B          mov bx,[0xb0c]	; get manufacturer code
  0x81ec  0x73d:0xe1c    D1E3              shl bx,1
  0x81ee  0x73d:0xe1e    D1E3              shl bx,1
@@ -14681,11 +14767,12 @@ ALLOC
  0x8202  0x73d:0xe32    8B5808            mov bx,[bx+si+0x8]
  0x8205  0x73d:0xe35    D1E3              shl bx,1
  0x8207  0x73d:0xe37    D1E3              shl bx,1
- 0x8209  0x73d:0xe39    FF9F3A1C          call far [bx+0x1c3a]
+ 0x8209  0x73d:0xe39    FF9F3A1C          call far [bx+0x1c3a]		; far_delay
+
  0x820d  0x73d:0xe3d    E9D2FF            jmp 0x81e2
  0x8210  0x73d:0xe40    9A111F6F01        call 0x3601   ; Buell
  0x8215  0x73d:0xe45    9AE1176F01        call 0x2ed1   ; Lincoln
- 0x821a  0x73d:0xe4a    9A3F246F01        call 0x3b2f   ; EE_delay
+ 0x821a  0x73d:0xe4a    9A3F246F01        call 0x3b2f   ; delay_0.01ms
  0x821f  0x73d:0xe4f    E90800            jmp 0x822a
  0x8222  0x73d:0xe52    C746E60100        mov word [bp-0x1a],0x1
  0x8227  0x73d:0xe57    E98700            jmp 0x82b1
@@ -14697,6 +14784,7 @@ ALLOC
  0x8238  0x73d:0xe68    83C402            add sp,byte +0x2
  0x823b  0x73d:0xe6b    9AA8146F01        call 0x2b98   ; Sherman
  0x8240  0x73d:0xe70    9A191B6F01        call 0x3209   ; Hood
+
  0x8245  0x73d:0xe75    8B1E0C0B          mov bx,[0xb0c]	; get manufacturer code
  0x8249  0x73d:0xe79    D1E3              shl bx,1
  0x824b  0x73d:0xe7b    D1E3              shl bx,1
@@ -14710,10 +14798,11 @@ ALLOC
  0x825f  0x73d:0xe8f    8B5808            mov bx,[bx+si+0x8]
  0x8262  0x73d:0xe92    D1E3              shl bx,1
  0x8264  0x73d:0xe94    D1E3              shl bx,1
- 0x8266  0x73d:0xe96    FF9F3A1C          call far [bx+0x1c3a]
+ 0x8266  0x73d:0xe96    FF9F3A1C          call far [bx+0x1c3a]		; far_delay
+
  0x826a  0x73d:0xe9a    9A111F6F01        call 0x3601   ; Buell
  0x826f  0x73d:0xe9f    9AE1176F01        call 0x2ed1   ; Lincoln
- 0x8274  0x73d:0xea4    9A3F246F01        call 0x3b2f   ; EE_delay
+ 0x8274  0x73d:0xea4    9A3F246F01        call 0x3b2f   ; delay_0.01ms
  0x8279  0x73d:0xea9    9A8D0D6F01        call 0x247d   ; Jackson
  0x827e  0x73d:0xeae    3A46FC            cmp al,[bp-0x4]
  0x8281  0x73d:0xeb1    7503              jnz 0x8286
@@ -18761,7 +18850,7 @@ ALLOC
  0xaa2a  0x9b2:0xf0a    C746FE0000        mov word [bp-0x2],0x0		; i = 0
  0xaa2f  0x9b2:0xf0f    EB08              jmp short 0xaa39
 
- 0xaa31  0x9b2:0xf11    9A21246F01        call 0x3b11   ; AA_delay
+ 0xaa31  0x9b2:0xf11    9A21246F01        call 0x3b11   ; delay_1ms
 
  0xaa36  0x9b2:0xf16    FF46FE            inc word [bp-0x2]			; i++
  0xaa39  0x9b2:0xf19    8B4606            mov ax,[bp+0x6]			; arg
@@ -24172,7 +24261,7 @@ ALLOC
  0xe12a  0xdb8:0x5aa    9A1D316F01        call 0x480d   ; write_port
  0xe12f  0xdb8:0x5af    83C404            add sp,byte +0x4
 
- 0xe132  0xdb8:0x5b2    9A21246F01        call 0x3b11   ; AA_delay
+ 0xe132  0xdb8:0x5b2    9A21246F01        call 0x3b11   ; delay_1ms
 
  0xe137  0xdb8:0x5b7    800ED43304        or byte [0x33d4],0x4
 
@@ -24189,7 +24278,7 @@ ALLOC
  0xe156  0xdb8:0x5d6    9A1D316F01        call 0x480d   ; write_port
  0xe15b  0xdb8:0x5db    83C404            add sp,byte +0x4
 
- 0xe15e  0xdb8:0x5de    9A03246F01        call 0x3af3   ; YY_delay
+ 0xe15e  0xdb8:0x5de    9A03246F01        call 0x3af3   ; delay_10ms
 
  0xe163  0xdb8:0x5e3    8026453BF5        and byte [0x3b45],0xf5
  0xe168  0xdb8:0x5e8    B8E300            mov ax,0xe3			; TTL-3
@@ -24205,7 +24294,7 @@ ALLOC
  0xe182  0xdb8:0x602    9A1D316F01        call 0x480d   ; write_port
  0xe187  0xdb8:0x607    83C404            add sp,byte +0x4
 
- 0xe18a  0xdb8:0x60a    9A21246F01        call 0x3b11   ; AA_delay
+ 0xe18a  0xdb8:0x60a    9A21246F01        call 0x3b11   ; delay_1ms
 
  0xe18f  0xdb8:0x60f    E94F00            jmp 0xe1e1
  0xe192  0xdb8:0x612    800ED43308        or byte [0x33d4],0x8
@@ -25017,7 +25106,7 @@ ALLOC
  0xea32  0xdb8:0xeb2    FF365C36          push word [0x365c]
  0xea36  0xdb8:0xeb6    9A1D316F01        call 0x480d   ; write_port
  0xea3b  0xdb8:0xebb    83C404            add sp,byte +0x4
- 0xea3e  0xdb8:0xebe    9A21246F01        call 0x3b11   ; AA_delay
+ 0xea3e  0xdb8:0xebe    9A21246F01        call 0x3b11   ; delay_1ms
  0xea43  0xdb8:0xec3    8026D433FB        and byte [0x33d4],0xfb
  0xea48  0xdb8:0xec8    B8EB00            mov ax,0xeb
  0xea4b  0xdb8:0xecb    50                push ax
@@ -25030,7 +25119,7 @@ ALLOC
  0xea5e  0xdb8:0xede    FF365C36          push word [0x365c]
  0xea62  0xdb8:0xee2    9A1D316F01        call 0x480d   ; write_port
  0xea67  0xdb8:0xee7    83C404            add sp,byte +0x4
- 0xea6a  0xdb8:0xeea    9A03246F01        call 0x3af3   ; YY_delay
+ 0xea6a  0xdb8:0xeea    9A03246F01        call 0x3af3   ; delay_10ms
  0xea6f  0xdb8:0xeef    800E453B10        or byte [0x3b45],0x10
  0xea74  0xdb8:0xef4    B8E300            mov ax,0xe3
  0xea77  0xdb8:0xef7    50                push ax
@@ -27210,20 +27299,21 @@ Data    00010788 0ba8: 0100
 ; ==========================================
 ; big table indexed by chip type.  "Chip_table"
 ; 12 bytes per entry
+;  ** remember each entry is byte swapped **
 ; entries are:
 ;  offset 0 - pointer to chip type string
 ;  offset 2 - 
 ;  offset 4 - 
 ;  offset 6 - 
-;  offset 8 - 
+;  offset 8 - far delay index
 ;  offset a - 
 
-Data    0001078a 0baa: ce00		; points to "x16"
-Data    0001078c 0bac: 0008
-Data    0001078e 0bae: 0000
-Data    00010790 0bb0: 0100
-Data    00010792 0bb2: 0100
-Data    00010794 0bb4: 1800
+Data    0001078a 0baa: ce00		; +0:  points to "x16"
+Data    0001078c 0bac: 0008		; +2:
+Data    0001078e 0bae: 0000		; +4:
+Data    00010790 0bb0: 0100		; +6:
+Data    00010792 0bb2: 0100		; +8:  far_delay index
+Data    00010794 0bb4: 1800		; +a:
 
 Data    00010796 0bb6: d200		; points to "x16b"
 Data    00010798 0bb8: 0008
@@ -28604,9 +28694,15 @@ String  000115f7 1a17: Or press <ESC> to back to main menu.
 Data    0001161d 1a3d: 00
 Data    0001161e 1a3e: 0000
 Data    00011620 1a40: 0000
+
+; Here (at 1a47 and on) we have the delay table
+; "delay_table"
+
 Data    00011622 1a42: 0000
 Data    00011624 1a44: 0000
-Data    00011626 1a46: 0007
+Data    00011626 1a46: 00
+
+Data    00011626 1a47: 07
 Data    00011628 1a48: 000e
 Data    0001162a 1a4a: 0015
 Data    0001162c 1a4c: 001c
@@ -28649,25 +28745,30 @@ String  00011802 1c22: Verify error at %05hX
 
 Data    00011819 1c39: 00
 
+; ----------------------------------------
 ; table here used for Far calls
+;     call this "far_delay"
+;
+; entries in the Chip_table point here.
+
 Data    0001181a 1c3a: eb23
-Data    0001181c 1c3c: 6f01		; 16f:23eb = ZZ_delay
+Data    0001181c 1c3c: 6f01		; delay_50ms
 Data    0001181e 1c3e: 2124
-Data    00011820 1c40: 6f01		; AA_delay
+Data    00011820 1c40: 6f01		; delay_1ms
 Data    00011822 1c42: 3f24
-Data    00011824 1c44: 6f01		; EE_delay
+Data    00011824 1c44: 6f01		; delay_0.01ms
 Data    00011826 1c46: 2124
-Data    00011828 1c48: 6f01		; AA_delay
+Data    00011828 1c48: 6f01		; delay_1ms
 Data    0001182a 1c4a: 3f24
-Data    0001182c 1c4c: 6f01		; EE_delay
+Data    0001182c 1c4c: 6f01		; delay_0.01ms
 Data    0001182e 1c4e: 3924
-Data    00011830 1c50: 6f01		; DD_delay
+Data    00011830 1c50: 6f01		; delay_0.2ms
 Data    00011832 1c52: 2124
-Data    00011834 1c54: 6f01		; AA_delay
+Data    00011834 1c54: 6f01		; delay_1ms
 Data    00011836 1c56: 2724
-Data    00011838 1c58: 6f01		; BB_delay
+Data    00011838 1c58: 6f01		; delay_0.5ms
 Data    0001183a 1c5a: 3924
-Data    0001183c 1c5c: 6f01		; DD_delay
+Data    0001183c 1c5c: 6f01		; delay_0.2ms
 
 Data    0001183e 1c5e: 0100
 
