@@ -250,7 +250,7 @@ dump_one ( int off, char *dp )
 }
 
 void
-dump_data ( void )
+dump_data ( int addr, int count )
 {
 	int data_offset;
 	int off;
@@ -268,8 +268,50 @@ dump_data ( void )
 	printf ( "Data end: %08x\n", nbuf );
 	printf ( "Data size: %d bytes\n", nbuf - data_offset );
 
-	for ( off = 0; off < ndata; off += nd ) {
+	if ( count == 0 ) {
+		for ( off = 0; off < ndata; off += nd ) {
+			nd = dump_one ( off, &data_base[off] );
+		}
+		return;
+	}
+
+	data_offset = lm_offset + dsval*16;
+	data_base = &exebuf[data_offset];
+
+	for ( off=addr; off<ndata; off += nd ) {
 		nd = dump_one ( off, &data_base[off] );
+		count--;
+		if ( count <= 0 )
+			break;
+	}
+}
+
+/* Dump table from data segment
+ */
+void
+dump_tdata ( int addr, int num )
+{
+	int i;
+	char *data_base;
+	int data_offset;
+	unsigned short *dp;
+	int data;
+	int off;
+
+	// lm_base = &exebuf[lm_offset];
+
+	data_offset = lm_offset + dsval*16;
+	data_base = &exebuf[data_offset];
+
+	off = addr;
+	for ( i=0; i<num; i++ ) {
+		addr = dsval*16 + off;
+		dp = (unsigned short *) &data_base[off];
+		data = *dp;
+		printf ( " 0x%x  0x%x: ", addr, off );
+		dump_short ( data );
+		printf ( "    ; 0x%x\n", data );
+		off += 2;
 	}
 }
 
@@ -311,13 +353,29 @@ dump_edata ( int addr, int num )
 	}
 }
 
-enum mode { STRING, DATA, EDATA };
+enum mode { STRING, TABLE, DATA, EDATA };
+
+/*
+ * exedump 0x1991
+ * -- dumps string given offset in data segment
+ * exedump -d
+ * -- dumps entire data segment
+ * exedump -t addr
+ * -- dumps 32 line of table from data segment
+ * exedump -e 0x11627
+ * -- dumps 32 lines
+ * -- expects absolute address
+ * -- dumps with CS segment values
+ *  (was handy for embedded jump tables)
+ */
 
 int
 main ( int argc, char **argv )
 {
 	char *infile = "epp512.exe";
 	int str_addr;
+	int d_addr, d_count;
+	int t_addr, t_count;
 	enum mode mode;
 
 	if ( argc < 2 )
@@ -325,8 +383,17 @@ main ( int argc, char **argv )
 
 	if ( argc == 3 && strcmp ( argv[1], "-e" ) == 0 ) {
 		mode = EDATA;
-	} else if ( strcmp ( argv[1], "-d" ) == 0 )
+	}
+	else if ( argc == 3 && strcmp ( argv[1], "-t" ) == 0 ) {
+		t_addr = hex(argv[2]);
+		t_count = 32;
+		mode = TABLE;
+	}
+	else if ( argc == 2 && strcmp ( argv[1], "-d" ) == 0 ) {
+		d_addr = 0;
+		d_count = 0;
 		mode = DATA;
+	}
 	else {
 		// printf ( "arg: %s\n", argv[1] );
 		str_addr = hex ( argv[1] );
@@ -345,7 +412,10 @@ main ( int argc, char **argv )
 		get_string ( str_addr );
 
 	if ( mode == DATA )
-		dump_data ();
+		dump_data ( d_addr, d_count );
+
+	if ( mode == TABLE )
+		dump_tdata ( t_addr, t_count );
 
 	// 32 is a guess
 	if ( mode == EDATA )
