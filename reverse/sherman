@@ -73,6 +73,7 @@ type_list = types.split(",")
 n_type = len ( type_list )
 
 # print ( len(man_list), " manufacturers" )
+# 179
 # print ( len(type_list), " types" )
 
 #for m in man_list :
@@ -177,6 +178,8 @@ for index in range(n_man) :
     else :
         n_data = (jumps[index+1] - data_addr) // 2
     # Stupid python defaults to floating point on addition
+
+    ##print ( "HOSE ", n_data )
 
     #print ( "DATA addr ", hex(data_addr) )
     #print ( "DATA count ", n_data )

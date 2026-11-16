@@ -1,0 +1,106 @@
+#!/bin/python
+
+# Tom Trebisky  11-8-2026
+# A helper for the epp512.exe disassembly
+
+# This is the "patton" script.
+
+# This generates a nicely formatted copy of the
+# Chip_table
+
+import subprocess
+
+mans = \
+"27/27C,AMD/MMI,ATMEL,CATALYST,CYPRESS,FUJITSU,HITACHI,HYUNDAI," \
+"INTEL,MATSUSHITA,MICROCHIP,MITSUBISHI,MOSTEK,MOTOROLA,NEC,NS,OKI," \
+"RICOH,SIGNETICS,SMOS,SGS_THOMSON,TI,TOSHIBA,WSI,VLSI,SEEQ,MXIC"
+
+types = \
+"x16,x16B,x32,x32A,x32B,x64,x64A,x128,x128A,x256,x256HV,x512,x512HV,x513,2716,2716B,2732," \
+"2732A,2732B,2764,2764A/AP/C64,27128,27128A/AP/C128,27C256/P,27256HV,27512/C512,27512HV," \
+"AT27HC64/L,AT27C128,AT27C/HC256/L,AT27C512,AT27C513,AT27C256R,AT27C512R,AT27C513R,CSI2764A," \
+"CSI27128A,CSI27/HC256,CSI27512,CY7C261,CY7C263,CY7C264,CY7C251,CY7C253,CY7C254,CY7C271," \
+"MBM8516,MBM2732/8532,MBM27/C32A,MBM2764,MBM27C64,MBM27128,MBM27C128,MBM27256/C256A,MBM27C256H," \
+"MBM27C512,462716,462732,48/462732A,HN27C64,427128P,HN27128AG,27/C256G/AG/HG,27512P/G/C512G,27C64," \
+"B2716,D2732,D2732A,D2764,D2764A/C64,D27128,D27128A,D27/C256,D27/C512,D27/C513,D87C64,D87C256," \
+"D87C257,2764,27128,27C64/HC64,27C128,27C256/HC256,27C512,27C513,M5L2716,M5L2732,M5L2764,27128/27C128K," \
+"M5L27C128,27K/C256/AK,27512/C512AK,2716,MCM68764,MCM68766,D2716,D2732,D2732A,D2732B,D2764,D27C64," \
+"D27128,D27/C256,D27C512,NMC2716/C16,NMC27C16B,NMC27C32,MNC27C32B,NMC27C64,NMC27C128/B,NMC27CP128," \
+"NMC27C256,NMC27C256B,NMC27C512,NMC27C512A,MSM2716,MSM2764AS,MSM2764A,MSM27128AS,MSM27128A,MSM27256AS," \
+"MSM27512AS,27C32,27C64,27C256,27C64A,27C128,27C256,27C512,27C64H,27128H,27C256H,2716/C16,TS27/C32," \
+"M2732A,TS2764,27/C64A,M27128A,M27/C256,M27/C512,2732,2732A,27C32/PC32,2764,27C64/PC64,27128," \
+"27C128/PC128,27C/PC256/87C257,27C512/PC512,2516,2532,2532A,2564,TMM2732,TMM2764,TMM2764A," \
+"TMM27128,TMM27128A,27256/A/57256AD,TMM27512,WS27C64FM,WS57C64F,WS27C128FM,WS57C128F,WS27C256FM," \
+"WS57C256F-55,WS57C256F-35,WS27C256L,WS27C256F,WS27C512F,VT27C64,VT27C128,VT27C256,VT27C512," \
+"DQ2764,DQ27128,DQ27C256,MX27C256,MX27C512"
+
+type_count = [
+    14, 13, 8, 4, 7, 
+    10, 8, 1, 13, 2, 
+    5, 7, 1, 2, 9, 
+    11, 7, 3, 4, 3, 
+    8, 13, 7, 10, 4, 
+    3, 2 ]
+
+man_list = mans.split(",")
+n_man = len ( man_list )
+type_list = types.split(",")
+n_type = len ( type_list )
+
+print ( len(man_list), " manufacturers" )
+print ( len(type_list), " types" )
+#  27  manufacturers
+#  179  types
+
+#for m in man_list :
+#    print ( m )
+
+def get_table () :
+    result = subprocess.run(['exedump', '-u'], capture_output=True, text=True)
+    raw_lines = result.stdout
+    lines = raw_lines.split ( "\n" )
+    return lines[:-1]
+
+# ---------------------------------
+
+data = get_table ()
+print ( len(data), " data lines" )
+
+index = 0
+t_index = 0
+man_index = 0
+man_count = 0
+skip = False
+
+for l in data :
+    if index == 0 :
+        print ("")
+        if skip :
+            extra = "---"
+            skip = False
+        else :
+            extra = type_list[t_index] + " " + man_list[man_index]
+            man_count += 1
+        if man_count >= type_count[man_index] :
+            man_count = 0
+            man_index += 1
+            skip = True
+        ll = l + "  " + extra
+        t_index += 1
+        print ( ll )
+    if index == 5 :
+        ww = l.split()
+        nn = int ( ww[-1], 16 )
+        if nn == 0 :
+            extra = "---"
+        else :
+            extra = str ( nn )
+        print ( l + "  " + extra )
+    else :
+        print ( l )
+
+    index += 1
+    if index == 6 :
+        index = 0
+
+# THE END

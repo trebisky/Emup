@@ -5280,6 +5280,7 @@ zerosub:
 
 ; subroutine "Lincoln"
 ; many calls
+; this applies a mask to values written to the VOP register
 
  0x2ed1  0x16f:0x17e1   8B1E0C0B          mov bx,[0xb0c]	; get manufacturer code
  0x2ed5  0x16f:0x17e5   03DB              add bx,bx
@@ -5625,6 +5626,8 @@ zerosub:
  0x3200  0x16f:0x1b10   8B165C36          mov dx,[0x365c]
  0x3204  0x16f:0x1b14   A0D433            mov al,[0x33d4]
  0x3207  0x16f:0x1b17   EE                out dx,al			; <<
+
+; some entries just come here and do nothing.
  0x3208  0x16f:0x1b18   CB                retf
 
 ; -------------------------------------------------------------------
@@ -24215,7 +24218,14 @@ ALLOC
 ; setting 0x08 is pin 32 (correct for a 24 pin device)
 ; setting 0x04 is pin 34 (correct for a 28 pin device)
 ; setting 0x0c is pin 32 AND 34 !?
-; -- this is the TI 2564 which does get VCC on both pin 26 and 28!
+; -- this is the TI 2564 which can/does get VCC on both pin 26 and 28!
+; -- they allowed it on either pin for 24 bit device compatibility.
+; Apparently this software only will configure VCC on the two
+;  cases shown here.
+; And this seems to be true.  The AMD 27C010 is a 32 pin device,
+; but this software does not support it!
+; You need to go to epp1024b.exe or epp1024w.exe for that
+;  and presumably for other chips bigger than 28 pin packages.
 
 ; -------------------------------------------------------------------
 

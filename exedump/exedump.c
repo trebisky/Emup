@@ -315,6 +315,45 @@ dump_tdata ( int addr, int num )
 	}
 }
 
+char *
+dump_hex ( int val )
+{
+		static char buf[32];
+
+		sprintf ( buf, "0x%x", val );
+		return buf;
+}
+
+/* Dump table from data segment
+ * (custom flavor of the above)
+ */
+void
+dump_udata ( int addr, int num )
+{
+	int i;
+	char *data_base;
+	int data_offset;
+	unsigned short *dp;
+	int data;
+	int off;
+	char *hex;
+
+	data_offset = lm_offset + dsval*16;
+	data_base = &exebuf[data_offset];
+
+	off = addr;
+	for ( i=0; i<num; i++ ) {
+		addr = dsval*16 + off;
+		dp = (unsigned short *) &data_base[off];
+		data = *dp;
+		printf ( " 0x%x  0x%x: ", addr, off );
+		dump_short ( data );
+		hex = dump_hex ( data );
+		printf ( "    ; %7s\n", hex );
+		off += 2;
+	}
+}
+
 /*
  * The following turns these 4 lines:
  0x188c  0x16f:0x19c    D201              ; 0x1d2
@@ -353,7 +392,7 @@ dump_edata ( int addr, int num )
 	}
 }
 
-enum mode { STRING, TABLE, DATA, EDATA };
+enum mode { STRING, UTABLE, TABLE, DATA, EDATA };
 
 /*
  * exedump 0x1991
@@ -394,10 +433,8 @@ main ( int argc, char **argv )
 		d_count = 0;
 		mode = DATA;
 	}
-	else {
-		// printf ( "arg: %s\n", argv[1] );
-		str_addr = hex ( argv[1] );
-		mode = STRING;
+	else if ( argc == 2 && strcmp ( argv[1], "-u" ) == 0 ) {
+		mode = UTABLE;
 	}
 
 	load_image ( infile );
@@ -416,6 +453,11 @@ main ( int argc, char **argv )
 
 	if ( mode == TABLE )
 		dump_tdata ( t_addr, t_count );
+
+#define NMAN	27
+#define NTYPES	179
+	if ( mode == UTABLE )
+		dump_udata ( 0x0baa, 6*(NTYPES+NMAN) );
 
 	// 32 is a guess
 	if ( mode == EDATA )
