@@ -88,7 +88,7 @@ for l in data :
             skip = True
         ll = l + "  " + extra
         print ( ll )
-    if index == 5 :
+    elif index == 5 :
         ww = l.split()
         nn = int ( ww[-1], 16 )
         if nn == 0 :
