@@ -27532,1245 +27532,1653 @@ Data    00010788 0ba8: 0100
 ;  offset 8 - far delay index (primary)
 ;  offset a - pins in package.
 
-Data    0001078a 0baa: ce00		; +0:  points to "x16"
-Data    0001078c 0bac: 0008		; +2:  size: 0x800 = 2K
-Data    0001078e 0bae: 0000		; +4:  flag
-Data    00010790 0bb0: 0100		; +6:  far delay index
-Data    00010792 0bb2: 0100		; +8:  far_delay index
-Data    00010794 0bb4: 1800		; +a:  24 pin package
+ 0x1078a  0xbaa: ce00    ;    0xce  x16 27/27C
+ 0x1078a  0xbaa: ce00    ;    0xce
+ 0x1078c  0xbac: 0008    ;   0x800
+ 0x1078e  0xbae: 0000    ;     0x0
+ 0x10790  0xbb0: 0100    ;     0x1
+ 0x10792  0xbb2: 0100    ;     0x1
+ 0x10794  0xbb4: 1800    ;    0x18  24
 
-Data    00010796 0bb6: d200		; points to "x16b"
-Data    00010798 0bb8: 0008
-Data    0001079a 0bba: 0000
-Data    0001079c 0bbc: 0300
-Data    0001079e 0bbe: 0100
-Data    000107a0 0bc0: 1800
+ 0x10796  0xbb6: d200    ;    0xd2  x16B 27/27C
+ 0x10796  0xbb6: d200    ;    0xd2
+ 0x10798  0xbb8: 0008    ;   0x800
+ 0x1079a  0xbba: 0000    ;     0x0
+ 0x1079c  0xbbc: 0300    ;     0x3
+ 0x1079e  0xbbe: 0100    ;     0x1
+ 0x107a0  0xbc0: 1800    ;    0x18  24
 
-Data    000107a2 0bc2: d700
-Data    000107a4 0bc4: 0010
-Data    000107a6 0bc6: 0000
-Data    000107a8 0bc8: 0100
-Data    000107aa 0bca: 0100
-Data    000107ac 0bcc: 1800
+ 0x107a2  0xbc2: d700    ;    0xd7  x32 27/27C
+ 0x107a2  0xbc2: d700    ;    0xd7
+ 0x107a4  0xbc4: 0010    ;  0x1000
+ 0x107a6  0xbc6: 0000    ;     0x0
+ 0x107a8  0xbc8: 0100    ;     0x1
+ 0x107aa  0xbca: 0100    ;     0x1
+ 0x107ac  0xbcc: 1800    ;    0x18  24
 
-Data    000107ae 0bce: db00
-Data    000107b0 0bd0: 0010
-Data    000107b2 0bd2: 0000
-Data    000107b4 0bd4: 0200
-Data    000107b6 0bd6: 0100
-Data    000107b8 0bd8: 1800
-Data    000107ba 0bda: e000
-Data    000107bc 0bdc: 0010
-Data    000107be 0bde: 0000
-Data    000107c0 0be0: 0300
-Data    000107c2 0be2: 0100
-Data    000107c4 0be4: 1800
-Data    000107c6 0be6: e500
-Data    000107c8 0be8: 0020
-Data    000107ca 0bea: 0000
-Data    000107cc 0bec: 0200
-Data    000107ce 0bee: 0100
-Data    000107d0 0bf0: 1c00
-Data    000107d2 0bf2: e900
-Data    000107d4 0bf4: 0020
-Data    000107d6 0bf6: 0000
-Data    000107d8 0bf8: 0300
-Data    000107da 0bfa: 0100
-Data    000107dc 0bfc: 1c00
-Data    000107de 0bfe: ee00
-Data    000107e0 0c00: 0040
-Data    000107e2 0c02: 0000
-Data    000107e4 0c04: 0200
-Data    000107e6 0c06: 0100
-Data    000107e8 0c08: 1c00
-Data    000107ea 0c0a: f300
-Data    000107ec 0c0c: 0040
-Data    000107ee 0c0e: 0000
-Data    000107f0 0c10: 0300
-Data    000107f2 0c12: 0100
-Data    000107f4 0c14: 1c00
-Data    000107f6 0c16: f900
-Data    000107f8 0c18: 0080
-Data    000107fa 0c1a: 0000
-Data    000107fc 0c1c: 0300
-Data    000107fe 0c1e: 0100
-Data    00010800 0c20: 1c00
-Data    00010802 0c22: fe00
-Data    00010804 0c24: 0080
-Data    00010806 0c26: 0000
-Data    00010808 0c28: 0200
-Data    0001080a 0c2a: 0100
-Data    0001080c 0c2c: 1c00
-Data    0001080e 0c2e: 0501
-Data    00010810 0c30: 0000
-Data    00010812 0c32: 0100
-Data    00010814 0c34: 0300
-Data    00010816 0c36: 0100
-Data    00010818 0c38: 1c00
-Data    0001081a 0c3a: 0a01
-Data    0001081c 0c3c: 0000
-Data    0001081e 0c3e: 0100
-Data    00010820 0c40: 0200
-Data    00010822 0c42: 0100
-Data    00010824 0c44: 1c00
-Data    00010826 0c46: 1101
-Data    00010828 0c48: 0000
-Data    0001082a 0c4a: 0100
-Data    0001082c 0c4c: 0300
-Data    0001082e 0c4e: 0200
-Data    00010830 0c50: 1c00
-Data    00010832 0c52: 0000
-Data    00010834 0c54: 0000
-Data    00010836 0c56: 0000
-Data    00010838 0c58: 0000
-Data    0001083a 0c5a: 0000
-Data    0001083c 0c5c: 0000
-Data    0001083e 0c5e: 1601
-Data    00010840 0c60: 0008
-Data    00010842 0c62: 0000
-Data    00010844 0c64: 0100
-Data    00010846 0c66: 0100
-Data    00010848 0c68: 1800
-Data    0001084a 0c6a: 1b01
-Data    0001084c 0c6c: 0008
-Data    0001084e 0c6e: 0000
-Data    00010850 0c70: 0300
-Data    00010852 0c72: 0100
-Data    00010854 0c74: 1800
-Data    00010856 0c76: 2101
-Data    00010858 0c78: 0010
-Data    0001085a 0c7a: 0000
-Data    0001085c 0c7c: 0100
-Data    0001085e 0c7e: 0100
-Data    00010860 0c80: 1800
-Data    00010862 0c82: 2601
-Data    00010864 0c84: 0010
-Data    00010866 0c86: 0000
-Data    00010868 0c88: 0200
-Data    0001086a 0c8a: 0100
-Data    0001086c 0c8c: 1800
-Data    0001086e 0c8e: 2c01
-Data    00010870 0c90: 0010
-Data    00010872 0c92: 0000
-Data    00010874 0c94: 0300
-Data    00010876 0c96: 0100
-Data    00010878 0c98: 1800
-Data    0001087a 0c9a: 3201
-Data    0001087c 0c9c: 0020
-Data    0001087e 0c9e: 0000
-Data    00010880 0ca0: 0200
-Data    00010882 0ca2: 0100
-Data    00010884 0ca4: 1c00
-Data    00010886 0ca6: 3701
-Data    00010888 0ca8: 0020
-Data    0001088a 0caa: 0000
-Data    0001088c 0cac: 0300
-Data    0001088e 0cae: 0100
-Data    00010890 0cb0: 1c00
-Data    00010892 0cb2: 4401
-Data    00010894 0cb4: 0040
-Data    00010896 0cb6: 0000
-Data    00010898 0cb8: 0200
-Data    0001089a 0cba: 0100
-Data    0001089c 0cbc: 1c00
-Data    0001089e 0cbe: 4a01
-Data    000108a0 0cc0: 0040
-Data    000108a2 0cc2: 0000
-Data    000108a4 0cc4: 0300
-Data    000108a6 0cc6: 0100
-Data    000108a8 0cc8: 1c00
-Data    000108aa 0cca: 5901
-Data    000108ac 0ccc: 0080
-Data    000108ae 0cce: 0000
-Data    000108b0 0cd0: 0300
-Data    000108b2 0cd2: 0100
-Data    000108b4 0cd4: 1c00
-Data    000108b6 0cd6: 6201
-Data    000108b8 0cd8: 0080
-Data    000108ba 0cda: 0000
-Data    000108bc 0cdc: 0200
-Data    000108be 0cde: 0100
-Data    000108c0 0ce0: 1c00
-Data    000108c2 0ce2: 6a01
-Data    000108c4 0ce4: 0000
-Data    000108c6 0ce6: 0100
-Data    000108c8 0ce8: 0300
-Data    000108ca 0cea: 0100
-Data    000108cc 0cec: 1c00
-Data    000108ce 0cee: 7501
-Data    000108d0 0cf0: 0000
-Data    000108d2 0cf2: 0100
-Data    000108d4 0cf4: 0200
-Data    000108d6 0cf6: 0100
-Data    000108d8 0cf8: 1c00
-Data    000108da 0cfa: 0000
-Data    000108dc 0cfc: 0000
-Data    000108de 0cfe: 0000
-Data    000108e0 0d00: 0000
-Data    000108e2 0d02: 0000
-Data    000108e4 0d04: 0000
-Data    000108e6 0d06: 7d01
-Data    000108e8 0d08: 0020
-Data    000108ea 0d0a: 0000
-Data    000108ec 0d0c: 0300
-Data    000108ee 0d0e: 0100
-Data    000108f0 0d10: 1c00
-Data    000108f2 0d12: 8801
-Data    000108f4 0d14: 0040
-Data    000108f6 0d16: 0000
-Data    000108f8 0d18: 0300
-Data    000108fa 0d1a: 0100
-Data    000108fc 0d1c: 1c00
-Data    000108fe 0d1e: 9101
-Data    00010900 0d20: 0080
-Data    00010902 0d22: 0000
-Data    00010904 0d24: 0300
-Data    00010906 0d26: 0100
-Data    00010908 0d28: 1c00
-Data    0001090a 0d2a: 9f01
-Data    0001090c 0d2c: 0000
-Data    0001090e 0d2e: 0100
-Data    00010910 0d30: 0300
-Data    00010912 0d32: 0100
-Data    00010914 0d34: 1c00
-Data    00010916 0d36: a801
-Data    00010918 0d38: 0000
-Data    0001091a 0d3a: 0100
-Data    0001091c 0d3c: 0300
-Data    0001091e 0d3e: 0200
-Data    00010920 0d40: 1c00
-Data    00010922 0d42: b101
-Data    00010924 0d44: 0080
-Data    00010926 0d46: 0000
-Data    00010928 0d48: 0500
-Data    0001092a 0d4a: 0400
-Data    0001092c 0d4c: 1c00
-Data    0001092e 0d4e: bb01
-Data    00010930 0d50: 0000
-Data    00010932 0d52: 0100
-Data    00010934 0d54: 0500
-Data    00010936 0d56: 0400
-Data    00010938 0d58: 1c00
-Data    0001093a 0d5a: c501
-Data    0001093c 0d5c: 0000
-Data    0001093e 0d5e: 0100
-Data    00010940 0d60: 0500
-Data    00010942 0d62: 0400
-Data    00010944 0d64: 1c00
-Data    00010946 0d66: 0000
-Data    00010948 0d68: 0000
-Data    0001094a 0d6a: 0000
-Data    0001094c 0d6c: 0000
-Data    0001094e 0d6e: 0000
-Data    00010950 0d70: 0000
-Data    00010952 0d72: cf01
-Data    00010954 0d74: 0020
-Data    00010956 0d76: 0000
-Data    00010958 0d78: 0300
-Data    0001095a 0d7a: 0100
-Data    0001095c 0d7c: 1c00
-Data    0001095e 0d7e: d801
-Data    00010960 0d80: 0040
-Data    00010962 0d82: 0000
-Data    00010964 0d84: 0300
-Data    00010966 0d86: 0100
-Data    00010968 0d88: 1c00
-Data    0001096a 0d8a: e201
-Data    0001096c 0d8c: 0080
-Data    0001096e 0d8e: 0000
-Data    00010970 0d90: 0300
-Data    00010972 0d92: 0100
-Data    00010974 0d94: 1c00
-Data    00010976 0d96: ee01
-Data    00010978 0d98: 0000
-Data    0001097a 0d9a: 0100
-Data    0001097c 0d9c: 0300
-Data    0001097e 0d9e: 0100
-Data    00010980 0da0: 1c00
-Data    00010982 0da2: 0000
-Data    00010984 0da4: 0000
-Data    00010986 0da6: 0000
-Data    00010988 0da8: 0000
-Data    0001098a 0daa: 0000
-Data    0001098c 0dac: 0000
-Data    0001098e 0dae: f701
-Data    00010990 0db0: 0020
-Data    00010992 0db2: 0000
-Data    00010994 0db4: 0300
-Data    00010996 0db6: 0500
-Data    00010998 0db8: 1800
-Data    0001099a 0dba: ff01
-Data    0001099c 0dbc: 0020
-Data    0001099e 0dbe: 0000
-Data    000109a0 0dc0: 0300
-Data    000109a2 0dc2: 0500
-Data    000109a4 0dc4: 1800
-Data    000109a6 0dc6: 0702
-Data    000109a8 0dc8: 0020
-Data    000109aa 0dca: 0000
-Data    000109ac 0dcc: 0300
-Data    000109ae 0dce: 0500
-Data    000109b0 0dd0: 1800
-Data    000109b2 0dd2: 0f02
-Data    000109b4 0dd4: 0040
-Data    000109b6 0dd6: 0000
-Data    000109b8 0dd8: 0300
-Data    000109ba 0dda: 0500
-Data    000109bc 0ddc: 1c00
-Data    000109be 0dde: 1702
-Data    000109c0 0de0: 0040
-Data    000109c2 0de2: 0000
-Data    000109c4 0de4: 0300
-Data    000109c6 0de6: 0500
-Data    000109c8 0de8: 1c00
-Data    000109ca 0dea: 1f02
-Data    000109cc 0dec: 0040
-Data    000109ce 0dee: 0000
-Data    000109d0 0df0: 0300
-Data    000109d2 0df2: 0500
-Data    000109d4 0df4: 1c00
-Data    000109d6 0df6: 2702
-Data    000109d8 0df8: 0080
-Data    000109da 0dfa: 0000
-Data    000109dc 0dfc: 0300
-Data    000109de 0dfe: 0500
-Data    000109e0 0e00: 1c00
-Data    000109e2 0e02: 0000
-Data    000109e4 0e04: 0000
-Data    000109e6 0e06: 0000
-Data    000109e8 0e08: 0000
-Data    000109ea 0e0a: 0000
-Data    000109ec 0e0c: 0000
-Data    000109ee 0e0e: 2f02
-Data    000109f0 0e10: 0008
-Data    000109f2 0e12: 0000
-Data    000109f4 0e14: 0100
-Data    000109f6 0e16: 0100
-Data    000109f8 0e18: 1800
-Data    000109fa 0e1a: 3702
-Data    000109fc 0e1c: 0010
-Data    000109fe 0e1e: 0000
-Data    00010a00 0e20: 0100
-Data    00010a02 0e22: 0100
-Data    00010a04 0e24: 1800
-Data    00010a06 0e26: 4402
-Data    00010a08 0e28: 0010
-Data    00010a0a 0e2a: 0000
-Data    00010a0c 0e2c: 0200
-Data    00010a0e 0e2e: 0100
-Data    00010a10 0e30: 1800
-Data    00010a12 0e32: 4f02
-Data    00010a14 0e34: 0020
-Data    00010a16 0e36: 0000
-Data    00010a18 0e38: 0200
-Data    00010a1a 0e3a: 0100
-Data    00010a1c 0e3c: 1c00
-Data    00010a1e 0e3e: 5702
-Data    00010a20 0e40: 0020
-Data    00010a22 0e42: 0000
-Data    00010a24 0e44: 0300
-Data    00010a26 0e46: 0100
-Data    00010a28 0e48: 1c00
-Data    00010a2a 0e4a: 6002
-Data    00010a2c 0e4c: 0040
-Data    00010a2e 0e4e: 0000
-Data    00010a30 0e50: 0200
-Data    00010a32 0e52: 0100
-Data    00010a34 0e54: 1c00
-Data    00010a36 0e56: 6902
-Data    00010a38 0e58: 0040
-Data    00010a3a 0e5a: 0000
-Data    00010a3c 0e5c: 0300
-Data    00010a3e 0e5e: 0100
-Data    00010a40 0e60: 1c00
-Data    00010a42 0e62: 7302
-Data    00010a44 0e64: 0080
-Data    00010a46 0e66: 0000
-Data    00010a48 0e68: 0300
-Data    00010a4a 0e6a: 0100
-Data    00010a4c 0e6c: 1c00
-Data    00010a4e 0e6e: 8202
-Data    00010a50 0e70: 0080
-Data    00010a52 0e72: 0000
-Data    00010a54 0e74: 0200
-Data    00010a56 0e76: 0100
-Data    00010a58 0e78: 1c00
-Data    00010a5a 0e7a: 8d02
-Data    00010a5c 0e7c: 0000
-Data    00010a5e 0e7e: 0100
-Data    00010a60 0e80: 0300
-Data    00010a62 0e82: 0100
-Data    00010a64 0e84: 1c00
-Data    00010a66 0e86: 0000
-Data    00010a68 0e88: 0000
-Data    00010a6a 0e8a: 0000
-Data    00010a6c 0e8c: 0000
-Data    00010a6e 0e8e: 0000
-Data    00010a70 0e90: 0000
-Data    00010a72 0e92: 9702
-Data    00010a74 0e94: 0008
-Data    00010a76 0e96: 0000
-Data    00010a78 0e98: 0100
-Data    00010a7a 0e9a: 0100
-Data    00010a7c 0e9c: 1800
-Data    00010a7e 0e9e: 9e02
-Data    00010a80 0ea0: 0010
-Data    00010a82 0ea2: 0000
-Data    00010a84 0ea4: 0100
-Data    00010a86 0ea6: 0100
-Data    00010a88 0ea8: 1800
-Data    00010a8a 0eaa: a502
-Data    00010a8c 0eac: 0010
-Data    00010a8e 0eae: 0000
-Data    00010a90 0eb0: 0200
-Data    00010a92 0eb2: 0100
-Data    00010a94 0eb4: 1800
-Data    00010a96 0eb6: b002
-Data    00010a98 0eb8: 0020
-Data    00010a9a 0eba: 0000
-Data    00010a9c 0ebc: 0200
-Data    00010a9e 0ebe: 0100
-Data    00010aa0 0ec0: 1c00
-Data    00010aa2 0ec2: b802
-Data    00010aa4 0ec4: 0040
-Data    00010aa6 0ec6: 0000
-Data    00010aa8 0ec8: 0200
-Data    00010aaa 0eca: 0100
-Data    00010aac 0ecc: 1c00
-Data    00010aae 0ece: c002
-Data    00010ab0 0ed0: 0040
-Data    00010ab2 0ed2: 0000
-Data    00010ab4 0ed4: 0300
-Data    00010ab6 0ed6: 0100
-Data    00010ab8 0ed8: 1c00
-Data    00010aba 0eda: ca02
-Data    00010abc 0edc: 0080
-Data    00010abe 0ede: 0000
-Data    00010ac0 0ee0: 0300
-Data    00010ac2 0ee2: 0100
-Data    00010ac4 0ee4: 1c00
-Data    00010ac6 0ee6: d902
-Data    00010ac8 0ee8: 0000
-Data    00010aca 0eea: 0100
-Data    00010acc 0eec: 0300
-Data    00010ace 0eee: 0100
-Data    00010ad0 0ef0: 1c00
-Data    00010ad2 0ef2: 0000
-Data    00010ad4 0ef4: 0000
-Data    00010ad6 0ef6: 0000
-Data    00010ad8 0ef8: 0000
-Data    00010ada 0efa: 0000
-Data    00010adc 0efc: 0000
-Data    00010ade 0efe: e802
-Data    00010ae0 0f00: 0020
-Data    00010ae2 0f02: 0000
-Data    00010ae4 0f04: 0300
-Data    00010ae6 0f06: 0100
-Data    00010ae8 0f08: 1c00
-Data    00010aea 0f0a: 0000
-Data    00010aec 0f0c: 0000
-Data    00010aee 0f0e: 0000
-Data    00010af0 0f10: 0000
-Data    00010af2 0f12: 0000
-Data    00010af4 0f14: 0000
-Data    00010af6 0f16: ee02
-Data    00010af8 0f18: 0008
-Data    00010afa 0f1a: 0000
-Data    00010afc 0f1c: 0100
-Data    00010afe 0f1e: 0100
-Data    00010b00 0f20: 1800
-Data    00010b02 0f22: f402
-Data    00010b04 0f24: 0010
-Data    00010b06 0f26: 0000
-Data    00010b08 0f28: 0100
-Data    00010b0a 0f2a: 0100
-Data    00010b0c 0f2c: 1800
-Data    00010b0e 0f2e: fa02
-Data    00010b10 0f30: 0010
-Data    00010b12 0f32: 0000
-Data    00010b14 0f34: 0200
-Data    00010b16 0f36: 0100
-Data    00010b18 0f38: 1800
-Data    00010b1a 0f3a: 0103
-Data    00010b1c 0f3c: 0020
-Data    00010b1e 0f3e: 0000
-Data    00010b20 0f40: 0200
-Data    00010b22 0f42: 0100
-Data    00010b24 0f44: 1c00
-Data    00010b26 0f46: 0703
-Data    00010b28 0f48: 0020
-Data    00010b2a 0f4a: 0000
-Data    00010b2c 0f4c: 0300
-Data    00010b2e 0f4e: 0100
-Data    00010b30 0f50: 1c00
-Data    00010b32 0f52: 1203
-Data    00010b34 0f54: 0040
-Data    00010b36 0f56: 0000
-Data    00010b38 0f58: 0200
-Data    00010b3a 0f5a: 0100
-Data    00010b3c 0f5c: 1c00
-Data    00010b3e 0f5e: 1903
-Data    00010b40 0f60: 0040
-Data    00010b42 0f62: 0000
-Data    00010b44 0f64: 0300
-Data    00010b46 0f66: 0100
-Data    00010b48 0f68: 1c00
-Data    00010b4a 0f6a: 2103
-Data    00010b4c 0f6c: 0080
-Data    00010b4e 0f6e: 0000
-Data    00010b50 0f70: 0400
-Data    00010b52 0f72: 0200
-Data    00010b54 0f74: 1c00
-Data    00010b56 0f76: 2a03
-Data    00010b58 0f78: 0000
-Data    00010b5a 0f7a: 0100
-Data    00010b5c 0f7c: 0400
-Data    00010b5e 0f7e: 0200
-Data    00010b60 0f80: 1c00
-Data    00010b62 0f82: 3303
-Data    00010b64 0f84: 0000
-Data    00010b66 0f86: 0100
-Data    00010b68 0f88: 0300
-Data    00010b6a 0f8a: 0200
-Data    00010b6c 0f8c: 1c00
-Data    00010b6e 0f8e: 3c03
-Data    00010b70 0f90: 0020
-Data    00010b72 0f92: 0000
-Data    00010b74 0f94: 0300
-Data    00010b76 0f96: 0100
-Data    00010b78 0f98: 1c00
-Data    00010b7a 0f9a: 4303
-Data    00010b7c 0f9c: 0080
-Data    00010b7e 0f9e: 0000
-Data    00010b80 0fa0: 0400
-Data    00010b82 0fa2: 0200
-Data    00010b84 0fa4: 1c00
-Data    00010b86 0fa6: 4b03
-Data    00010b88 0fa8: 0080
-Data    00010b8a 0faa: 0000
-Data    00010b8c 0fac: 0400
-Data    00010b8e 0fae: 0100
-Data    00010b90 0fb0: 1c00
-Data    00010b92 0fb2: 0000
-Data    00010b94 0fb4: 0000
-Data    00010b96 0fb6: 0000
-Data    00010b98 0fb8: 0000
-Data    00010b9a 0fba: 0000
-Data    00010b9c 0fbc: 0000
-Data    00010b9e 0fbe: 5303
-Data    00010ba0 0fc0: 0020
-Data    00010ba2 0fc2: 0000
-Data    00010ba4 0fc4: 0200
-Data    00010ba6 0fc6: 0100
-Data    00010ba8 0fc8: 1c00
-Data    00010baa 0fca: 5803
-Data    00010bac 0fcc: 0040
-Data    00010bae 0fce: 0000
-Data    00010bb0 0fd0: 0200
-Data    00010bb2 0fd2: 0100
-Data    00010bb4 0fd4: 1c00
-Data    00010bb6 0fd6: 0000
-Data    00010bb8 0fd8: 0000
-Data    00010bba 0fda: 0000
-Data    00010bbc 0fdc: 0000
-Data    00010bbe 0fde: 0000
-Data    00010bc0 0fe0: 0000
-Data    00010bc2 0fe2: 5e03
-Data    00010bc4 0fe4: 0020
-Data    00010bc6 0fe6: 0000
-Data    00010bc8 0fe8: 0300
-Data    00010bca 0fea: 0100
-Data    00010bcc 0fec: 1c00
-Data    00010bce 0fee: 6903
-Data    00010bd0 0ff0: 0040
-Data    00010bd2 0ff2: 0000
-Data    00010bd4 0ff4: 0300
-Data    00010bd6 0ff6: 0100
-Data    00010bd8 0ff8: 1c00
-Data    00010bda 0ffa: 7003
-Data    00010bdc 0ffc: 0080
-Data    00010bde 0ffe: 0000
-Data    00010be0 1000: 0300
-Data    00010be2 1002: 0100
-Data    00010be4 1004: 1c00
-Data    00010be6 1006: 7d03
-Data    00010be8 1008: 0000
-Data    00010bea 100a: 0100
-Data    00010bec 100c: 0300
-Data    00010bee 100e: 0100
-Data    00010bf0 1010: 1c00
-Data    00010bf2 1012: 8403
-Data    00010bf4 1014: 0000
-Data    00010bf6 1016: 0100
-Data    00010bf8 1018: 0300
-Data    00010bfa 101a: 0200
-Data    00010bfc 101c: 1c00
-Data    00010bfe 101e: 0000
-Data    00010c00 1020: 0000
-Data    00010c02 1022: 0000
-Data    00010c04 1024: 0000
-Data    00010c06 1026: 0000
-Data    00010c08 1028: 0000
-Data    00010c0a 102a: 8b03
-Data    00010c0c 102c: 0008
-Data    00010c0e 102e: 0000
-Data    00010c10 1030: 0100
-Data    00010c12 1032: 0100
-Data    00010c14 1034: 1800
-Data    00010c16 1036: 9303
-Data    00010c18 1038: 0010
-Data    00010c1a 103a: 0000
-Data    00010c1c 103c: 0100
-Data    00010c1e 103e: 0100
-Data    00010c20 1040: 1800
-Data    00010c22 1042: 9b03
-Data    00010c24 1044: 0020
-Data    00010c26 1046: 0000
-Data    00010c28 1048: 0200
-Data    00010c2a 104a: 0100
-Data    00010c2c 104c: 1c00
-Data    00010c2e 104e: a303
-Data    00010c30 1050: 0040
-Data    00010c32 1052: 0000
-Data    00010c34 1054: 0200
-Data    00010c36 1056: 0100
-Data    00010c38 1058: 1c00
-Data    00010c3a 105a: b103
-Data    00010c3c 105c: 0040
-Data    00010c3e 105e: 0000
-Data    00010c40 1060: 0300
-Data    00010c42 1062: 0100
-Data    00010c44 1064: 1c00
-Data    00010c46 1066: bb03
-Data    00010c48 1068: 0080
-Data    00010c4a 106a: 0000
-Data    00010c4c 106c: 0300
-Data    00010c4e 106e: 0100
-Data    00010c50 1070: 1c00
-Data    00010c52 1072: c703
-Data    00010c54 1074: 0000
-Data    00010c56 1076: 0100
-Data    00010c58 1078: 0300
-Data    00010c5a 107a: 0100
-Data    00010c5c 107c: 1c00
-Data    00010c5e 107e: 0000
-Data    00010c60 1080: 0000
-Data    00010c62 1082: 0000
-Data    00010c64 1084: 0000
-Data    00010c66 1086: 0000
-Data    00010c68 1088: 0000
-Data    00010c6a 108a: d403
-Data    00010c6c 108c: 0008
-Data    00010c6e 108e: 0000
-Data    00010c70 1090: 0100
-Data    00010c72 1092: 0100
-Data    00010c74 1094: 1800
-Data    00010c76 1096: 0000
-Data    00010c78 1098: 0000
-Data    00010c7a 109a: 0000
-Data    00010c7c 109c: 0000
-Data    00010c7e 109e: 0000
-Data    00010c80 10a0: 0000
-Data    00010c82 10a2: d903
-Data    00010c84 10a4: 0020
-Data    00010c86 10a6: 0000
-Data    00010c88 10a8: 0100
-Data    00010c8a 10aa: 0600
-Data    00010c8c 10ac: 1c00
-Data    00010c8e 10ae: e203
-Data    00010c90 10b0: 0020
-Data    00010c92 10b2: 0000
-Data    00010c94 10b4: 0100
-Data    00010c96 10b6: 0600
-Data    00010c98 10b8: 1c00
-Data    00010c9a 10ba: 0000
-Data    00010c9c 10bc: 0000
-Data    00010c9e 10be: 0000
-Data    00010ca0 10c0: 0000
-Data    00010ca2 10c2: 0000
-Data    00010ca4 10c4: 0000
-Data    00010ca6 10c6: eb03
-Data    00010ca8 10c8: 0008
-Data    00010caa 10ca: 0000
-Data    00010cac 10cc: 0100
-Data    00010cae 10ce: 0100
-Data    00010cb0 10d0: 1800
-Data    00010cb2 10d2: f103
-Data    00010cb4 10d4: 0010
-Data    00010cb6 10d6: 0000
-Data    00010cb8 10d8: 0100
-Data    00010cba 10da: 0100
-Data    00010cbc 10dc: 1800
-Data    00010cbe 10de: f703
-Data    00010cc0 10e0: 0010
-Data    00010cc2 10e2: 0000
-Data    00010cc4 10e4: 0200
-Data    00010cc6 10e6: 0100
-Data    00010cc8 10e8: 1800
-Data    00010cca 10ea: fe03
-Data    00010ccc 10ec: 0010
-Data    00010cce 10ee: 0000
-Data    00010cd0 10f0: 0300
-Data    00010cd2 10f2: 0100
-Data    00010cd4 10f4: 1800
-Data    00010cd6 10f6: 0504
-Data    00010cd8 10f8: 0020
-Data    00010cda 10fa: 0000
-Data    00010cdc 10fc: 0200
-Data    00010cde 10fe: 0100
-Data    00010ce0 1100: 1c00
-Data    00010ce2 1102: 0b04
-Data    00010ce4 1104: 0020
-Data    00010ce6 1106: 0000
-Data    00010ce8 1108: 0300
-Data    00010cea 110a: 0100
-Data    00010cec 110c: 1c00
-Data    00010cee 110e: 1204
-Data    00010cf0 1110: 0040
-Data    00010cf2 1112: 0000
-Data    00010cf4 1114: 0200
-Data    00010cf6 1116: 0100
-Data    00010cf8 1118: 1c00
-Data    00010cfa 111a: 1904
-Data    00010cfc 111c: 0080
-Data    00010cfe 111e: 0000
-Data    00010d00 1120: 0200
-Data    00010d02 1122: 0100
-Data    00010d04 1124: 1c00
-Data    00010d06 1126: 2204
-Data    00010d08 1128: 0000
-Data    00010d0a 112a: 0100
-Data    00010d0c 112c: 0300
-Data    00010d0e 112e: 0100
-Data    00010d10 1130: 1c00
-Data    00010d12 1132: 0000
-Data    00010d14 1134: 0000
-Data    00010d16 1136: 0000
-Data    00010d18 1138: 0000
-Data    00010d1a 113a: 0000
-Data    00010d1c 113c: 0000
-Data    00010d1e 113e: 2a04
-Data    00010d20 1140: 0008
-Data    00010d22 1142: 0000
-Data    00010d24 1144: 0100
-Data    00010d26 1146: 0700
-Data    00010d28 1148: 1800
-Data    00010d2a 114a: 3604
-Data    00010d2c 114c: 0008
-Data    00010d2e 114e: 0000
-Data    00010d30 1150: 0500
-Data    00010d32 1152: 0700
-Data    00010d34 1154: 1800
-Data    00010d36 1156: 4004
-Data    00010d38 1158: 0010
-Data    00010d3a 115a: 0000
-Data    00010d3c 115c: 0100
-Data    00010d3e 115e: 0700
-Data    00010d40 1160: 1800
-Data    00010d42 1162: 4904
-Data    00010d44 1164: 0010
-Data    00010d46 1166: 0000
-Data    00010d48 1168: 0500
-Data    00010d4a 116a: 0700
-Data    00010d4c 116c: 1800
-Data    00010d4e 116e: 5304
-Data    00010d50 1170: 0020
-Data    00010d52 1172: 0000
-Data    00010d54 1174: 0500
-Data    00010d56 1176: 0700
-Data    00010d58 1178: 1c00
-Data    00010d5a 117a: 5c04
-Data    00010d5c 117c: 0040
-Data    00010d5e 117e: 0000
-Data    00010d60 1180: 0500
-Data    00010d62 1182: 0700
-Data    00010d64 1184: 1c00
-Data    00010d66 1186: 6804
-Data    00010d68 1188: 0040
-Data    00010d6a 118a: 0000
-Data    00010d6c 118c: 0500
-Data    00010d6e 118e: 0700
-Data    00010d70 1190: 1c00
-Data    00010d72 1192: 7304
-Data    00010d74 1194: 0080
-Data    00010d76 1196: 0000
-Data    00010d78 1198: 0500
-Data    00010d7a 119a: 0700
-Data    00010d7c 119c: 1c00
-Data    00010d7e 119e: 7d04
-Data    00010d80 11a0: 0080
-Data    00010d82 11a2: 0000
-Data    00010d84 11a4: 0300
-Data    00010d86 11a6: 0700
-Data    00010d88 11a8: 1c00
-Data    00010d8a 11aa: 8804
-Data    00010d8c 11ac: 0000
-Data    00010d8e 11ae: 0100
-Data    00010d90 11b0: 0500
-Data    00010d92 11b2: 0700
-Data    00010d94 11b4: 1c00
-Data    00010d96 11b6: 9204
-Data    00010d98 11b8: 0000
-Data    00010d9a 11ba: 0100
-Data    00010d9c 11bc: 0300
-Data    00010d9e 11be: 0700
-Data    00010da0 11c0: 1c00
-Data    00010da2 11c2: 0000
-Data    00010da4 11c4: 0000
-Data    00010da6 11c6: 0000
-Data    00010da8 11c8: 0000
-Data    00010daa 11ca: 0000
-Data    00010dac 11cc: 0000
-Data    00010dae 11ce: 9d04
-Data    00010db0 11d0: 0008
-Data    00010db2 11d2: 0000
-Data    00010db4 11d4: 0100
-Data    00010db6 11d6: 0100
-Data    00010db8 11d8: 1800
-Data    00010dba 11da: a504
-Data    00010dbc 11dc: 0020
-Data    00010dbe 11de: 0000
-Data    00010dc0 11e0: 0200
-Data    00010dc2 11e2: 0100
-Data    00010dc4 11e4: 1c00
-Data    00010dc6 11e6: af04
-Data    00010dc8 11e8: 0020
-Data    00010dca 11ea: 0000
-Data    00010dcc 11ec: 0300
-Data    00010dce 11ee: 0100
-Data    00010dd0 11f0: 1c00
-Data    00010dd2 11f2: b804
-Data    00010dd4 11f4: 0040
-Data    00010dd6 11f6: 0000
-Data    00010dd8 11f8: 0200
-Data    00010dda 11fa: 0100
-Data    00010ddc 11fc: 1c00
-Data    00010dde 11fe: c304
-Data    00010de0 1200: 0040
-Data    00010de2 1202: 0000
-Data    00010de4 1204: 0300
-Data    00010de6 1206: 0100
-Data    00010de8 1208: 1c00
-Data    00010dea 120a: cd04
-Data    00010dec 120c: 0080
-Data    00010dee 120e: 0000
-Data    00010df0 1210: 0300
-Data    00010df2 1212: 0100
-Data    00010df4 1214: 1c00
-Data    00010df6 1216: d804
-Data    00010df8 1218: 0000
-Data    00010dfa 121a: 0100
-Data    00010dfc 121c: 0300
-Data    00010dfe 121e: 0100
-Data    00010e00 1220: 1c00
-Data    00010e02 1222: 0000
-Data    00010e04 1224: 0000
-Data    00010e06 1226: 0000
-Data    00010e08 1228: 0000
-Data    00010e0a 122a: 0000
-Data    00010e0c 122c: 0000
-Data    00010e0e 122e: e304
-Data    00010e10 1230: 0010
-Data    00010e12 1232: 0000
-Data    00010e14 1234: 0200
-Data    00010e16 1236: 0100
-Data    00010e18 1238: 1800
-Data    00010e1a 123a: e904
-Data    00010e1c 123c: 0020
-Data    00010e1e 123e: 0000
-Data    00010e20 1240: 0200
-Data    00010e22 1242: 0100
-Data    00010e24 1244: 1c00
-Data    00010e26 1246: ef04
-Data    00010e28 1248: 0080
-Data    00010e2a 124a: 0000
-Data    00010e2c 124c: 0300
-Data    00010e2e 124e: 0100
-Data    00010e30 1250: 1c00
-Data    00010e32 1252: 0000
-Data    00010e34 1254: 0000
-Data    00010e36 1256: 0000
-Data    00010e38 1258: 0000
-Data    00010e3a 125a: 0000
-Data    00010e3c 125c: 0000
-Data    00010e3e 125e: f604
-Data    00010e40 1260: 0020
-Data    00010e42 1262: 0000
-Data    00010e44 1264: 0400
-Data    00010e46 1266: 0200
-Data    00010e48 1268: 1c00
-Data    00010e4a 126a: fd04
-Data    00010e4c 126c: 0040
-Data    00010e4e 126e: 0000
-Data    00010e50 1270: 0400
-Data    00010e52 1272: 0200
-Data    00010e54 1274: 1c00
-Data    00010e56 1276: 0405
-Data    00010e58 1278: 0080
-Data    00010e5a 127a: 0000
-Data    00010e5c 127c: 0400
-Data    00010e5e 127e: 0200
-Data    00010e60 1280: 1c00
-Data    00010e62 1282: 0b05
-Data    00010e64 1284: 0000
-Data    00010e66 1286: 0100
-Data    00010e68 1288: 0400
-Data    00010e6a 128a: 0200
-Data    00010e6c 128c: 1c00
-Data    00010e6e 128e: 0000
-Data    00010e70 1290: 0000
-Data    00010e72 1292: 0000
-Data    00010e74 1294: 0000
-Data    00010e76 1296: 0000
-Data    00010e78 1298: 0000
-Data    00010e7a 129a: 1205
-Data    00010e7c 129c: 0020
-Data    00010e7e 129e: 0000
-Data    00010e80 12a0: 0300
-Data    00010e82 12a2: 0100
-Data    00010e84 12a4: 1c00
-Data    00010e86 12a6: 1905
-Data    00010e88 12a8: 0040
-Data    00010e8a 12aa: 0000
-Data    00010e8c 12ac: 0300
-Data    00010e8e 12ae: 0100
-Data    00010e90 12b0: 1c00
-Data    00010e92 12b2: 2005
-Data    00010e94 12b4: 0080
-Data    00010e96 12b6: 0000
-Data    00010e98 12b8: 0300
-Data    00010e9a 12ba: 0100
-Data    00010e9c 12bc: 1c00
-Data    00010e9e 12be: 0000
-Data    00010ea0 12c0: 0000
-Data    00010ea2 12c2: 0000
-Data    00010ea4 12c4: 0000
-Data    00010ea6 12c6: 0000
-Data    00010ea8 12c8: 0000
-Data    00010eaa 12ca: 2805
-Data    00010eac 12cc: 0008
-Data    00010eae 12ce: 0000
-Data    00010eb0 12d0: 0100
-Data    00010eb2 12d2: 0100
-Data    00010eb4 12d4: 1800
-Data    00010eb6 12d6: 3105
-Data    00010eb8 12d8: 0010
-Data    00010eba 12da: 0000
-Data    00010ebc 12dc: 0100
-Data    00010ebe 12de: 0100
-Data    00010ec0 12e0: 1800
-Data    00010ec2 12e2: 3a05
-Data    00010ec4 12e4: 0010
-Data    00010ec6 12e6: 0000
-Data    00010ec8 12e8: 0200
-Data    00010eca 12ea: 0100
-Data    00010ecc 12ec: 1800
-Data    00010ece 12ee: 4105
-Data    00010ed0 12f0: 0020
-Data    00010ed2 12f2: 0000
-Data    00010ed4 12f4: 0200
-Data    00010ed6 12f6: 0100
-Data    00010ed8 12f8: 1c00
-Data    00010eda 12fa: 4805
-Data    00010edc 12fc: 0020
-Data    00010ede 12fe: 0000
-Data    00010ee0 1300: 0300
-Data    00010ee2 1302: 0100
-Data    00010ee4 1304: 1c00
-Data    00010ee6 1306: 5005
-Data    00010ee8 1308: 0040
-Data    00010eea 130a: 0000
-Data    00010eec 130c: 0300
-Data    00010eee 130e: 0100
-Data    00010ef0 1310: 1c00
-Data    00010ef2 1312: 5805
-Data    00010ef4 1314: 0080
-Data    00010ef6 1316: 0000
-Data    00010ef8 1318: 0300
-Data    00010efa 131a: 0100
-Data    00010efc 131c: 1c00
-Data    00010efe 131e: 6105
-Data    00010f00 1320: 0000
-Data    00010f02 1322: 0100
-Data    00010f04 1324: 0300
-Data    00010f06 1326: 0100
-Data    00010f08 1328: 1c00
-Data    00010f0a 132a: 0000
-Data    00010f0c 132c: 0000
-Data    00010f0e 132e: 0000
-Data    00010f10 1330: 0000
-Data    00010f12 1332: 0000
-Data    00010f14 1334: 0000
-Data    00010f16 1336: 6a05
-Data    00010f18 1338: 0010
-Data    00010f1a 133a: 0000
-Data    00010f1c 133c: 0100
-Data    00010f1e 133e: 0100
-Data    00010f20 1340: 1800
-Data    00010f22 1342: 6f05
-Data    00010f24 1344: 0010
-Data    00010f26 1346: 0000
-Data    00010f28 1348: 0200
-Data    00010f2a 134a: 0100
-Data    00010f2c 134c: 1800
-Data    00010f2e 134e: 7505
-Data    00010f30 1350: 0010
-Data    00010f32 1352: 0000
-Data    00010f34 1354: 0300
-Data    00010f36 1356: 0400
-Data    00010f38 1358: 1800
-Data    00010f3a 135a: 8005
-Data    00010f3c 135c: 0020
-Data    00010f3e 135e: 0000
-Data    00010f40 1360: 0200
-Data    00010f42 1362: 0100
-Data    00010f44 1364: 1c00
-Data    00010f46 1366: 8505
-Data    00010f48 1368: 0020
-Data    00010f4a 136a: 0000
-Data    00010f4c 136c: 0300
-Data    00010f4e 136e: 0400
-Data    00010f50 1370: 1c00
-Data    00010f52 1372: 9005
-Data    00010f54 1374: 0040
-Data    00010f56 1376: 0000
-Data    00010f58 1378: 0200
-Data    00010f5a 137a: 0100
-Data    00010f5c 137c: 1c00
-Data    00010f5e 137e: 9605
-Data    00010f60 1380: 0040
-Data    00010f62 1382: 0000
-Data    00010f64 1384: 0300
-Data    00010f66 1386: 0400
-Data    00010f68 1388: 1c00
-Data    00010f6a 138a: a305
-Data    00010f6c 138c: 0080
-Data    00010f6e 138e: 0000
-Data    00010f70 1390: 0300
-Data    00010f72 1392: 0400
-Data    00010f74 1394: 1c00
-Data    00010f76 1396: b405
-Data    00010f78 1398: 0000
-Data    00010f7a 139a: 0100
-Data    00010f7c 139c: 0300
-Data    00010f7e 139e: 0400
-Data    00010f80 13a0: 1c00
-Data    00010f82 13a2: c105
-Data    00010f84 13a4: 0008
-Data    00010f86 13a6: 0000
-Data    00010f88 13a8: 0100
-Data    00010f8a 13aa: 0100
-Data    00010f8c 13ac: 1800
-Data    00010f8e 13ae: c605
-Data    00010f90 13b0: 0010
-Data    00010f92 13b2: 0000
-Data    00010f94 13b4: 0100
-Data    00010f96 13b6: 0100
-Data    00010f98 13b8: 1800
-Data    00010f9a 13ba: cb05
-Data    00010f9c 13bc: 0010
-Data    00010f9e 13be: 0000
-Data    00010fa0 13c0: 0200
-Data    00010fa2 13c2: 0100
-Data    00010fa4 13c4: 1800
-Data    00010fa6 13c6: d105
-Data    00010fa8 13c8: 0020
-Data    00010faa 13ca: 0000
-Data    00010fac 13cc: 0200
-Data    00010fae 13ce: 0100
-Data    00010fb0 13d0: 1c00
-Data    00010fb2 13d2: 0000
-Data    00010fb4 13d4: 0000
-Data    00010fb6 13d6: 0000
-Data    00010fb8 13d8: 0000
-Data    00010fba 13da: 0000
-Data    00010fbc 13dc: 0000
-Data    00010fbe 13de: d605
-Data    00010fc0 13e0: 0010
-Data    00010fc2 13e2: 0000
-Data    00010fc4 13e4: 0100
-Data    00010fc6 13e6: 0100
-Data    00010fc8 13e8: 1800
-Data    00010fca 13ea: de05
-Data    00010fcc 13ec: 0020
-Data    00010fce 13ee: 0000
-Data    00010fd0 13f0: 0200
-Data    00010fd2 13f2: 0100
-Data    00010fd4 13f4: 1c00
-Data    00010fd6 13f6: e605
-Data    00010fd8 13f8: 0020
-Data    00010fda 13fa: 0000
-Data    00010fdc 13fc: 0300
-Data    00010fde 13fe: 0100
-Data    00010fe0 1400: 1c00
-Data    00010fe2 1402: ef05
-Data    00010fe4 1404: 0040
-Data    00010fe6 1406: 0000
-Data    00010fe8 1408: 0200
-Data    00010fea 140a: 0100
-Data    00010fec 140c: 1c00
-Data    00010fee 140e: f805
-Data    00010ff0 1410: 0040
-Data    00010ff2 1412: 0000
-Data    00010ff4 1414: 0300
-Data    00010ff6 1416: 0100
-Data    00010ff8 1418: 1c00
-Data    00010ffa 141a: 0206
-Data    00010ffc 141c: 0080
-Data    00010ffe 141e: 0000
-Data    00011000 1420: 0300
-Data    00011002 1422: 0100
-Data    00011004 1424: 1c00
-Data    00011006 1426: 1206
-Data    00011008 1428: 0000
-Data    0001100a 142a: 0100
-Data    0001100c 142c: 0300
-Data    0001100e 142e: 0100
-Data    00011010 1430: 1c00
-Data    00011012 1432: 0000
-Data    00011014 1434: 0000
-Data    00011016 1436: 0000
-Data    00011018 1438: 0000
-Data    0001101a 143a: 0000
-Data    0001101c 143c: 0000
-Data    0001101e 143e: 1b06
-Data    00011020 1440: 0020
-Data    00011022 1442: 0000
-Data    00011024 1444: 0600
-Data    00011026 1446: 0800
-Data    00011028 1448: 1c00
-Data    0001102a 144a: 2506
-Data    0001102c 144c: 0020
-Data    0001102e 144e: 0000
-Data    00011030 1450: 0600
-Data    00011032 1452: 0800
-Data    00011034 1454: 1c00
-Data    00011036 1456: 2e06
-Data    00011038 1458: 0040
-Data    0001103a 145a: 0000
-Data    0001103c 145c: 0300
-Data    0001103e 145e: 0800
-Data    00011040 1460: 1c00
-Data    00011042 1462: 3906
-Data    00011044 1464: 0040
-Data    00011046 1466: 0000
-Data    00011048 1468: 0600
-Data    0001104a 146a: 0800
-Data    0001104c 146c: 1c00
-Data    0001104e 146e: 4306
-Data    00011050 1470: 0080
-Data    00011052 1472: 0000
-Data    00011054 1474: 0300
-Data    00011056 1476: 0800
-Data    00011058 1478: 1c00
-Data    0001105a 147a: 4e06
-Data    0001105c 147c: 0080
-Data    0001105e 147e: 0000
-Data    00011060 1480: 0300
-Data    00011062 1482: 0800
-Data    00011064 1484: 1c00
-Data    00011066 1486: 5b06
-Data    00011068 1488: 0080
-Data    0001106a 148a: 0000
-Data    0001106c 148c: 0300
-Data    0001106e 148e: 0800
-Data    00011070 1490: 1c00
-Data    00011072 1492: 6806
-Data    00011074 1494: 0080
-Data    00011076 1496: 0000
-Data    00011078 1498: 0400
-Data    0001107a 149a: 0800
-Data    0001107c 149c: 1c00
-Data    0001107e 149e: 7206
-Data    00011080 14a0: 0100
-Data    00011082 14a2: 0500
-Data    00011084 14a4: 0300
-Data    00011086 14a6: 0800
-Data    00011088 14a8: 1c00
-Data    0001108a 14aa: 7c06
-Data    0001108c 14ac: 0000
-Data    0001108e 14ae: 0100
-Data    00011090 14b0: 0300
-Data    00011092 14b2: 0800
-Data    00011094 14b4: 1c00
-Data    00011096 14b6: 0000
-Data    00011098 14b8: 0000
-Data    0001109a 14ba: 0000
-Data    0001109c 14bc: 0000
-Data    0001109e 14be: 0000
-Data    000110a0 14c0: 0000
-Data    000110a2 14c2: 8606
-Data    000110a4 14c4: 0020
-Data    000110a6 14c6: 0000
-Data    000110a8 14c8: 0300
-Data    000110aa 14ca: 0100
-Data    000110ac 14cc: 1c00
-Data    000110ae 14ce: 8e06
-Data    000110b0 14d0: 0040
-Data    000110b2 14d2: 0000
-Data    000110b4 14d4: 0300
-Data    000110b6 14d6: 0100
-Data    000110b8 14d8: 1c00
-Data    000110ba 14da: 9706
-Data    000110bc 14dc: 0080
-Data    000110be 14de: 0000
-Data    000110c0 14e0: 0300
-Data    000110c2 14e2: 0100
-Data    000110c4 14e4: 1c00
-Data    000110c6 14e6: a006
-Data    000110c8 14e8: 0000
-Data    000110ca 14ea: 0100
-Data    000110cc 14ec: 0300
-Data    000110ce 14ee: 0100
-Data    000110d0 14f0: 1c00
-Data    000110d2 14f2: 0000
-Data    000110d4 14f4: 0000
-Data    000110d6 14f6: 0000
-Data    000110d8 14f8: 0000
-Data    000110da 14fa: 0000
-Data    000110dc 14fc: 0000
-Data    000110de 14fe: a906
-Data    000110e0 1500: 0020
-Data    000110e2 1502: 0000
-Data    000110e4 1504: 0200
-Data    000110e6 1506: 0100
-Data    000110e8 1508: 1c00
-Data    000110ea 150a: b006
-Data    000110ec 150c: 0040
-Data    000110ee 150e: 0000
-Data    000110f0 1510: 0200
-Data    000110f2 1512: 0100
-Data    000110f4 1514: 1c00
-Data    000110f6 1516: b806
-Data    000110f8 1518: 0080
-Data    000110fa 151a: 0000
-Data    000110fc 151c: 0300
-Data    000110fe 151e: 0100
-Data    00011100 1520: 1c00
-Data    00011102 1522: 0000
-Data    00011104 1524: 0000
-Data    00011106 1526: 0000
-Data    00011108 1528: 0000
-Data    0001110a 152a: 0000
-Data    0001110c 152c: 0000
-Data    0001110e 152e: c106
-Data    00011110 1530: 0080
-Data    00011112 1532: 0000
-Data    00011114 1534: 0300
-Data    00011116 1536: 0200
-Data    00011118 1538: 1c00
-Data    0001111a 153a: ca06
-Data    0001111c 153c: 0000
-Data    0001111e 153e: 0100
-Data    00011120 1540: 0300
-Data    00011122 1542: 0200
-Data    00011124 1544: 1c00
-Data    00011126 1546: 0000
-Data    00011128 1548: 0000
-Data    0001112a 154a: 0000
-Data    0001112c 154c: 0000
-Data    0001112e 154e: 0000
-Data    00011130 1550: 0000
+ 0x107ae  0xbce: db00    ;    0xdb  x32A 27/27C
+ 0x107ae  0xbce: db00    ;    0xdb
+ 0x107b0  0xbd0: 0010    ;  0x1000
+ 0x107b2  0xbd2: 0000    ;     0x0
+ 0x107b4  0xbd4: 0200    ;     0x2
+ 0x107b6  0xbd6: 0100    ;     0x1
+ 0x107b8  0xbd8: 1800    ;    0x18  24
+
+ 0x107ba  0xbda: e000    ;    0xe0  x32B 27/27C
+ 0x107ba  0xbda: e000    ;    0xe0
+ 0x107bc  0xbdc: 0010    ;  0x1000
+ 0x107be  0xbde: 0000    ;     0x0
+ 0x107c0  0xbe0: 0300    ;     0x3
+ 0x107c2  0xbe2: 0100    ;     0x1
+ 0x107c4  0xbe4: 1800    ;    0x18  24
+
+ 0x107c6  0xbe6: e500    ;    0xe5  x64 27/27C
+ 0x107c6  0xbe6: e500    ;    0xe5
+ 0x107c8  0xbe8: 0020    ;  0x2000
+ 0x107ca  0xbea: 0000    ;     0x0
+ 0x107cc  0xbec: 0200    ;     0x2
+ 0x107ce  0xbee: 0100    ;     0x1
+ 0x107d0  0xbf0: 1c00    ;    0x1c  28
+
+ 0x107d2  0xbf2: e900    ;    0xe9  x64A 27/27C
+ 0x107d2  0xbf2: e900    ;    0xe9
+ 0x107d4  0xbf4: 0020    ;  0x2000
+ 0x107d6  0xbf6: 0000    ;     0x0
+ 0x107d8  0xbf8: 0300    ;     0x3
+ 0x107da  0xbfa: 0100    ;     0x1
+ 0x107dc  0xbfc: 1c00    ;    0x1c  28
+
+ 0x107de  0xbfe: ee00    ;    0xee  x128 27/27C
+ 0x107de  0xbfe: ee00    ;    0xee
+ 0x107e0  0xc00: 0040    ;  0x4000
+ 0x107e2  0xc02: 0000    ;     0x0
+ 0x107e4  0xc04: 0200    ;     0x2
+ 0x107e6  0xc06: 0100    ;     0x1
+ 0x107e8  0xc08: 1c00    ;    0x1c  28
+
+ 0x107ea  0xc0a: f300    ;    0xf3  x128A 27/27C
+ 0x107ea  0xc0a: f300    ;    0xf3
+ 0x107ec  0xc0c: 0040    ;  0x4000
+ 0x107ee  0xc0e: 0000    ;     0x0
+ 0x107f0  0xc10: 0300    ;     0x3
+ 0x107f2  0xc12: 0100    ;     0x1
+ 0x107f4  0xc14: 1c00    ;    0x1c  28
+
+ 0x107f6  0xc16: f900    ;    0xf9  x256 27/27C
+ 0x107f6  0xc16: f900    ;    0xf9
+ 0x107f8  0xc18: 0080    ;  0x8000
+ 0x107fa  0xc1a: 0000    ;     0x0
+ 0x107fc  0xc1c: 0300    ;     0x3
+ 0x107fe  0xc1e: 0100    ;     0x1
+ 0x10800  0xc20: 1c00    ;    0x1c  28
+
+ 0x10802  0xc22: fe00    ;    0xfe  x256HV 27/27C
+ 0x10802  0xc22: fe00    ;    0xfe
+ 0x10804  0xc24: 0080    ;  0x8000
+ 0x10806  0xc26: 0000    ;     0x0
+ 0x10808  0xc28: 0200    ;     0x2
+ 0x1080a  0xc2a: 0100    ;     0x1
+ 0x1080c  0xc2c: 1c00    ;    0x1c  28
+
+ 0x1080e  0xc2e: 0501    ;   0x105  x512 27/27C
+ 0x1080e  0xc2e: 0501    ;   0x105
+ 0x10810  0xc30: 0000    ;     0x0
+ 0x10812  0xc32: 0100    ;     0x1
+ 0x10814  0xc34: 0300    ;     0x3
+ 0x10816  0xc36: 0100    ;     0x1
+ 0x10818  0xc38: 1c00    ;    0x1c  28
+
+ 0x1081a  0xc3a: 0a01    ;   0x10a  x512HV 27/27C
+ 0x1081a  0xc3a: 0a01    ;   0x10a
+ 0x1081c  0xc3c: 0000    ;     0x0
+ 0x1081e  0xc3e: 0100    ;     0x1
+ 0x10820  0xc40: 0200    ;     0x2
+ 0x10822  0xc42: 0100    ;     0x1
+ 0x10824  0xc44: 1c00    ;    0x1c  28
+
+ 0x10826  0xc46: 1101    ;   0x111  x513 27/27C
+ 0x10826  0xc46: 1101    ;   0x111
+ 0x10828  0xc48: 0000    ;     0x0
+ 0x1082a  0xc4a: 0100    ;     0x1
+ 0x1082c  0xc4c: 0300    ;     0x3
+ 0x1082e  0xc4e: 0200    ;     0x2
+ 0x10830  0xc50: 1c00    ;    0x1c  28
+
+ 0x10832  0xc52: 0000    ;     0x0  ---
+ 0x10832  0xc52: 0000    ;     0x0
+ 0x10834  0xc54: 0000    ;     0x0
+ 0x10836  0xc56: 0000    ;     0x0
+ 0x10838  0xc58: 0000    ;     0x0
+ 0x1083a  0xc5a: 0000    ;     0x0
+ 0x1083c  0xc5c: 0000    ;     0x0  ---
+
+ 0x1083e  0xc5e: 1601    ;   0x116  2716 AMD/MMI
+ 0x1083e  0xc5e: 1601    ;   0x116
+ 0x10840  0xc60: 0008    ;   0x800
+ 0x10842  0xc62: 0000    ;     0x0
+ 0x10844  0xc64: 0100    ;     0x1
+ 0x10846  0xc66: 0100    ;     0x1
+ 0x10848  0xc68: 1800    ;    0x18  24
+
+ 0x1084a  0xc6a: 1b01    ;   0x11b  2716B AMD/MMI
+ 0x1084a  0xc6a: 1b01    ;   0x11b
+ 0x1084c  0xc6c: 0008    ;   0x800
+ 0x1084e  0xc6e: 0000    ;     0x0
+ 0x10850  0xc70: 0300    ;     0x3
+ 0x10852  0xc72: 0100    ;     0x1
+ 0x10854  0xc74: 1800    ;    0x18  24
+
+ 0x10856  0xc76: 2101    ;   0x121  2732 AMD/MMI
+ 0x10856  0xc76: 2101    ;   0x121
+ 0x10858  0xc78: 0010    ;  0x1000
+ 0x1085a  0xc7a: 0000    ;     0x0
+ 0x1085c  0xc7c: 0100    ;     0x1
+ 0x1085e  0xc7e: 0100    ;     0x1
+ 0x10860  0xc80: 1800    ;    0x18  24
+
+ 0x10862  0xc82: 2601    ;   0x126  2732A AMD/MMI
+ 0x10862  0xc82: 2601    ;   0x126
+ 0x10864  0xc84: 0010    ;  0x1000
+ 0x10866  0xc86: 0000    ;     0x0
+ 0x10868  0xc88: 0200    ;     0x2
+ 0x1086a  0xc8a: 0100    ;     0x1
+ 0x1086c  0xc8c: 1800    ;    0x18  24
+
+ 0x1086e  0xc8e: 2c01    ;   0x12c  2732B AMD/MMI
+ 0x1086e  0xc8e: 2c01    ;   0x12c
+ 0x10870  0xc90: 0010    ;  0x1000
+ 0x10872  0xc92: 0000    ;     0x0
+ 0x10874  0xc94: 0300    ;     0x3
+ 0x10876  0xc96: 0100    ;     0x1
+ 0x10878  0xc98: 1800    ;    0x18  24
+
+ 0x1087a  0xc9a: 3201    ;   0x132  2764 AMD/MMI
+ 0x1087a  0xc9a: 3201    ;   0x132
+ 0x1087c  0xc9c: 0020    ;  0x2000
+ 0x1087e  0xc9e: 0000    ;     0x0
+ 0x10880  0xca0: 0200    ;     0x2
+ 0x10882  0xca2: 0100    ;     0x1
+ 0x10884  0xca4: 1c00    ;    0x1c  28
+
+ 0x10886  0xca6: 3701    ;   0x137  2764A/AP/C64 AMD/MMI
+ 0x10886  0xca6: 3701    ;   0x137
+ 0x10888  0xca8: 0020    ;  0x2000
+ 0x1088a  0xcaa: 0000    ;     0x0
+ 0x1088c  0xcac: 0300    ;     0x3
+ 0x1088e  0xcae: 0100    ;     0x1
+ 0x10890  0xcb0: 1c00    ;    0x1c  28
+
+ 0x10892  0xcb2: 4401    ;   0x144  27128 AMD/MMI
+ 0x10892  0xcb2: 4401    ;   0x144
+ 0x10894  0xcb4: 0040    ;  0x4000
+ 0x10896  0xcb6: 0000    ;     0x0
+ 0x10898  0xcb8: 0200    ;     0x2
+ 0x1089a  0xcba: 0100    ;     0x1
+ 0x1089c  0xcbc: 1c00    ;    0x1c  28
+
+ 0x1089e  0xcbe: 4a01    ;   0x14a  27128A/AP/C128 AMD/MMI
+ 0x1089e  0xcbe: 4a01    ;   0x14a
+ 0x108a0  0xcc0: 0040    ;  0x4000
+ 0x108a2  0xcc2: 0000    ;     0x0
+ 0x108a4  0xcc4: 0300    ;     0x3
+ 0x108a6  0xcc6: 0100    ;     0x1
+ 0x108a8  0xcc8: 1c00    ;    0x1c  28
+
+ 0x108aa  0xcca: 5901    ;   0x159  27C256/P AMD/MMI
+ 0x108aa  0xcca: 5901    ;   0x159
+ 0x108ac  0xccc: 0080    ;  0x8000
+ 0x108ae  0xcce: 0000    ;     0x0
+ 0x108b0  0xcd0: 0300    ;     0x3
+ 0x108b2  0xcd2: 0100    ;     0x1
+ 0x108b4  0xcd4: 1c00    ;    0x1c  28
+
+ 0x108b6  0xcd6: 6201    ;   0x162  27256HV AMD/MMI
+ 0x108b6  0xcd6: 6201    ;   0x162
+ 0x108b8  0xcd8: 0080    ;  0x8000
+ 0x108ba  0xcda: 0000    ;     0x0
+ 0x108bc  0xcdc: 0200    ;     0x2
+ 0x108be  0xcde: 0100    ;     0x1
+ 0x108c0  0xce0: 1c00    ;    0x1c  28
+
+ 0x108c2  0xce2: 6a01    ;   0x16a  27512/C512 AMD/MMI
+ 0x108c2  0xce2: 6a01    ;   0x16a
+ 0x108c4  0xce4: 0000    ;     0x0
+ 0x108c6  0xce6: 0100    ;     0x1
+ 0x108c8  0xce8: 0300    ;     0x3
+ 0x108ca  0xcea: 0100    ;     0x1
+ 0x108cc  0xcec: 1c00    ;    0x1c  28
+
+ 0x108ce  0xcee: 7501    ;   0x175  27512HV AMD/MMI
+ 0x108ce  0xcee: 7501    ;   0x175
+ 0x108d0  0xcf0: 0000    ;     0x0
+ 0x108d2  0xcf2: 0100    ;     0x1
+ 0x108d4  0xcf4: 0200    ;     0x2
+ 0x108d6  0xcf6: 0100    ;     0x1
+ 0x108d8  0xcf8: 1c00    ;    0x1c  28
+
+ 0x108da  0xcfa: 0000    ;     0x0  ---
+ 0x108da  0xcfa: 0000    ;     0x0
+ 0x108dc  0xcfc: 0000    ;     0x0
+ 0x108de  0xcfe: 0000    ;     0x0
+ 0x108e0  0xd00: 0000    ;     0x0
+ 0x108e2  0xd02: 0000    ;     0x0
+ 0x108e4  0xd04: 0000    ;     0x0  ---
+
+ 0x108e6  0xd06: 7d01    ;   0x17d  AT27HC64/L ATMEL
+ 0x108e6  0xd06: 7d01    ;   0x17d
+ 0x108e8  0xd08: 0020    ;  0x2000
+ 0x108ea  0xd0a: 0000    ;     0x0
+ 0x108ec  0xd0c: 0300    ;     0x3
+ 0x108ee  0xd0e: 0100    ;     0x1
+ 0x108f0  0xd10: 1c00    ;    0x1c  28
+
+ 0x108f2  0xd12: 8801    ;   0x188  AT27C128 ATMEL
+ 0x108f2  0xd12: 8801    ;   0x188
+ 0x108f4  0xd14: 0040    ;  0x4000
+ 0x108f6  0xd16: 0000    ;     0x0
+ 0x108f8  0xd18: 0300    ;     0x3
+ 0x108fa  0xd1a: 0100    ;     0x1
+ 0x108fc  0xd1c: 1c00    ;    0x1c  28
+
+ 0x108fe  0xd1e: 9101    ;   0x191  AT27C/HC256/L ATMEL
+ 0x108fe  0xd1e: 9101    ;   0x191
+ 0x10900  0xd20: 0080    ;  0x8000
+ 0x10902  0xd22: 0000    ;     0x0
+ 0x10904  0xd24: 0300    ;     0x3
+ 0x10906  0xd26: 0100    ;     0x1
+ 0x10908  0xd28: 1c00    ;    0x1c  28
+
+ 0x1090a  0xd2a: 9f01    ;   0x19f  AT27C512 ATMEL
+ 0x1090a  0xd2a: 9f01    ;   0x19f
+ 0x1090c  0xd2c: 0000    ;     0x0
+ 0x1090e  0xd2e: 0100    ;     0x1
+ 0x10910  0xd30: 0300    ;     0x3
+ 0x10912  0xd32: 0100    ;     0x1
+ 0x10914  0xd34: 1c00    ;    0x1c  28
+
+ 0x10916  0xd36: a801    ;   0x1a8  AT27C513 ATMEL
+ 0x10916  0xd36: a801    ;   0x1a8
+ 0x10918  0xd38: 0000    ;     0x0
+ 0x1091a  0xd3a: 0100    ;     0x1
+ 0x1091c  0xd3c: 0300    ;     0x3
+ 0x1091e  0xd3e: 0200    ;     0x2
+ 0x10920  0xd40: 1c00    ;    0x1c  28
+
+ 0x10922  0xd42: b101    ;   0x1b1  AT27C256R ATMEL
+ 0x10922  0xd42: b101    ;   0x1b1
+ 0x10924  0xd44: 0080    ;  0x8000
+ 0x10926  0xd46: 0000    ;     0x0
+ 0x10928  0xd48: 0500    ;     0x5
+ 0x1092a  0xd4a: 0400    ;     0x4
+ 0x1092c  0xd4c: 1c00    ;    0x1c  28
+
+ 0x1092e  0xd4e: bb01    ;   0x1bb  AT27C512R ATMEL
+ 0x1092e  0xd4e: bb01    ;   0x1bb
+ 0x10930  0xd50: 0000    ;     0x0
+ 0x10932  0xd52: 0100    ;     0x1
+ 0x10934  0xd54: 0500    ;     0x5
+ 0x10936  0xd56: 0400    ;     0x4
+ 0x10938  0xd58: 1c00    ;    0x1c  28
+
+ 0x1093a  0xd5a: c501    ;   0x1c5  AT27C513R ATMEL
+ 0x1093a  0xd5a: c501    ;   0x1c5
+ 0x1093c  0xd5c: 0000    ;     0x0
+ 0x1093e  0xd5e: 0100    ;     0x1
+ 0x10940  0xd60: 0500    ;     0x5
+ 0x10942  0xd62: 0400    ;     0x4
+ 0x10944  0xd64: 1c00    ;    0x1c  28
+
+ 0x10946  0xd66: 0000    ;     0x0  ---
+ 0x10946  0xd66: 0000    ;     0x0
+ 0x10948  0xd68: 0000    ;     0x0
+ 0x1094a  0xd6a: 0000    ;     0x0
+ 0x1094c  0xd6c: 0000    ;     0x0
+ 0x1094e  0xd6e: 0000    ;     0x0
+ 0x10950  0xd70: 0000    ;     0x0  ---
+
+ 0x10952  0xd72: cf01    ;   0x1cf  CSI2764A CATALYST
+ 0x10952  0xd72: cf01    ;   0x1cf
+ 0x10954  0xd74: 0020    ;  0x2000
+ 0x10956  0xd76: 0000    ;     0x0
+ 0x10958  0xd78: 0300    ;     0x3
+ 0x1095a  0xd7a: 0100    ;     0x1
+ 0x1095c  0xd7c: 1c00    ;    0x1c  28
+
+ 0x1095e  0xd7e: d801    ;   0x1d8  CSI27128A CATALYST
+ 0x1095e  0xd7e: d801    ;   0x1d8
+ 0x10960  0xd80: 0040    ;  0x4000
+ 0x10962  0xd82: 0000    ;     0x0
+ 0x10964  0xd84: 0300    ;     0x3
+ 0x10966  0xd86: 0100    ;     0x1
+ 0x10968  0xd88: 1c00    ;    0x1c  28
+
+ 0x1096a  0xd8a: e201    ;   0x1e2  CSI27/HC256 CATALYST
+ 0x1096a  0xd8a: e201    ;   0x1e2
+ 0x1096c  0xd8c: 0080    ;  0x8000
+ 0x1096e  0xd8e: 0000    ;     0x0
+ 0x10970  0xd90: 0300    ;     0x3
+ 0x10972  0xd92: 0100    ;     0x1
+ 0x10974  0xd94: 1c00    ;    0x1c  28
+
+ 0x10976  0xd96: ee01    ;   0x1ee  CSI27512 CATALYST
+ 0x10976  0xd96: ee01    ;   0x1ee
+ 0x10978  0xd98: 0000    ;     0x0
+ 0x1097a  0xd9a: 0100    ;     0x1
+ 0x1097c  0xd9c: 0300    ;     0x3
+ 0x1097e  0xd9e: 0100    ;     0x1
+ 0x10980  0xda0: 1c00    ;    0x1c  28
+
+ 0x10982  0xda2: 0000    ;     0x0  ---
+ 0x10982  0xda2: 0000    ;     0x0
+ 0x10984  0xda4: 0000    ;     0x0
+ 0x10986  0xda6: 0000    ;     0x0
+ 0x10988  0xda8: 0000    ;     0x0
+ 0x1098a  0xdaa: 0000    ;     0x0
+ 0x1098c  0xdac: 0000    ;     0x0  ---
+
+ 0x1098e  0xdae: f701    ;   0x1f7  CY7C261 CYPRESS
+ 0x1098e  0xdae: f701    ;   0x1f7
+ 0x10990  0xdb0: 0020    ;  0x2000
+ 0x10992  0xdb2: 0000    ;     0x0
+ 0x10994  0xdb4: 0300    ;     0x3
+ 0x10996  0xdb6: 0500    ;     0x5
+ 0x10998  0xdb8: 1800    ;    0x18  24
+
+ 0x1099a  0xdba: ff01    ;   0x1ff  CY7C263 CYPRESS
+ 0x1099a  0xdba: ff01    ;   0x1ff
+ 0x1099c  0xdbc: 0020    ;  0x2000
+ 0x1099e  0xdbe: 0000    ;     0x0
+ 0x109a0  0xdc0: 0300    ;     0x3
+ 0x109a2  0xdc2: 0500    ;     0x5
+ 0x109a4  0xdc4: 1800    ;    0x18  24
+
+ 0x109a6  0xdc6: 0702    ;   0x207  CY7C264 CYPRESS
+ 0x109a6  0xdc6: 0702    ;   0x207
+ 0x109a8  0xdc8: 0020    ;  0x2000
+ 0x109aa  0xdca: 0000    ;     0x0
+ 0x109ac  0xdcc: 0300    ;     0x3
+ 0x109ae  0xdce: 0500    ;     0x5
+ 0x109b0  0xdd0: 1800    ;    0x18  24
+
+ 0x109b2  0xdd2: 0f02    ;   0x20f  CY7C251 CYPRESS
+ 0x109b2  0xdd2: 0f02    ;   0x20f
+ 0x109b4  0xdd4: 0040    ;  0x4000
+ 0x109b6  0xdd6: 0000    ;     0x0
+ 0x109b8  0xdd8: 0300    ;     0x3
+ 0x109ba  0xdda: 0500    ;     0x5
+ 0x109bc  0xddc: 1c00    ;    0x1c  28
+
+ 0x109be  0xdde: 1702    ;   0x217  CY7C253 CYPRESS
+ 0x109be  0xdde: 1702    ;   0x217
+ 0x109c0  0xde0: 0040    ;  0x4000
+ 0x109c2  0xde2: 0000    ;     0x0
+ 0x109c4  0xde4: 0300    ;     0x3
+ 0x109c6  0xde6: 0500    ;     0x5
+ 0x109c8  0xde8: 1c00    ;    0x1c  28
+
+ 0x109ca  0xdea: 1f02    ;   0x21f  CY7C254 CYPRESS
+ 0x109ca  0xdea: 1f02    ;   0x21f
+ 0x109cc  0xdec: 0040    ;  0x4000
+ 0x109ce  0xdee: 0000    ;     0x0
+ 0x109d0  0xdf0: 0300    ;     0x3
+ 0x109d2  0xdf2: 0500    ;     0x5
+ 0x109d4  0xdf4: 1c00    ;    0x1c  28
+
+ 0x109d6  0xdf6: 2702    ;   0x227  CY7C271 CYPRESS
+ 0x109d6  0xdf6: 2702    ;   0x227
+ 0x109d8  0xdf8: 0080    ;  0x8000
+ 0x109da  0xdfa: 0000    ;     0x0
+ 0x109dc  0xdfc: 0300    ;     0x3
+ 0x109de  0xdfe: 0500    ;     0x5
+ 0x109e0  0xe00: 1c00    ;    0x1c  28
+
+ 0x109e2  0xe02: 0000    ;     0x0  ---
+ 0x109e2  0xe02: 0000    ;     0x0
+ 0x109e4  0xe04: 0000    ;     0x0
+ 0x109e6  0xe06: 0000    ;     0x0
+ 0x109e8  0xe08: 0000    ;     0x0
+ 0x109ea  0xe0a: 0000    ;     0x0
+ 0x109ec  0xe0c: 0000    ;     0x0  ---
+
+ 0x109ee  0xe0e: 2f02    ;   0x22f  MBM8516 FUJITSU
+ 0x109ee  0xe0e: 2f02    ;   0x22f
+ 0x109f0  0xe10: 0008    ;   0x800
+ 0x109f2  0xe12: 0000    ;     0x0
+ 0x109f4  0xe14: 0100    ;     0x1
+ 0x109f6  0xe16: 0100    ;     0x1
+ 0x109f8  0xe18: 1800    ;    0x18  24
+
+ 0x109fa  0xe1a: 3702    ;   0x237  MBM2732/8532 FUJITSU
+ 0x109fa  0xe1a: 3702    ;   0x237
+ 0x109fc  0xe1c: 0010    ;  0x1000
+ 0x109fe  0xe1e: 0000    ;     0x0
+ 0x10a00  0xe20: 0100    ;     0x1
+ 0x10a02  0xe22: 0100    ;     0x1
+ 0x10a04  0xe24: 1800    ;    0x18  24
+
+ 0x10a06  0xe26: 4402    ;   0x244  MBM27/C32A FUJITSU
+ 0x10a06  0xe26: 4402    ;   0x244
+ 0x10a08  0xe28: 0010    ;  0x1000
+ 0x10a0a  0xe2a: 0000    ;     0x0
+ 0x10a0c  0xe2c: 0200    ;     0x2
+ 0x10a0e  0xe2e: 0100    ;     0x1
+ 0x10a10  0xe30: 1800    ;    0x18  24
+
+ 0x10a12  0xe32: 4f02    ;   0x24f  MBM2764 FUJITSU
+ 0x10a12  0xe32: 4f02    ;   0x24f
+ 0x10a14  0xe34: 0020    ;  0x2000
+ 0x10a16  0xe36: 0000    ;     0x0
+ 0x10a18  0xe38: 0200    ;     0x2
+ 0x10a1a  0xe3a: 0100    ;     0x1
+ 0x10a1c  0xe3c: 1c00    ;    0x1c  28
+
+ 0x10a1e  0xe3e: 5702    ;   0x257  MBM27C64 FUJITSU
+ 0x10a1e  0xe3e: 5702    ;   0x257
+ 0x10a20  0xe40: 0020    ;  0x2000
+ 0x10a22  0xe42: 0000    ;     0x0
+ 0x10a24  0xe44: 0300    ;     0x3
+ 0x10a26  0xe46: 0100    ;     0x1
+ 0x10a28  0xe48: 1c00    ;    0x1c  28
+
+ 0x10a2a  0xe4a: 6002    ;   0x260  MBM27128 FUJITSU
+ 0x10a2a  0xe4a: 6002    ;   0x260
+ 0x10a2c  0xe4c: 0040    ;  0x4000
+ 0x10a2e  0xe4e: 0000    ;     0x0
+ 0x10a30  0xe50: 0200    ;     0x2
+ 0x10a32  0xe52: 0100    ;     0x1
+ 0x10a34  0xe54: 1c00    ;    0x1c  28
+
+ 0x10a36  0xe56: 6902    ;   0x269  MBM27C128 FUJITSU
+ 0x10a36  0xe56: 6902    ;   0x269
+ 0x10a38  0xe58: 0040    ;  0x4000
+ 0x10a3a  0xe5a: 0000    ;     0x0
+ 0x10a3c  0xe5c: 0300    ;     0x3
+ 0x10a3e  0xe5e: 0100    ;     0x1
+ 0x10a40  0xe60: 1c00    ;    0x1c  28
+
+ 0x10a42  0xe62: 7302    ;   0x273  MBM27256/C256A FUJITSU
+ 0x10a42  0xe62: 7302    ;   0x273
+ 0x10a44  0xe64: 0080    ;  0x8000
+ 0x10a46  0xe66: 0000    ;     0x0
+ 0x10a48  0xe68: 0300    ;     0x3
+ 0x10a4a  0xe6a: 0100    ;     0x1
+ 0x10a4c  0xe6c: 1c00    ;    0x1c  28
+
+ 0x10a4e  0xe6e: 8202    ;   0x282  MBM27C256H FUJITSU
+ 0x10a4e  0xe6e: 8202    ;   0x282
+ 0x10a50  0xe70: 0080    ;  0x8000
+ 0x10a52  0xe72: 0000    ;     0x0
+ 0x10a54  0xe74: 0200    ;     0x2
+ 0x10a56  0xe76: 0100    ;     0x1
+ 0x10a58  0xe78: 1c00    ;    0x1c  28
+
+ 0x10a5a  0xe7a: 8d02    ;   0x28d  MBM27C512 FUJITSU
+ 0x10a5a  0xe7a: 8d02    ;   0x28d
+ 0x10a5c  0xe7c: 0000    ;     0x0
+ 0x10a5e  0xe7e: 0100    ;     0x1
+ 0x10a60  0xe80: 0300    ;     0x3
+ 0x10a62  0xe82: 0100    ;     0x1
+ 0x10a64  0xe84: 1c00    ;    0x1c  28
+
+ 0x10a66  0xe86: 0000    ;     0x0  ---
+ 0x10a66  0xe86: 0000    ;     0x0
+ 0x10a68  0xe88: 0000    ;     0x0
+ 0x10a6a  0xe8a: 0000    ;     0x0
+ 0x10a6c  0xe8c: 0000    ;     0x0
+ 0x10a6e  0xe8e: 0000    ;     0x0
+ 0x10a70  0xe90: 0000    ;     0x0  ---
+
+ 0x10a72  0xe92: 9702    ;   0x297  462716 HITACHI
+ 0x10a72  0xe92: 9702    ;   0x297
+ 0x10a74  0xe94: 0008    ;   0x800
+ 0x10a76  0xe96: 0000    ;     0x0
+ 0x10a78  0xe98: 0100    ;     0x1
+ 0x10a7a  0xe9a: 0100    ;     0x1
+ 0x10a7c  0xe9c: 1800    ;    0x18  24
+
+ 0x10a7e  0xe9e: 9e02    ;   0x29e  462732 HITACHI
+ 0x10a7e  0xe9e: 9e02    ;   0x29e
+ 0x10a80  0xea0: 0010    ;  0x1000
+ 0x10a82  0xea2: 0000    ;     0x0
+ 0x10a84  0xea4: 0100    ;     0x1
+ 0x10a86  0xea6: 0100    ;     0x1
+ 0x10a88  0xea8: 1800    ;    0x18  24
+
+ 0x10a8a  0xeaa: a502    ;   0x2a5  48/462732A HITACHI
+ 0x10a8a  0xeaa: a502    ;   0x2a5
+ 0x10a8c  0xeac: 0010    ;  0x1000
+ 0x10a8e  0xeae: 0000    ;     0x0
+ 0x10a90  0xeb0: 0200    ;     0x2
+ 0x10a92  0xeb2: 0100    ;     0x1
+ 0x10a94  0xeb4: 1800    ;    0x18  24
+
+ 0x10a96  0xeb6: b002    ;   0x2b0  HN27C64 HITACHI
+ 0x10a96  0xeb6: b002    ;   0x2b0
+ 0x10a98  0xeb8: 0020    ;  0x2000
+ 0x10a9a  0xeba: 0000    ;     0x0
+ 0x10a9c  0xebc: 0200    ;     0x2
+ 0x10a9e  0xebe: 0100    ;     0x1
+ 0x10aa0  0xec0: 1c00    ;    0x1c  28
+
+ 0x10aa2  0xec2: b802    ;   0x2b8  427128P HITACHI
+ 0x10aa2  0xec2: b802    ;   0x2b8
+ 0x10aa4  0xec4: 0040    ;  0x4000
+ 0x10aa6  0xec6: 0000    ;     0x0
+ 0x10aa8  0xec8: 0200    ;     0x2
+ 0x10aaa  0xeca: 0100    ;     0x1
+ 0x10aac  0xecc: 1c00    ;    0x1c  28
+
+ 0x10aae  0xece: c002    ;   0x2c0  HN27128AG HITACHI
+ 0x10aae  0xece: c002    ;   0x2c0
+ 0x10ab0  0xed0: 0040    ;  0x4000
+ 0x10ab2  0xed2: 0000    ;     0x0
+ 0x10ab4  0xed4: 0300    ;     0x3
+ 0x10ab6  0xed6: 0100    ;     0x1
+ 0x10ab8  0xed8: 1c00    ;    0x1c  28
+
+ 0x10aba  0xeda: ca02    ;   0x2ca  27/C256G/AG/HG HITACHI
+ 0x10aba  0xeda: ca02    ;   0x2ca
+ 0x10abc  0xedc: 0080    ;  0x8000
+ 0x10abe  0xede: 0000    ;     0x0
+ 0x10ac0  0xee0: 0300    ;     0x3
+ 0x10ac2  0xee2: 0100    ;     0x1
+ 0x10ac4  0xee4: 1c00    ;    0x1c  28
+
+ 0x10ac6  0xee6: d902    ;   0x2d9  27512P/G/C512G HITACHI
+ 0x10ac6  0xee6: d902    ;   0x2d9
+ 0x10ac8  0xee8: 0000    ;     0x0
+ 0x10aca  0xeea: 0100    ;     0x1
+ 0x10acc  0xeec: 0300    ;     0x3
+ 0x10ace  0xeee: 0100    ;     0x1
+ 0x10ad0  0xef0: 1c00    ;    0x1c  28
+
+ 0x10ad2  0xef2: 0000    ;     0x0  ---
+ 0x10ad2  0xef2: 0000    ;     0x0
+ 0x10ad4  0xef4: 0000    ;     0x0
+ 0x10ad6  0xef6: 0000    ;     0x0
+ 0x10ad8  0xef8: 0000    ;     0x0
+ 0x10ada  0xefa: 0000    ;     0x0
+ 0x10adc  0xefc: 0000    ;     0x0  ---
+
+ 0x10ade  0xefe: e802    ;   0x2e8  27C64 HYUNDAI
+ 0x10ade  0xefe: e802    ;   0x2e8
+ 0x10ae0  0xf00: 0020    ;  0x2000
+ 0x10ae2  0xf02: 0000    ;     0x0
+ 0x10ae4  0xf04: 0300    ;     0x3
+ 0x10ae6  0xf06: 0100    ;     0x1
+ 0x10ae8  0xf08: 1c00    ;    0x1c  28
+
+ 0x10aea  0xf0a: 0000    ;     0x0  ---
+ 0x10aea  0xf0a: 0000    ;     0x0
+ 0x10aec  0xf0c: 0000    ;     0x0
+ 0x10aee  0xf0e: 0000    ;     0x0
+ 0x10af0  0xf10: 0000    ;     0x0
+ 0x10af2  0xf12: 0000    ;     0x0
+ 0x10af4  0xf14: 0000    ;     0x0  ---
+
+ 0x10af6  0xf16: ee02    ;   0x2ee  B2716 INTEL
+ 0x10af6  0xf16: ee02    ;   0x2ee
+ 0x10af8  0xf18: 0008    ;   0x800
+ 0x10afa  0xf1a: 0000    ;     0x0
+ 0x10afc  0xf1c: 0100    ;     0x1
+ 0x10afe  0xf1e: 0100    ;     0x1
+ 0x10b00  0xf20: 1800    ;    0x18  24
+
+ 0x10b02  0xf22: f402    ;   0x2f4  D2732 INTEL
+ 0x10b02  0xf22: f402    ;   0x2f4
+ 0x10b04  0xf24: 0010    ;  0x1000
+ 0x10b06  0xf26: 0000    ;     0x0
+ 0x10b08  0xf28: 0100    ;     0x1
+ 0x10b0a  0xf2a: 0100    ;     0x1
+ 0x10b0c  0xf2c: 1800    ;    0x18  24
+
+ 0x10b0e  0xf2e: fa02    ;   0x2fa  D2732A INTEL
+ 0x10b0e  0xf2e: fa02    ;   0x2fa
+ 0x10b10  0xf30: 0010    ;  0x1000
+ 0x10b12  0xf32: 0000    ;     0x0
+ 0x10b14  0xf34: 0200    ;     0x2
+ 0x10b16  0xf36: 0100    ;     0x1
+ 0x10b18  0xf38: 1800    ;    0x18  24
+
+ 0x10b1a  0xf3a: 0103    ;   0x301  D2764 INTEL
+ 0x10b1a  0xf3a: 0103    ;   0x301
+ 0x10b1c  0xf3c: 0020    ;  0x2000
+ 0x10b1e  0xf3e: 0000    ;     0x0
+ 0x10b20  0xf40: 0200    ;     0x2
+ 0x10b22  0xf42: 0100    ;     0x1
+ 0x10b24  0xf44: 1c00    ;    0x1c  28
+
+ 0x10b26  0xf46: 0703    ;   0x307  D2764A/C64 INTEL
+ 0x10b26  0xf46: 0703    ;   0x307
+ 0x10b28  0xf48: 0020    ;  0x2000
+ 0x10b2a  0xf4a: 0000    ;     0x0
+ 0x10b2c  0xf4c: 0300    ;     0x3
+ 0x10b2e  0xf4e: 0100    ;     0x1
+ 0x10b30  0xf50: 1c00    ;    0x1c  28
+
+ 0x10b32  0xf52: 1203    ;   0x312  D27128 INTEL
+ 0x10b32  0xf52: 1203    ;   0x312
+ 0x10b34  0xf54: 0040    ;  0x4000
+ 0x10b36  0xf56: 0000    ;     0x0
+ 0x10b38  0xf58: 0200    ;     0x2
+ 0x10b3a  0xf5a: 0100    ;     0x1
+ 0x10b3c  0xf5c: 1c00    ;    0x1c  28
+
+ 0x10b3e  0xf5e: 1903    ;   0x319  D27128A INTEL
+ 0x10b3e  0xf5e: 1903    ;   0x319
+ 0x10b40  0xf60: 0040    ;  0x4000
+ 0x10b42  0xf62: 0000    ;     0x0
+ 0x10b44  0xf64: 0300    ;     0x3
+ 0x10b46  0xf66: 0100    ;     0x1
+ 0x10b48  0xf68: 1c00    ;    0x1c  28
+
+ 0x10b4a  0xf6a: 2103    ;   0x321  D27/C256 INTEL
+ 0x10b4a  0xf6a: 2103    ;   0x321
+ 0x10b4c  0xf6c: 0080    ;  0x8000
+ 0x10b4e  0xf6e: 0000    ;     0x0
+ 0x10b50  0xf70: 0400    ;     0x4
+ 0x10b52  0xf72: 0200    ;     0x2
+ 0x10b54  0xf74: 1c00    ;    0x1c  28
+
+ 0x10b56  0xf76: 2a03    ;   0x32a  D27/C512 INTEL
+ 0x10b56  0xf76: 2a03    ;   0x32a
+ 0x10b58  0xf78: 0000    ;     0x0
+ 0x10b5a  0xf7a: 0100    ;     0x1
+ 0x10b5c  0xf7c: 0400    ;     0x4
+ 0x10b5e  0xf7e: 0200    ;     0x2
+ 0x10b60  0xf80: 1c00    ;    0x1c  28
+
+ 0x10b62  0xf82: 3303    ;   0x333  D27/C513 INTEL
+ 0x10b62  0xf82: 3303    ;   0x333
+ 0x10b64  0xf84: 0000    ;     0x0
+ 0x10b66  0xf86: 0100    ;     0x1
+ 0x10b68  0xf88: 0300    ;     0x3
+ 0x10b6a  0xf8a: 0200    ;     0x2
+ 0x10b6c  0xf8c: 1c00    ;    0x1c  28
+
+ 0x10b6e  0xf8e: 3c03    ;   0x33c  D87C64 INTEL
+ 0x10b6e  0xf8e: 3c03    ;   0x33c
+ 0x10b70  0xf90: 0020    ;  0x2000
+ 0x10b72  0xf92: 0000    ;     0x0
+ 0x10b74  0xf94: 0300    ;     0x3
+ 0x10b76  0xf96: 0100    ;     0x1
+ 0x10b78  0xf98: 1c00    ;    0x1c  28
+
+ 0x10b7a  0xf9a: 4303    ;   0x343  D87C256 INTEL
+ 0x10b7a  0xf9a: 4303    ;   0x343
+ 0x10b7c  0xf9c: 0080    ;  0x8000
+ 0x10b7e  0xf9e: 0000    ;     0x0
+ 0x10b80  0xfa0: 0400    ;     0x4
+ 0x10b82  0xfa2: 0200    ;     0x2
+ 0x10b84  0xfa4: 1c00    ;    0x1c  28
+
+ 0x10b86  0xfa6: 4b03    ;   0x34b  D87C257 INTEL
+ 0x10b86  0xfa6: 4b03    ;   0x34b
+ 0x10b88  0xfa8: 0080    ;  0x8000
+ 0x10b8a  0xfaa: 0000    ;     0x0
+ 0x10b8c  0xfac: 0400    ;     0x4
+ 0x10b8e  0xfae: 0100    ;     0x1
+ 0x10b90  0xfb0: 1c00    ;    0x1c  28
+
+ 0x10b92  0xfb2: 0000    ;     0x0  ---
+ 0x10b92  0xfb2: 0000    ;     0x0
+ 0x10b94  0xfb4: 0000    ;     0x0
+ 0x10b96  0xfb6: 0000    ;     0x0
+ 0x10b98  0xfb8: 0000    ;     0x0
+ 0x10b9a  0xfba: 0000    ;     0x0
+ 0x10b9c  0xfbc: 0000    ;     0x0  ---
+
+ 0x10b9e  0xfbe: 5303    ;   0x353  2764 MATSUSHITA
+ 0x10b9e  0xfbe: 5303    ;   0x353
+ 0x10ba0  0xfc0: 0020    ;  0x2000
+ 0x10ba2  0xfc2: 0000    ;     0x0
+ 0x10ba4  0xfc4: 0200    ;     0x2
+ 0x10ba6  0xfc6: 0100    ;     0x1
+ 0x10ba8  0xfc8: 1c00    ;    0x1c  28
+
+ 0x10baa  0xfca: 5803    ;   0x358  27128 MATSUSHITA
+ 0x10baa  0xfca: 5803    ;   0x358
+ 0x10bac  0xfcc: 0040    ;  0x4000
+ 0x10bae  0xfce: 0000    ;     0x0
+ 0x10bb0  0xfd0: 0200    ;     0x2
+ 0x10bb2  0xfd2: 0100    ;     0x1
+ 0x10bb4  0xfd4: 1c00    ;    0x1c  28
+
+ 0x10bb6  0xfd6: 0000    ;     0x0  ---
+ 0x10bb6  0xfd6: 0000    ;     0x0
+ 0x10bb8  0xfd8: 0000    ;     0x0
+ 0x10bba  0xfda: 0000    ;     0x0
+ 0x10bbc  0xfdc: 0000    ;     0x0
+ 0x10bbe  0xfde: 0000    ;     0x0
+ 0x10bc0  0xfe0: 0000    ;     0x0  ---
+
+ 0x10bc2  0xfe2: 5e03    ;   0x35e  27C64/HC64 MICROCHIP
+ 0x10bc2  0xfe2: 5e03    ;   0x35e
+ 0x10bc4  0xfe4: 0020    ;  0x2000
+ 0x10bc6  0xfe6: 0000    ;     0x0
+ 0x10bc8  0xfe8: 0300    ;     0x3
+ 0x10bca  0xfea: 0100    ;     0x1
+ 0x10bcc  0xfec: 1c00    ;    0x1c  28
+
+ 0x10bce  0xfee: 6903    ;   0x369  27C128 MICROCHIP
+ 0x10bce  0xfee: 6903    ;   0x369
+ 0x10bd0  0xff0: 0040    ;  0x4000
+ 0x10bd2  0xff2: 0000    ;     0x0
+ 0x10bd4  0xff4: 0300    ;     0x3
+ 0x10bd6  0xff6: 0100    ;     0x1
+ 0x10bd8  0xff8: 1c00    ;    0x1c  28
+
+ 0x10bda  0xffa: 7003    ;   0x370  27C256/HC256 MICROCHIP
+ 0x10bda  0xffa: 7003    ;   0x370
+ 0x10bdc  0xffc: 0080    ;  0x8000
+ 0x10bde  0xffe: 0000    ;     0x0
+ 0x10be0  0x1000: 0300    ;     0x3
+ 0x10be2  0x1002: 0100    ;     0x1
+ 0x10be4  0x1004: 1c00    ;    0x1c  28
+
+ 0x10be6  0x1006: 7d03    ;   0x37d  27C512 MICROCHIP
+ 0x10be6  0x1006: 7d03    ;   0x37d
+ 0x10be8  0x1008: 0000    ;     0x0
+ 0x10bea  0x100a: 0100    ;     0x1
+ 0x10bec  0x100c: 0300    ;     0x3
+ 0x10bee  0x100e: 0100    ;     0x1
+ 0x10bf0  0x1010: 1c00    ;    0x1c  28
+
+ 0x10bf2  0x1012: 8403    ;   0x384  27C513 MICROCHIP
+ 0x10bf2  0x1012: 8403    ;   0x384
+ 0x10bf4  0x1014: 0000    ;     0x0
+ 0x10bf6  0x1016: 0100    ;     0x1
+ 0x10bf8  0x1018: 0300    ;     0x3
+ 0x10bfa  0x101a: 0200    ;     0x2
+ 0x10bfc  0x101c: 1c00    ;    0x1c  28
+
+ 0x10bfe  0x101e: 0000    ;     0x0  ---
+ 0x10bfe  0x101e: 0000    ;     0x0
+ 0x10c00  0x1020: 0000    ;     0x0
+ 0x10c02  0x1022: 0000    ;     0x0
+ 0x10c04  0x1024: 0000    ;     0x0
+ 0x10c06  0x1026: 0000    ;     0x0
+ 0x10c08  0x1028: 0000    ;     0x0  ---
+
+ 0x10c0a  0x102a: 8b03    ;   0x38b  M5L2716 MITSUBISHI
+ 0x10c0a  0x102a: 8b03    ;   0x38b
+ 0x10c0c  0x102c: 0008    ;   0x800
+ 0x10c0e  0x102e: 0000    ;     0x0
+ 0x10c10  0x1030: 0100    ;     0x1
+ 0x10c12  0x1032: 0100    ;     0x1
+ 0x10c14  0x1034: 1800    ;    0x18  24
+
+ 0x10c16  0x1036: 9303    ;   0x393  M5L2732 MITSUBISHI
+ 0x10c16  0x1036: 9303    ;   0x393
+ 0x10c18  0x1038: 0010    ;  0x1000
+ 0x10c1a  0x103a: 0000    ;     0x0
+ 0x10c1c  0x103c: 0100    ;     0x1
+ 0x10c1e  0x103e: 0100    ;     0x1
+ 0x10c20  0x1040: 1800    ;    0x18  24
+
+ 0x10c22  0x1042: 9b03    ;   0x39b  M5L2764 MITSUBISHI
+ 0x10c22  0x1042: 9b03    ;   0x39b
+ 0x10c24  0x1044: 0020    ;  0x2000
+ 0x10c26  0x1046: 0000    ;     0x0
+ 0x10c28  0x1048: 0200    ;     0x2
+ 0x10c2a  0x104a: 0100    ;     0x1
+ 0x10c2c  0x104c: 1c00    ;    0x1c  28
+
+ 0x10c2e  0x104e: a303    ;   0x3a3  27128/27C128K MITSUBISHI
+ 0x10c2e  0x104e: a303    ;   0x3a3
+ 0x10c30  0x1050: 0040    ;  0x4000
+ 0x10c32  0x1052: 0000    ;     0x0
+ 0x10c34  0x1054: 0200    ;     0x2
+ 0x10c36  0x1056: 0100    ;     0x1
+ 0x10c38  0x1058: 1c00    ;    0x1c  28
+
+ 0x10c3a  0x105a: b103    ;   0x3b1  M5L27C128 MITSUBISHI
+ 0x10c3a  0x105a: b103    ;   0x3b1
+ 0x10c3c  0x105c: 0040    ;  0x4000
+ 0x10c3e  0x105e: 0000    ;     0x0
+ 0x10c40  0x1060: 0300    ;     0x3
+ 0x10c42  0x1062: 0100    ;     0x1
+ 0x10c44  0x1064: 1c00    ;    0x1c  28
+
+ 0x10c46  0x1066: bb03    ;   0x3bb  27K/C256/AK MITSUBISHI
+ 0x10c46  0x1066: bb03    ;   0x3bb
+ 0x10c48  0x1068: 0080    ;  0x8000
+ 0x10c4a  0x106a: 0000    ;     0x0
+ 0x10c4c  0x106c: 0300    ;     0x3
+ 0x10c4e  0x106e: 0100    ;     0x1
+ 0x10c50  0x1070: 1c00    ;    0x1c  28
+
+ 0x10c52  0x1072: c703    ;   0x3c7  27512/C512AK MITSUBISHI
+ 0x10c52  0x1072: c703    ;   0x3c7
+ 0x10c54  0x1074: 0000    ;     0x0
+ 0x10c56  0x1076: 0100    ;     0x1
+ 0x10c58  0x1078: 0300    ;     0x3
+ 0x10c5a  0x107a: 0100    ;     0x1
+ 0x10c5c  0x107c: 1c00    ;    0x1c  28
+
+ 0x10c5e  0x107e: 0000    ;     0x0  ---
+ 0x10c5e  0x107e: 0000    ;     0x0
+ 0x10c60  0x1080: 0000    ;     0x0
+ 0x10c62  0x1082: 0000    ;     0x0
+ 0x10c64  0x1084: 0000    ;     0x0
+ 0x10c66  0x1086: 0000    ;     0x0
+ 0x10c68  0x1088: 0000    ;     0x0  ---
+
+ 0x10c6a  0x108a: d403    ;   0x3d4  2716 MOSTEK
+ 0x10c6a  0x108a: d403    ;   0x3d4
+ 0x10c6c  0x108c: 0008    ;   0x800
+ 0x10c6e  0x108e: 0000    ;     0x0
+ 0x10c70  0x1090: 0100    ;     0x1
+ 0x10c72  0x1092: 0100    ;     0x1
+ 0x10c74  0x1094: 1800    ;    0x18  24
+
+ 0x10c76  0x1096: 0000    ;     0x0  ---
+ 0x10c76  0x1096: 0000    ;     0x0
+ 0x10c78  0x1098: 0000    ;     0x0
+ 0x10c7a  0x109a: 0000    ;     0x0
+ 0x10c7c  0x109c: 0000    ;     0x0
+ 0x10c7e  0x109e: 0000    ;     0x0
+ 0x10c80  0x10a0: 0000    ;     0x0  ---
+
+ 0x10c82  0x10a2: d903    ;   0x3d9  MCM68764 MOTOROLA
+ 0x10c82  0x10a2: d903    ;   0x3d9
+ 0x10c84  0x10a4: 0020    ;  0x2000
+ 0x10c86  0x10a6: 0000    ;     0x0
+ 0x10c88  0x10a8: 0100    ;     0x1
+ 0x10c8a  0x10aa: 0600    ;     0x6
+ 0x10c8c  0x10ac: 1c00    ;    0x1c  28
+
+ 0x10c8e  0x10ae: e203    ;   0x3e2  MCM68766 MOTOROLA
+ 0x10c8e  0x10ae: e203    ;   0x3e2
+ 0x10c90  0x10b0: 0020    ;  0x2000
+ 0x10c92  0x10b2: 0000    ;     0x0
+ 0x10c94  0x10b4: 0100    ;     0x1
+ 0x10c96  0x10b6: 0600    ;     0x6
+ 0x10c98  0x10b8: 1c00    ;    0x1c  28
+
+ 0x10c9a  0x10ba: 0000    ;     0x0  ---
+ 0x10c9a  0x10ba: 0000    ;     0x0
+ 0x10c9c  0x10bc: 0000    ;     0x0
+ 0x10c9e  0x10be: 0000    ;     0x0
+ 0x10ca0  0x10c0: 0000    ;     0x0
+ 0x10ca2  0x10c2: 0000    ;     0x0
+ 0x10ca4  0x10c4: 0000    ;     0x0  ---
+
+ 0x10ca6  0x10c6: eb03    ;   0x3eb  D2716 NEC
+ 0x10ca6  0x10c6: eb03    ;   0x3eb
+ 0x10ca8  0x10c8: 0008    ;   0x800
+ 0x10caa  0x10ca: 0000    ;     0x0
+ 0x10cac  0x10cc: 0100    ;     0x1
+ 0x10cae  0x10ce: 0100    ;     0x1
+ 0x10cb0  0x10d0: 1800    ;    0x18  24
+
+ 0x10cb2  0x10d2: f103    ;   0x3f1  D2732 NEC
+ 0x10cb2  0x10d2: f103    ;   0x3f1
+ 0x10cb4  0x10d4: 0010    ;  0x1000
+ 0x10cb6  0x10d6: 0000    ;     0x0
+ 0x10cb8  0x10d8: 0100    ;     0x1
+ 0x10cba  0x10da: 0100    ;     0x1
+ 0x10cbc  0x10dc: 1800    ;    0x18  24
+
+ 0x10cbe  0x10de: f703    ;   0x3f7  D2732A NEC
+ 0x10cbe  0x10de: f703    ;   0x3f7
+ 0x10cc0  0x10e0: 0010    ;  0x1000
+ 0x10cc2  0x10e2: 0000    ;     0x0
+ 0x10cc4  0x10e4: 0200    ;     0x2
+ 0x10cc6  0x10e6: 0100    ;     0x1
+ 0x10cc8  0x10e8: 1800    ;    0x18  24
+
+ 0x10cca  0x10ea: fe03    ;   0x3fe  D2732B NEC
+ 0x10cca  0x10ea: fe03    ;   0x3fe
+ 0x10ccc  0x10ec: 0010    ;  0x1000
+ 0x10cce  0x10ee: 0000    ;     0x0
+ 0x10cd0  0x10f0: 0300    ;     0x3
+ 0x10cd2  0x10f2: 0100    ;     0x1
+ 0x10cd4  0x10f4: 1800    ;    0x18  24
+
+ 0x10cd6  0x10f6: 0504    ;   0x405  D2764 NEC
+ 0x10cd6  0x10f6: 0504    ;   0x405
+ 0x10cd8  0x10f8: 0020    ;  0x2000
+ 0x10cda  0x10fa: 0000    ;     0x0
+ 0x10cdc  0x10fc: 0200    ;     0x2
+ 0x10cde  0x10fe: 0100    ;     0x1
+ 0x10ce0  0x1100: 1c00    ;    0x1c  28
+
+ 0x10ce2  0x1102: 0b04    ;   0x40b  D27C64 NEC
+ 0x10ce2  0x1102: 0b04    ;   0x40b
+ 0x10ce4  0x1104: 0020    ;  0x2000
+ 0x10ce6  0x1106: 0000    ;     0x0
+ 0x10ce8  0x1108: 0300    ;     0x3
+ 0x10cea  0x110a: 0100    ;     0x1
+ 0x10cec  0x110c: 1c00    ;    0x1c  28
+
+ 0x10cee  0x110e: 1204    ;   0x412  D27128 NEC
+ 0x10cee  0x110e: 1204    ;   0x412
+ 0x10cf0  0x1110: 0040    ;  0x4000
+ 0x10cf2  0x1112: 0000    ;     0x0
+ 0x10cf4  0x1114: 0200    ;     0x2
+ 0x10cf6  0x1116: 0100    ;     0x1
+ 0x10cf8  0x1118: 1c00    ;    0x1c  28
+
+ 0x10cfa  0x111a: 1904    ;   0x419  D27/C256 NEC
+ 0x10cfa  0x111a: 1904    ;   0x419
+ 0x10cfc  0x111c: 0080    ;  0x8000
+ 0x10cfe  0x111e: 0000    ;     0x0
+ 0x10d00  0x1120: 0200    ;     0x2
+ 0x10d02  0x1122: 0100    ;     0x1
+ 0x10d04  0x1124: 1c00    ;    0x1c  28
+
+ 0x10d06  0x1126: 2204    ;   0x422  D27C512 NEC
+ 0x10d06  0x1126: 2204    ;   0x422
+ 0x10d08  0x1128: 0000    ;     0x0
+ 0x10d0a  0x112a: 0100    ;     0x1
+ 0x10d0c  0x112c: 0300    ;     0x3
+ 0x10d0e  0x112e: 0100    ;     0x1
+ 0x10d10  0x1130: 1c00    ;    0x1c  28
+
+ 0x10d12  0x1132: 0000    ;     0x0  ---
+ 0x10d12  0x1132: 0000    ;     0x0
+ 0x10d14  0x1134: 0000    ;     0x0
+ 0x10d16  0x1136: 0000    ;     0x0
+ 0x10d18  0x1138: 0000    ;     0x0
+ 0x10d1a  0x113a: 0000    ;     0x0
+ 0x10d1c  0x113c: 0000    ;     0x0  ---
+
+ 0x10d1e  0x113e: 2a04    ;   0x42a  NMC2716/C16 NS
+ 0x10d1e  0x113e: 2a04    ;   0x42a
+ 0x10d20  0x1140: 0008    ;   0x800
+ 0x10d22  0x1142: 0000    ;     0x0
+ 0x10d24  0x1144: 0100    ;     0x1
+ 0x10d26  0x1146: 0700    ;     0x7
+ 0x10d28  0x1148: 1800    ;    0x18  24
+
+ 0x10d2a  0x114a: 3604    ;   0x436  NMC27C16B NS
+ 0x10d2a  0x114a: 3604    ;   0x436
+ 0x10d2c  0x114c: 0008    ;   0x800
+ 0x10d2e  0x114e: 0000    ;     0x0
+ 0x10d30  0x1150: 0500    ;     0x5
+ 0x10d32  0x1152: 0700    ;     0x7
+ 0x10d34  0x1154: 1800    ;    0x18  24
+
+ 0x10d36  0x1156: 4004    ;   0x440  NMC27C32 NS
+ 0x10d36  0x1156: 4004    ;   0x440
+ 0x10d38  0x1158: 0010    ;  0x1000
+ 0x10d3a  0x115a: 0000    ;     0x0
+ 0x10d3c  0x115c: 0100    ;     0x1
+ 0x10d3e  0x115e: 0700    ;     0x7
+ 0x10d40  0x1160: 1800    ;    0x18  24
+
+ 0x10d42  0x1162: 4904    ;   0x449  MNC27C32B NS
+ 0x10d42  0x1162: 4904    ;   0x449
+ 0x10d44  0x1164: 0010    ;  0x1000
+ 0x10d46  0x1166: 0000    ;     0x0
+ 0x10d48  0x1168: 0500    ;     0x5
+ 0x10d4a  0x116a: 0700    ;     0x7
+ 0x10d4c  0x116c: 1800    ;    0x18  24
+
+ 0x10d4e  0x116e: 5304    ;   0x453  NMC27C64 NS
+ 0x10d4e  0x116e: 5304    ;   0x453
+ 0x10d50  0x1170: 0020    ;  0x2000
+ 0x10d52  0x1172: 0000    ;     0x0
+ 0x10d54  0x1174: 0500    ;     0x5
+ 0x10d56  0x1176: 0700    ;     0x7
+ 0x10d58  0x1178: 1c00    ;    0x1c  28
+
+ 0x10d5a  0x117a: 5c04    ;   0x45c  NMC27C128/B NS
+ 0x10d5a  0x117a: 5c04    ;   0x45c
+ 0x10d5c  0x117c: 0040    ;  0x4000
+ 0x10d5e  0x117e: 0000    ;     0x0
+ 0x10d60  0x1180: 0500    ;     0x5
+ 0x10d62  0x1182: 0700    ;     0x7
+ 0x10d64  0x1184: 1c00    ;    0x1c  28
+
+ 0x10d66  0x1186: 6804    ;   0x468  NMC27CP128 NS
+ 0x10d66  0x1186: 6804    ;   0x468
+ 0x10d68  0x1188: 0040    ;  0x4000
+ 0x10d6a  0x118a: 0000    ;     0x0
+ 0x10d6c  0x118c: 0500    ;     0x5
+ 0x10d6e  0x118e: 0700    ;     0x7
+ 0x10d70  0x1190: 1c00    ;    0x1c  28
+
+ 0x10d72  0x1192: 7304    ;   0x473  NMC27C256 NS
+ 0x10d72  0x1192: 7304    ;   0x473
+ 0x10d74  0x1194: 0080    ;  0x8000
+ 0x10d76  0x1196: 0000    ;     0x0
+ 0x10d78  0x1198: 0500    ;     0x5
+ 0x10d7a  0x119a: 0700    ;     0x7
+ 0x10d7c  0x119c: 1c00    ;    0x1c  28
+
+ 0x10d7e  0x119e: 7d04    ;   0x47d  NMC27C256B NS
+ 0x10d7e  0x119e: 7d04    ;   0x47d
+ 0x10d80  0x11a0: 0080    ;  0x8000
+ 0x10d82  0x11a2: 0000    ;     0x0
+ 0x10d84  0x11a4: 0300    ;     0x3
+ 0x10d86  0x11a6: 0700    ;     0x7
+ 0x10d88  0x11a8: 1c00    ;    0x1c  28
+
+ 0x10d8a  0x11aa: 8804    ;   0x488  NMC27C512 NS
+ 0x10d8a  0x11aa: 8804    ;   0x488
+ 0x10d8c  0x11ac: 0000    ;     0x0
+ 0x10d8e  0x11ae: 0100    ;     0x1
+ 0x10d90  0x11b0: 0500    ;     0x5
+ 0x10d92  0x11b2: 0700    ;     0x7
+ 0x10d94  0x11b4: 1c00    ;    0x1c  28
+
+ 0x10d96  0x11b6: 9204    ;   0x492  NMC27C512A NS
+ 0x10d96  0x11b6: 9204    ;   0x492
+ 0x10d98  0x11b8: 0000    ;     0x0
+ 0x10d9a  0x11ba: 0100    ;     0x1
+ 0x10d9c  0x11bc: 0300    ;     0x3
+ 0x10d9e  0x11be: 0700    ;     0x7
+ 0x10da0  0x11c0: 1c00    ;    0x1c  28
+
+ 0x10da2  0x11c2: 0000    ;     0x0  ---
+ 0x10da2  0x11c2: 0000    ;     0x0
+ 0x10da4  0x11c4: 0000    ;     0x0
+ 0x10da6  0x11c6: 0000    ;     0x0
+ 0x10da8  0x11c8: 0000    ;     0x0
+ 0x10daa  0x11ca: 0000    ;     0x0
+ 0x10dac  0x11cc: 0000    ;     0x0  ---
+
+ 0x10dae  0x11ce: 9d04    ;   0x49d  MSM2716 OKI
+ 0x10dae  0x11ce: 9d04    ;   0x49d
+ 0x10db0  0x11d0: 0008    ;   0x800
+ 0x10db2  0x11d2: 0000    ;     0x0
+ 0x10db4  0x11d4: 0100    ;     0x1
+ 0x10db6  0x11d6: 0100    ;     0x1
+ 0x10db8  0x11d8: 1800    ;    0x18  24
+
+ 0x10dba  0x11da: a504    ;   0x4a5  MSM2764AS OKI
+ 0x10dba  0x11da: a504    ;   0x4a5
+ 0x10dbc  0x11dc: 0020    ;  0x2000
+ 0x10dbe  0x11de: 0000    ;     0x0
+ 0x10dc0  0x11e0: 0200    ;     0x2
+ 0x10dc2  0x11e2: 0100    ;     0x1
+ 0x10dc4  0x11e4: 1c00    ;    0x1c  28
+
+ 0x10dc6  0x11e6: af04    ;   0x4af  MSM2764A OKI
+ 0x10dc6  0x11e6: af04    ;   0x4af
+ 0x10dc8  0x11e8: 0020    ;  0x2000
+ 0x10dca  0x11ea: 0000    ;     0x0
+ 0x10dcc  0x11ec: 0300    ;     0x3
+ 0x10dce  0x11ee: 0100    ;     0x1
+ 0x10dd0  0x11f0: 1c00    ;    0x1c  28
+
+ 0x10dd2  0x11f2: b804    ;   0x4b8  MSM27128AS OKI
+ 0x10dd2  0x11f2: b804    ;   0x4b8
+ 0x10dd4  0x11f4: 0040    ;  0x4000
+ 0x10dd6  0x11f6: 0000    ;     0x0
+ 0x10dd8  0x11f8: 0200    ;     0x2
+ 0x10dda  0x11fa: 0100    ;     0x1
+ 0x10ddc  0x11fc: 1c00    ;    0x1c  28
+
+ 0x10dde  0x11fe: c304    ;   0x4c3  MSM27128A OKI
+ 0x10dde  0x11fe: c304    ;   0x4c3
+ 0x10de0  0x1200: 0040    ;  0x4000
+ 0x10de2  0x1202: 0000    ;     0x0
+ 0x10de4  0x1204: 0300    ;     0x3
+ 0x10de6  0x1206: 0100    ;     0x1
+ 0x10de8  0x1208: 1c00    ;    0x1c  28
+
+ 0x10dea  0x120a: cd04    ;   0x4cd  MSM27256AS OKI
+ 0x10dea  0x120a: cd04    ;   0x4cd
+ 0x10dec  0x120c: 0080    ;  0x8000
+ 0x10dee  0x120e: 0000    ;     0x0
+ 0x10df0  0x1210: 0300    ;     0x3
+ 0x10df2  0x1212: 0100    ;     0x1
+ 0x10df4  0x1214: 1c00    ;    0x1c  28
+
+ 0x10df6  0x1216: d804    ;   0x4d8  MSM27512AS OKI
+ 0x10df6  0x1216: d804    ;   0x4d8
+ 0x10df8  0x1218: 0000    ;     0x0
+ 0x10dfa  0x121a: 0100    ;     0x1
+ 0x10dfc  0x121c: 0300    ;     0x3
+ 0x10dfe  0x121e: 0100    ;     0x1
+ 0x10e00  0x1220: 1c00    ;    0x1c  28
+
+ 0x10e02  0x1222: 0000    ;     0x0  ---
+ 0x10e02  0x1222: 0000    ;     0x0
+ 0x10e04  0x1224: 0000    ;     0x0
+ 0x10e06  0x1226: 0000    ;     0x0
+ 0x10e08  0x1228: 0000    ;     0x0
+ 0x10e0a  0x122a: 0000    ;     0x0
+ 0x10e0c  0x122c: 0000    ;     0x0  ---
+
+ 0x10e0e  0x122e: e304    ;   0x4e3  27C32 RICOH
+ 0x10e0e  0x122e: e304    ;   0x4e3
+ 0x10e10  0x1230: 0010    ;  0x1000
+ 0x10e12  0x1232: 0000    ;     0x0
+ 0x10e14  0x1234: 0200    ;     0x2
+ 0x10e16  0x1236: 0100    ;     0x1
+ 0x10e18  0x1238: 1800    ;    0x18  24
+
+ 0x10e1a  0x123a: e904    ;   0x4e9  27C64 RICOH
+ 0x10e1a  0x123a: e904    ;   0x4e9
+ 0x10e1c  0x123c: 0020    ;  0x2000
+ 0x10e1e  0x123e: 0000    ;     0x0
+ 0x10e20  0x1240: 0200    ;     0x2
+ 0x10e22  0x1242: 0100    ;     0x1
+ 0x10e24  0x1244: 1c00    ;    0x1c  28
+
+ 0x10e26  0x1246: ef04    ;   0x4ef  27C256 RICOH
+ 0x10e26  0x1246: ef04    ;   0x4ef
+ 0x10e28  0x1248: 0080    ;  0x8000
+ 0x10e2a  0x124a: 0000    ;     0x0
+ 0x10e2c  0x124c: 0300    ;     0x3
+ 0x10e2e  0x124e: 0100    ;     0x1
+ 0x10e30  0x1250: 1c00    ;    0x1c  28
+
+ 0x10e32  0x1252: 0000    ;     0x0  ---
+ 0x10e32  0x1252: 0000    ;     0x0
+ 0x10e34  0x1254: 0000    ;     0x0
+ 0x10e36  0x1256: 0000    ;     0x0
+ 0x10e38  0x1258: 0000    ;     0x0
+ 0x10e3a  0x125a: 0000    ;     0x0
+ 0x10e3c  0x125c: 0000    ;     0x0  ---
+
+ 0x10e3e  0x125e: f604    ;   0x4f6  27C64A SIGNETICS
+ 0x10e3e  0x125e: f604    ;   0x4f6
+ 0x10e40  0x1260: 0020    ;  0x2000
+ 0x10e42  0x1262: 0000    ;     0x0
+ 0x10e44  0x1264: 0400    ;     0x4
+ 0x10e46  0x1266: 0200    ;     0x2
+ 0x10e48  0x1268: 1c00    ;    0x1c  28
+
+ 0x10e4a  0x126a: fd04    ;   0x4fd  27C128 SIGNETICS
+ 0x10e4a  0x126a: fd04    ;   0x4fd
+ 0x10e4c  0x126c: 0040    ;  0x4000
+ 0x10e4e  0x126e: 0000    ;     0x0
+ 0x10e50  0x1270: 0400    ;     0x4
+ 0x10e52  0x1272: 0200    ;     0x2
+ 0x10e54  0x1274: 1c00    ;    0x1c  28
+
+ 0x10e56  0x1276: 0405    ;   0x504  27C256 SIGNETICS
+ 0x10e56  0x1276: 0405    ;   0x504
+ 0x10e58  0x1278: 0080    ;  0x8000
+ 0x10e5a  0x127a: 0000    ;     0x0
+ 0x10e5c  0x127c: 0400    ;     0x4
+ 0x10e5e  0x127e: 0200    ;     0x2
+ 0x10e60  0x1280: 1c00    ;    0x1c  28
+
+ 0x10e62  0x1282: 0b05    ;   0x50b  27C512 SIGNETICS
+ 0x10e62  0x1282: 0b05    ;   0x50b
+ 0x10e64  0x1284: 0000    ;     0x0
+ 0x10e66  0x1286: 0100    ;     0x1
+ 0x10e68  0x1288: 0400    ;     0x4
+ 0x10e6a  0x128a: 0200    ;     0x2
+ 0x10e6c  0x128c: 1c00    ;    0x1c  28
+
+ 0x10e6e  0x128e: 0000    ;     0x0  ---
+ 0x10e6e  0x128e: 0000    ;     0x0
+ 0x10e70  0x1290: 0000    ;     0x0
+ 0x10e72  0x1292: 0000    ;     0x0
+ 0x10e74  0x1294: 0000    ;     0x0
+ 0x10e76  0x1296: 0000    ;     0x0
+ 0x10e78  0x1298: 0000    ;     0x0  ---
+
+ 0x10e7a  0x129a: 1205    ;   0x512  27C64H SMOS
+ 0x10e7a  0x129a: 1205    ;   0x512
+ 0x10e7c  0x129c: 0020    ;  0x2000
+ 0x10e7e  0x129e: 0000    ;     0x0
+ 0x10e80  0x12a0: 0300    ;     0x3
+ 0x10e82  0x12a2: 0100    ;     0x1
+ 0x10e84  0x12a4: 1c00    ;    0x1c  28
+
+ 0x10e86  0x12a6: 1905    ;   0x519  27128H SMOS
+ 0x10e86  0x12a6: 1905    ;   0x519
+ 0x10e88  0x12a8: 0040    ;  0x4000
+ 0x10e8a  0x12aa: 0000    ;     0x0
+ 0x10e8c  0x12ac: 0300    ;     0x3
+ 0x10e8e  0x12ae: 0100    ;     0x1
+ 0x10e90  0x12b0: 1c00    ;    0x1c  28
+
+ 0x10e92  0x12b2: 2005    ;   0x520  27C256H SMOS
+ 0x10e92  0x12b2: 2005    ;   0x520
+ 0x10e94  0x12b4: 0080    ;  0x8000
+ 0x10e96  0x12b6: 0000    ;     0x0
+ 0x10e98  0x12b8: 0300    ;     0x3
+ 0x10e9a  0x12ba: 0100    ;     0x1
+ 0x10e9c  0x12bc: 1c00    ;    0x1c  28
+
+ 0x10e9e  0x12be: 0000    ;     0x0  ---
+ 0x10e9e  0x12be: 0000    ;     0x0
+ 0x10ea0  0x12c0: 0000    ;     0x0
+ 0x10ea2  0x12c2: 0000    ;     0x0
+ 0x10ea4  0x12c4: 0000    ;     0x0
+ 0x10ea6  0x12c6: 0000    ;     0x0
+ 0x10ea8  0x12c8: 0000    ;     0x0  ---
+
+ 0x10eaa  0x12ca: 2805    ;   0x528  2716/C16 SGS_THOMSON
+ 0x10eaa  0x12ca: 2805    ;   0x528
+ 0x10eac  0x12cc: 0008    ;   0x800
+ 0x10eae  0x12ce: 0000    ;     0x0
+ 0x10eb0  0x12d0: 0100    ;     0x1
+ 0x10eb2  0x12d2: 0100    ;     0x1
+ 0x10eb4  0x12d4: 1800    ;    0x18  24
+
+ 0x10eb6  0x12d6: 3105    ;   0x531  TS27/C32 SGS_THOMSON
+ 0x10eb6  0x12d6: 3105    ;   0x531
+ 0x10eb8  0x12d8: 0010    ;  0x1000
+ 0x10eba  0x12da: 0000    ;     0x0
+ 0x10ebc  0x12dc: 0100    ;     0x1
+ 0x10ebe  0x12de: 0100    ;     0x1
+ 0x10ec0  0x12e0: 1800    ;    0x18  24
+
+ 0x10ec2  0x12e2: 3a05    ;   0x53a  M2732A SGS_THOMSON
+ 0x10ec2  0x12e2: 3a05    ;   0x53a
+ 0x10ec4  0x12e4: 0010    ;  0x1000
+ 0x10ec6  0x12e6: 0000    ;     0x0
+ 0x10ec8  0x12e8: 0200    ;     0x2
+ 0x10eca  0x12ea: 0100    ;     0x1
+ 0x10ecc  0x12ec: 1800    ;    0x18  24
+
+ 0x10ece  0x12ee: 4105    ;   0x541  TS2764 SGS_THOMSON
+ 0x10ece  0x12ee: 4105    ;   0x541
+ 0x10ed0  0x12f0: 0020    ;  0x2000
+ 0x10ed2  0x12f2: 0000    ;     0x0
+ 0x10ed4  0x12f4: 0200    ;     0x2
+ 0x10ed6  0x12f6: 0100    ;     0x1
+ 0x10ed8  0x12f8: 1c00    ;    0x1c  28
+
+ 0x10eda  0x12fa: 4805    ;   0x548  27/C64A SGS_THOMSON
+ 0x10eda  0x12fa: 4805    ;   0x548
+ 0x10edc  0x12fc: 0020    ;  0x2000
+ 0x10ede  0x12fe: 0000    ;     0x0
+ 0x10ee0  0x1300: 0300    ;     0x3
+ 0x10ee2  0x1302: 0100    ;     0x1
+ 0x10ee4  0x1304: 1c00    ;    0x1c  28
+
+ 0x10ee6  0x1306: 5005    ;   0x550  M27128A SGS_THOMSON
+ 0x10ee6  0x1306: 5005    ;   0x550
+ 0x10ee8  0x1308: 0040    ;  0x4000
+ 0x10eea  0x130a: 0000    ;     0x0
+ 0x10eec  0x130c: 0300    ;     0x3
+ 0x10eee  0x130e: 0100    ;     0x1
+ 0x10ef0  0x1310: 1c00    ;    0x1c  28
+
+ 0x10ef2  0x1312: 5805    ;   0x558  M27/C256 SGS_THOMSON
+ 0x10ef2  0x1312: 5805    ;   0x558
+ 0x10ef4  0x1314: 0080    ;  0x8000
+ 0x10ef6  0x1316: 0000    ;     0x0
+ 0x10ef8  0x1318: 0300    ;     0x3
+ 0x10efa  0x131a: 0100    ;     0x1
+ 0x10efc  0x131c: 1c00    ;    0x1c  28
+
+ 0x10efe  0x131e: 6105    ;   0x561  M27/C512 SGS_THOMSON
+ 0x10efe  0x131e: 6105    ;   0x561
+ 0x10f00  0x1320: 0000    ;     0x0
+ 0x10f02  0x1322: 0100    ;     0x1
+ 0x10f04  0x1324: 0300    ;     0x3
+ 0x10f06  0x1326: 0100    ;     0x1
+ 0x10f08  0x1328: 1c00    ;    0x1c  28
+
+ 0x10f0a  0x132a: 0000    ;     0x0  ---
+ 0x10f0a  0x132a: 0000    ;     0x0
+ 0x10f0c  0x132c: 0000    ;     0x0
+ 0x10f0e  0x132e: 0000    ;     0x0
+ 0x10f10  0x1330: 0000    ;     0x0
+ 0x10f12  0x1332: 0000    ;     0x0
+ 0x10f14  0x1334: 0000    ;     0x0  ---
+
+ 0x10f16  0x1336: 6a05    ;   0x56a  2732 TI
+ 0x10f16  0x1336: 6a05    ;   0x56a
+ 0x10f18  0x1338: 0010    ;  0x1000
+ 0x10f1a  0x133a: 0000    ;     0x0
+ 0x10f1c  0x133c: 0100    ;     0x1
+ 0x10f1e  0x133e: 0100    ;     0x1
+ 0x10f20  0x1340: 1800    ;    0x18  24
+
+ 0x10f22  0x1342: 6f05    ;   0x56f  2732A TI
+ 0x10f22  0x1342: 6f05    ;   0x56f
+ 0x10f24  0x1344: 0010    ;  0x1000
+ 0x10f26  0x1346: 0000    ;     0x0
+ 0x10f28  0x1348: 0200    ;     0x2
+ 0x10f2a  0x134a: 0100    ;     0x1
+ 0x10f2c  0x134c: 1800    ;    0x18  24
+
+ 0x10f2e  0x134e: 7505    ;   0x575  27C32/PC32 TI
+ 0x10f2e  0x134e: 7505    ;   0x575
+ 0x10f30  0x1350: 0010    ;  0x1000
+ 0x10f32  0x1352: 0000    ;     0x0
+ 0x10f34  0x1354: 0300    ;     0x3
+ 0x10f36  0x1356: 0400    ;     0x4
+ 0x10f38  0x1358: 1800    ;    0x18  24
+
+ 0x10f3a  0x135a: 8005    ;   0x580  2764 TI
+ 0x10f3a  0x135a: 8005    ;   0x580
+ 0x10f3c  0x135c: 0020    ;  0x2000
+ 0x10f3e  0x135e: 0000    ;     0x0
+ 0x10f40  0x1360: 0200    ;     0x2
+ 0x10f42  0x1362: 0100    ;     0x1
+ 0x10f44  0x1364: 1c00    ;    0x1c  28
+
+ 0x10f46  0x1366: 8505    ;   0x585  27C64/PC64 TI
+ 0x10f46  0x1366: 8505    ;   0x585
+ 0x10f48  0x1368: 0020    ;  0x2000
+ 0x10f4a  0x136a: 0000    ;     0x0
+ 0x10f4c  0x136c: 0300    ;     0x3
+ 0x10f4e  0x136e: 0400    ;     0x4
+ 0x10f50  0x1370: 1c00    ;    0x1c  28
+
+ 0x10f52  0x1372: 9005    ;   0x590  27128 TI
+ 0x10f52  0x1372: 9005    ;   0x590
+ 0x10f54  0x1374: 0040    ;  0x4000
+ 0x10f56  0x1376: 0000    ;     0x0
+ 0x10f58  0x1378: 0200    ;     0x2
+ 0x10f5a  0x137a: 0100    ;     0x1
+ 0x10f5c  0x137c: 1c00    ;    0x1c  28
+
+ 0x10f5e  0x137e: 9605    ;   0x596  27C128/PC128 TI
+ 0x10f5e  0x137e: 9605    ;   0x596
+ 0x10f60  0x1380: 0040    ;  0x4000
+ 0x10f62  0x1382: 0000    ;     0x0
+ 0x10f64  0x1384: 0300    ;     0x3
+ 0x10f66  0x1386: 0400    ;     0x4
+ 0x10f68  0x1388: 1c00    ;    0x1c  28
+
+ 0x10f6a  0x138a: a305    ;   0x5a3  27C/PC256/87C257 TI
+ 0x10f6a  0x138a: a305    ;   0x5a3
+ 0x10f6c  0x138c: 0080    ;  0x8000
+ 0x10f6e  0x138e: 0000    ;     0x0
+ 0x10f70  0x1390: 0300    ;     0x3
+ 0x10f72  0x1392: 0400    ;     0x4
+ 0x10f74  0x1394: 1c00    ;    0x1c  28
+
+ 0x10f76  0x1396: b405    ;   0x5b4  27C512/PC512 TI
+ 0x10f76  0x1396: b405    ;   0x5b4
+ 0x10f78  0x1398: 0000    ;     0x0
+ 0x10f7a  0x139a: 0100    ;     0x1
+ 0x10f7c  0x139c: 0300    ;     0x3
+ 0x10f7e  0x139e: 0400    ;     0x4
+ 0x10f80  0x13a0: 1c00    ;    0x1c  28
+
+ 0x10f82  0x13a2: c105    ;   0x5c1  2516 TI
+ 0x10f82  0x13a2: c105    ;   0x5c1
+ 0x10f84  0x13a4: 0008    ;   0x800
+ 0x10f86  0x13a6: 0000    ;     0x0
+ 0x10f88  0x13a8: 0100    ;     0x1
+ 0x10f8a  0x13aa: 0100    ;     0x1
+ 0x10f8c  0x13ac: 1800    ;    0x18  24
+
+ 0x10f8e  0x13ae: c605    ;   0x5c6  2532 TI
+ 0x10f8e  0x13ae: c605    ;   0x5c6
+ 0x10f90  0x13b0: 0010    ;  0x1000
+ 0x10f92  0x13b2: 0000    ;     0x0
+ 0x10f94  0x13b4: 0100    ;     0x1
+ 0x10f96  0x13b6: 0100    ;     0x1
+ 0x10f98  0x13b8: 1800    ;    0x18  24
+
+ 0x10f9a  0x13ba: cb05    ;   0x5cb  2532A TI
+ 0x10f9a  0x13ba: cb05    ;   0x5cb
+ 0x10f9c  0x13bc: 0010    ;  0x1000
+ 0x10f9e  0x13be: 0000    ;     0x0
+ 0x10fa0  0x13c0: 0200    ;     0x2
+ 0x10fa2  0x13c2: 0100    ;     0x1
+ 0x10fa4  0x13c4: 1800    ;    0x18  24
+
+ 0x10fa6  0x13c6: d105    ;   0x5d1  2564 TI
+ 0x10fa6  0x13c6: d105    ;   0x5d1
+ 0x10fa8  0x13c8: 0020    ;  0x2000
+ 0x10faa  0x13ca: 0000    ;     0x0
+ 0x10fac  0x13cc: 0200    ;     0x2
+ 0x10fae  0x13ce: 0100    ;     0x1
+ 0x10fb0  0x13d0: 1c00    ;    0x1c  28
+
+ 0x10fb2  0x13d2: 0000    ;     0x0  ---
+ 0x10fb2  0x13d2: 0000    ;     0x0
+ 0x10fb4  0x13d4: 0000    ;     0x0
+ 0x10fb6  0x13d6: 0000    ;     0x0
+ 0x10fb8  0x13d8: 0000    ;     0x0
+ 0x10fba  0x13da: 0000    ;     0x0
+ 0x10fbc  0x13dc: 0000    ;     0x0  ---
+
+ 0x10fbe  0x13de: d605    ;   0x5d6  TMM2732 TOSHIBA
+ 0x10fbe  0x13de: d605    ;   0x5d6
+ 0x10fc0  0x13e0: 0010    ;  0x1000
+ 0x10fc2  0x13e2: 0000    ;     0x0
+ 0x10fc4  0x13e4: 0100    ;     0x1
+ 0x10fc6  0x13e6: 0100    ;     0x1
+ 0x10fc8  0x13e8: 1800    ;    0x18  24
+
+ 0x10fca  0x13ea: de05    ;   0x5de  TMM2764 TOSHIBA
+ 0x10fca  0x13ea: de05    ;   0x5de
+ 0x10fcc  0x13ec: 0020    ;  0x2000
+ 0x10fce  0x13ee: 0000    ;     0x0
+ 0x10fd0  0x13f0: 0200    ;     0x2
+ 0x10fd2  0x13f2: 0100    ;     0x1
+ 0x10fd4  0x13f4: 1c00    ;    0x1c  28
+
+ 0x10fd6  0x13f6: e605    ;   0x5e6  TMM2764A TOSHIBA
+ 0x10fd6  0x13f6: e605    ;   0x5e6
+ 0x10fd8  0x13f8: 0020    ;  0x2000
+ 0x10fda  0x13fa: 0000    ;     0x0
+ 0x10fdc  0x13fc: 0300    ;     0x3
+ 0x10fde  0x13fe: 0100    ;     0x1
+ 0x10fe0  0x1400: 1c00    ;    0x1c  28
+
+ 0x10fe2  0x1402: ef05    ;   0x5ef  TMM27128 TOSHIBA
+ 0x10fe2  0x1402: ef05    ;   0x5ef
+ 0x10fe4  0x1404: 0040    ;  0x4000
+ 0x10fe6  0x1406: 0000    ;     0x0
+ 0x10fe8  0x1408: 0200    ;     0x2
+ 0x10fea  0x140a: 0100    ;     0x1
+ 0x10fec  0x140c: 1c00    ;    0x1c  28
+
+ 0x10fee  0x140e: f805    ;   0x5f8  TMM27128A TOSHIBA
+ 0x10fee  0x140e: f805    ;   0x5f8
+ 0x10ff0  0x1410: 0040    ;  0x4000
+ 0x10ff2  0x1412: 0000    ;     0x0
+ 0x10ff4  0x1414: 0300    ;     0x3
+ 0x10ff6  0x1416: 0100    ;     0x1
+ 0x10ff8  0x1418: 1c00    ;    0x1c  28
+
+ 0x10ffa  0x141a: 0206    ;   0x602  27256/A/57256AD TOSHIBA
+ 0x10ffa  0x141a: 0206    ;   0x602
+ 0x10ffc  0x141c: 0080    ;  0x8000
+ 0x10ffe  0x141e: 0000    ;     0x0
+ 0x11000  0x1420: 0300    ;     0x3
+ 0x11002  0x1422: 0100    ;     0x1
+ 0x11004  0x1424: 1c00    ;    0x1c  28
+
+ 0x11006  0x1426: 1206    ;   0x612  TMM27512 TOSHIBA
+ 0x11006  0x1426: 1206    ;   0x612
+ 0x11008  0x1428: 0000    ;     0x0
+ 0x1100a  0x142a: 0100    ;     0x1
+ 0x1100c  0x142c: 0300    ;     0x3
+ 0x1100e  0x142e: 0100    ;     0x1
+ 0x11010  0x1430: 1c00    ;    0x1c  28
+
+ 0x11012  0x1432: 0000    ;     0x0  ---
+ 0x11012  0x1432: 0000    ;     0x0
+ 0x11014  0x1434: 0000    ;     0x0
+ 0x11016  0x1436: 0000    ;     0x0
+ 0x11018  0x1438: 0000    ;     0x0
+ 0x1101a  0x143a: 0000    ;     0x0
+ 0x1101c  0x143c: 0000    ;     0x0  ---
+
+ 0x1101e  0x143e: 1b06    ;   0x61b  WS27C64FM WSI
+ 0x1101e  0x143e: 1b06    ;   0x61b
+ 0x11020  0x1440: 0020    ;  0x2000
+ 0x11022  0x1442: 0000    ;     0x0
+ 0x11024  0x1444: 0600    ;     0x6
+ 0x11026  0x1446: 0800    ;     0x8
+ 0x11028  0x1448: 1c00    ;    0x1c  28
+
+ 0x1102a  0x144a: 2506    ;   0x625  WS57C64F WSI
+ 0x1102a  0x144a: 2506    ;   0x625
+ 0x1102c  0x144c: 0020    ;  0x2000
+ 0x1102e  0x144e: 0000    ;     0x0
+ 0x11030  0x1450: 0600    ;     0x6
+ 0x11032  0x1452: 0800    ;     0x8
+ 0x11034  0x1454: 1c00    ;    0x1c  28
+
+ 0x11036  0x1456: 2e06    ;   0x62e  WS27C128FM WSI
+ 0x11036  0x1456: 2e06    ;   0x62e
+ 0x11038  0x1458: 0040    ;  0x4000
+ 0x1103a  0x145a: 0000    ;     0x0
+ 0x1103c  0x145c: 0300    ;     0x3
+ 0x1103e  0x145e: 0800    ;     0x8
+ 0x11040  0x1460: 1c00    ;    0x1c  28
+
+ 0x11042  0x1462: 3906    ;   0x639  WS57C128F WSI
+ 0x11042  0x1462: 3906    ;   0x639
+ 0x11044  0x1464: 0040    ;  0x4000
+ 0x11046  0x1466: 0000    ;     0x0
+ 0x11048  0x1468: 0600    ;     0x6
+ 0x1104a  0x146a: 0800    ;     0x8
+ 0x1104c  0x146c: 1c00    ;    0x1c  28
+
+ 0x1104e  0x146e: 4306    ;   0x643  WS27C256FM WSI
+ 0x1104e  0x146e: 4306    ;   0x643
+ 0x11050  0x1470: 0080    ;  0x8000
+ 0x11052  0x1472: 0000    ;     0x0
+ 0x11054  0x1474: 0300    ;     0x3
+ 0x11056  0x1476: 0800    ;     0x8
+ 0x11058  0x1478: 1c00    ;    0x1c  28
+
+ 0x1105a  0x147a: 4e06    ;   0x64e  WS57C256F-55 WSI
+ 0x1105a  0x147a: 4e06    ;   0x64e
+ 0x1105c  0x147c: 0080    ;  0x8000
+ 0x1105e  0x147e: 0000    ;     0x0
+ 0x11060  0x1480: 0300    ;     0x3
+ 0x11062  0x1482: 0800    ;     0x8
+ 0x11064  0x1484: 1c00    ;    0x1c  28
+
+ 0x11066  0x1486: 5b06    ;   0x65b  WS57C256F-35 WSI
+ 0x11066  0x1486: 5b06    ;   0x65b
+ 0x11068  0x1488: 0080    ;  0x8000
+ 0x1106a  0x148a: 0000    ;     0x0
+ 0x1106c  0x148c: 0300    ;     0x3
+ 0x1106e  0x148e: 0800    ;     0x8
+ 0x11070  0x1490: 1c00    ;    0x1c  28
+
+ 0x11072  0x1492: 6806    ;   0x668  WS27C256L WSI
+ 0x11072  0x1492: 6806    ;   0x668
+ 0x11074  0x1494: 0080    ;  0x8000
+ 0x11076  0x1496: 0000    ;     0x0
+ 0x11078  0x1498: 0400    ;     0x4
+ 0x1107a  0x149a: 0800    ;     0x8
+ 0x1107c  0x149c: 1c00    ;    0x1c  28
+
+ 0x1107e  0x149e: 7206    ;   0x672  WS27C256F WSI
+ 0x1107e  0x149e: 7206    ;   0x672
+ 0x11080  0x14a0: 0100    ;     0x1
+ 0x11082  0x14a2: 0500    ;     0x5
+ 0x11084  0x14a4: 0300    ;     0x3
+ 0x11086  0x14a6: 0800    ;     0x8
+ 0x11088  0x14a8: 1c00    ;    0x1c  28
+
+ 0x1108a  0x14aa: 7c06    ;   0x67c  WS27C512F WSI
+ 0x1108a  0x14aa: 7c06    ;   0x67c
+ 0x1108c  0x14ac: 0000    ;     0x0
+ 0x1108e  0x14ae: 0100    ;     0x1
+ 0x11090  0x14b0: 0300    ;     0x3
+ 0x11092  0x14b2: 0800    ;     0x8
+ 0x11094  0x14b4: 1c00    ;    0x1c  28
+
+ 0x11096  0x14b6: 0000    ;     0x0  ---
+ 0x11096  0x14b6: 0000    ;     0x0
+ 0x11098  0x14b8: 0000    ;     0x0
+ 0x1109a  0x14ba: 0000    ;     0x0
+ 0x1109c  0x14bc: 0000    ;     0x0
+ 0x1109e  0x14be: 0000    ;     0x0
+ 0x110a0  0x14c0: 0000    ;     0x0  ---
+
+ 0x110a2  0x14c2: 8606    ;   0x686  VT27C64 VLSI
+ 0x110a2  0x14c2: 8606    ;   0x686
+ 0x110a4  0x14c4: 0020    ;  0x2000
+ 0x110a6  0x14c6: 0000    ;     0x0
+ 0x110a8  0x14c8: 0300    ;     0x3
+ 0x110aa  0x14ca: 0100    ;     0x1
+ 0x110ac  0x14cc: 1c00    ;    0x1c  28
+
+ 0x110ae  0x14ce: 8e06    ;   0x68e  VT27C128 VLSI
+ 0x110ae  0x14ce: 8e06    ;   0x68e
+ 0x110b0  0x14d0: 0040    ;  0x4000
+ 0x110b2  0x14d2: 0000    ;     0x0
+ 0x110b4  0x14d4: 0300    ;     0x3
+ 0x110b6  0x14d6: 0100    ;     0x1
+ 0x110b8  0x14d8: 1c00    ;    0x1c  28
+
+ 0x110ba  0x14da: 9706    ;   0x697  VT27C256 VLSI
+ 0x110ba  0x14da: 9706    ;   0x697
+ 0x110bc  0x14dc: 0080    ;  0x8000
+ 0x110be  0x14de: 0000    ;     0x0
+ 0x110c0  0x14e0: 0300    ;     0x3
+ 0x110c2  0x14e2: 0100    ;     0x1
+ 0x110c4  0x14e4: 1c00    ;    0x1c  28
+
+ 0x110c6  0x14e6: a006    ;   0x6a0  VT27C512 VLSI
+ 0x110c6  0x14e6: a006    ;   0x6a0
+ 0x110c8  0x14e8: 0000    ;     0x0
+ 0x110ca  0x14ea: 0100    ;     0x1
+ 0x110cc  0x14ec: 0300    ;     0x3
+ 0x110ce  0x14ee: 0100    ;     0x1
+ 0x110d0  0x14f0: 1c00    ;    0x1c  28
+
+ 0x110d2  0x14f2: 0000    ;     0x0  ---
+ 0x110d2  0x14f2: 0000    ;     0x0
+ 0x110d4  0x14f4: 0000    ;     0x0
+ 0x110d6  0x14f6: 0000    ;     0x0
+ 0x110d8  0x14f8: 0000    ;     0x0
+ 0x110da  0x14fa: 0000    ;     0x0
+ 0x110dc  0x14fc: 0000    ;     0x0  ---
+
+ 0x110de  0x14fe: a906    ;   0x6a9  DQ2764 SEEQ
+ 0x110de  0x14fe: a906    ;   0x6a9
+ 0x110e0  0x1500: 0020    ;  0x2000
+ 0x110e2  0x1502: 0000    ;     0x0
+ 0x110e4  0x1504: 0200    ;     0x2
+ 0x110e6  0x1506: 0100    ;     0x1
+ 0x110e8  0x1508: 1c00    ;    0x1c  28
+
+ 0x110ea  0x150a: b006    ;   0x6b0  DQ27128 SEEQ
+ 0x110ea  0x150a: b006    ;   0x6b0
+ 0x110ec  0x150c: 0040    ;  0x4000
+ 0x110ee  0x150e: 0000    ;     0x0
+ 0x110f0  0x1510: 0200    ;     0x2
+ 0x110f2  0x1512: 0100    ;     0x1
+ 0x110f4  0x1514: 1c00    ;    0x1c  28
+
+ 0x110f6  0x1516: b806    ;   0x6b8  DQ27C256 SEEQ
+ 0x110f6  0x1516: b806    ;   0x6b8
+ 0x110f8  0x1518: 0080    ;  0x8000
+ 0x110fa  0x151a: 0000    ;     0x0
+ 0x110fc  0x151c: 0300    ;     0x3
+ 0x110fe  0x151e: 0100    ;     0x1
+ 0x11100  0x1520: 1c00    ;    0x1c  28
+
+ 0x11102  0x1522: 0000    ;     0x0  ---
+ 0x11102  0x1522: 0000    ;     0x0
+ 0x11104  0x1524: 0000    ;     0x0
+ 0x11106  0x1526: 0000    ;     0x0
+ 0x11108  0x1528: 0000    ;     0x0
+ 0x1110a  0x152a: 0000    ;     0x0
+ 0x1110c  0x152c: 0000    ;     0x0  ---
+
+ 0x1110e  0x152e: c106    ;   0x6c1  MX27C256 MXIC
+ 0x1110e  0x152e: c106    ;   0x6c1
+ 0x11110  0x1530: 0080    ;  0x8000
+ 0x11112  0x1532: 0000    ;     0x0
+ 0x11114  0x1534: 0300    ;     0x3
+ 0x11116  0x1536: 0200    ;     0x2
+ 0x11118  0x1538: 1c00    ;    0x1c  28
+
+ 0x1111a  0x153a: ca06    ;   0x6ca  MX27C512 MXIC
+ 0x1111a  0x153a: ca06    ;   0x6ca
+ 0x1111c  0x153c: 0000    ;     0x0
+ 0x1111e  0x153e: 0100    ;     0x1
+ 0x11120  0x1540: 0300    ;     0x3
+ 0x11122  0x1542: 0200    ;     0x2
+ 0x11124  0x1544: 1c00    ;    0x1c  28
+
+ 0x11126  0x1546: 0000    ;     0x0  ---
+ 0x11126  0x1546: 0000    ;     0x0
+ 0x11128  0x1548: 0000    ;     0x0
+ 0x1112a  0x154a: 0000    ;     0x0
+ 0x1112c  0x154c: 0000    ;     0x0
+ 0x1112e  0x154e: 0000    ;     0x0
+ 0x11130  0x1550: 0000    ;     0x0  ---
 
 ; =============================
 ; big table indexed by chip type.  "Chip_table"

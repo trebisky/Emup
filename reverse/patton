@@ -40,7 +40,7 @@ type_count = [
     5, 7, 1, 2, 9, 
     11, 7, 3, 4, 3, 
     8, 13, 7, 10, 4, 
-    3, 2 ]
+    3, 2, 9999 ]
 
 man_list = mans.split(",")
 n_man = len ( man_list )
@@ -80,13 +80,13 @@ for l in data :
             skip = False
         else :
             extra = type_list[t_index] + " " + man_list[man_index]
+            t_index += 1
             man_count += 1
         if man_count >= type_count[man_index] :
             man_count = 0
             man_index += 1
             skip = True
         ll = l + "  " + extra
-        t_index += 1
         print ( ll )
     if index == 5 :
         ww = l.split()
