@@ -1,0 +1,48 @@
+#!/bin/python
+
+# Tom Trebisky  11-16-2026
+
+# Generate a chart of pin mappings for
+# 24 and 28 pin EPROM chips
+
+# Here are the pin names for an AMD 27C64
+rnames28 = "Vpp,A12,A7,A6,A5,A4,A3,A2,A1,A0," \
+    "D0,D1,D2,GND,D3,D4,D5,D6,D7," \
+    "CE*,A10,OE*,A11,A9,A8,NC,PGM*,Vcc"
+
+# Here they are for the 2716
+rnames24 = "A7,A6,A5,A4,A3,A2,A1,A0," \
+    "D0,D1,D2,GND,D3,D4,D5,D6,D7," \
+    "CE*,A10,OE*,A11,A9,A8,Vcc"
+
+names28 = rnames28.split(",")
+names24 = rnames24.split(",")
+
+def xhex ( val ) :
+    return hex(val)[2:].zfill(2)
+
+def make ( names ) :
+    npins = len(names)
+    dif = (40-npins) // 2
+
+    pin = 1
+    for n in names :
+        xpin = pin + dif        # pin on 40 pin socket
+        reg = (xpin-1) // 8     # TTL reg number
+        bit = (xpin-1) % 8      # pin in TTL reg
+        shadow = hex ( 0x3b42 + reg )   # shadown reg
+        mask = 1<<bit
+        imask = (~mask) & 0xff
+        smask = xhex(mask)      # mask to set bit
+        simask = xhex(imask)    # mask to clear bit
+        stt = xhex ( 0xe0 + reg )   # TTL reg address
+        svop = xhex ( 0xe8 + reg )  # VOP reg address
+
+        #print ( pin, " ", n, " ", xpin, "TTL-", reg, " ", bit, " ", hex(mask), " ", hex(imask) )
+        print ( f"{pin:2}  {n:4} {xpin:3}  TTL-{reg}  {shadow}  {stt} ({svop})  {bit:2}  {smask}  {simask}" )
+        pin += 1
+
+#make ( names24 )
+make ( names28 )
+
+# THE END
