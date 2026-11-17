@@ -1,0 +1,55 @@
+
+ 
+ 1  A7     9  TTL-1  0x3b43 (0x33d2) e1 (e9)   0  01  fe
+ 2  A6    10  TTL-1  0x3b43 (0x33d2) e1 (e9)   1  02  fd
+ 3  A5    11  TTL-1  0x3b43 (0x33d2) e1 (e9)   2  04  fb
+ 4  A4    12  TTL-1  0x3b43 (0x33d2) e1 (e9)   3  08  f7
+ 5  A3    13  TTL-1  0x3b43 (0x33d2) e1 (e9)   4  10  ef
+ 6  A2    14  TTL-1  0x3b43 (0x33d2) e1 (e9)   5  20  df
+ 7  A1    15  TTL-1  0x3b43 (0x33d2) e1 (e9)   6  40  bf
+ 8  A0    16  TTL-1  0x3b43 (0x33d2) e1 (e9)   7  80  7f
+ 9  D0    17  TTL-2  0x3b44 (0x33d3) e2 (ea)   0  01  fe
+10  D1    18  TTL-2  0x3b44 (0x33d3) e2 (ea)   1  02  fd
+11  D2    19  TTL-2  0x3b44 (0x33d3) e2 (ea)   2  04  fb
+12  GND   20  TTL-2  0x3b44 (0x33d3) e2 (ea)   3  08  f7
+13  D3    21  TTL-2  0x3b44 (0x33d3) e2 (ea)   4  10  ef
+14  D4    22  TTL-2  0x3b44 (0x33d3) e2 (ea)   5  20  df
+15  D5    23  TTL-2  0x3b44 (0x33d3) e2 (ea)   6  40  bf
+16  D6    24  TTL-2  0x3b44 (0x33d3) e2 (ea)   7  80  7f
+17  D7    25  TTL-3  0x3b45 (0x33d4) e3 (eb)   0  01  fe
+18  CE*   26  TTL-3  0x3b45 (0x33d4) e3 (eb)   1  02  fd
+19  A10   27  TTL-3  0x3b45 (0x33d4) e3 (eb)   2  04  fb
+20  OE*   28  TTL-3  0x3b45 (0x33d4) e3 (eb)   3  08  f7
+21  A11   29  TTL-3  0x3b45 (0x33d4) e3 (eb)   4  10  ef
+22  A9    30  TTL-3  0x3b45 (0x33d4) e3 (eb)   5  20  df
+23  A8    31  TTL-3  0x3b45 (0x33d4) e3 (eb)   6  40  bf
+24  Vcc   32  TTL-3  0x3b45 (0x33d4) e3 (eb)   7  80  7f
+
+ 1  Vpp    7  TTL-0  0x3b42 (0x33d1) e0 (e8)   6  40  bf
+ 2  A12    8  TTL-0  0x3b42 (0x33d1) e0 (e8)   7  80  7f
+ 3  A7     9  TTL-1  0x3b43 (0x33d2) e1 (e9)   0  01  fe
+ 4  A6    10  TTL-1  0x3b43 (0x33d2) e1 (e9)   1  02  fd
+ 5  A5    11  TTL-1  0x3b43 (0x33d2) e1 (e9)   2  04  fb
+ 6  A4    12  TTL-1  0x3b43 (0x33d2) e1 (e9)   3  08  f7
+ 7  A3    13  TTL-1  0x3b43 (0x33d2) e1 (e9)   4  10  ef
+ 8  A2    14  TTL-1  0x3b43 (0x33d2) e1 (e9)   5  20  df
+ 9  A1    15  TTL-1  0x3b43 (0x33d2) e1 (e9)   6  40  bf
+10  A0    16  TTL-1  0x3b43 (0x33d2) e1 (e9)   7  80  7f
+11  D0    17  TTL-2  0x3b44 (0x33d3) e2 (ea)   0  01  fe
+12  D1    18  TTL-2  0x3b44 (0x33d3) e2 (ea)   1  02  fd
+13  D2    19  TTL-2  0x3b44 (0x33d3) e2 (ea)   2  04  fb
+14  GND   20  TTL-2  0x3b44 (0x33d3) e2 (ea)   3  08  f7
+15  D3    21  TTL-2  0x3b44 (0x33d3) e2 (ea)   4  10  ef
+16  D4    22  TTL-2  0x3b44 (0x33d3) e2 (ea)   5  20  df
+17  D5    23  TTL-2  0x3b44 (0x33d3) e2 (ea)   6  40  bf
+18  D6    24  TTL-2  0x3b44 (0x33d3) e2 (ea)   7  80  7f
+19  D7    25  TTL-3  0x3b45 (0x33d4) e3 (eb)   0  01  fe
+20  CE*   26  TTL-3  0x3b45 (0x33d4) e3 (eb)   1  02  fd
+21  A10   27  TTL-3  0x3b45 (0x33d4) e3 (eb)   2  04  fb
+22  OE*   28  TTL-3  0x3b45 (0x33d4) e3 (eb)   3  08  f7
+23  A11   29  TTL-3  0x3b45 (0x33d4) e3 (eb)   4  10  ef
+24  A9    30  TTL-3  0x3b45 (0x33d4) e3 (eb)   5  20  df
+25  A8    31  TTL-3  0x3b45 (0x33d4) e3 (eb)   6  40  bf
+26  NC    32  TTL-3  0x3b45 (0x33d4) e3 (eb)   7  80  7f
+27  PGM*  33  TTL-4  0x3b46 (0x33d5) e4 (ec)   0  01  fe
+28  Vcc   34  TTL-4  0x3b46 (0x33d5) e4 (ec)   1  02  fd

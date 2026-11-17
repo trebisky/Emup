@@ -30,7 +30,8 @@ def make ( names ) :
         xpin = pin + dif        # pin on 40 pin socket
         reg = (xpin-1) // 8     # TTL reg number
         bit = (xpin-1) % 8      # pin in TTL reg
-        shadow = hex ( 0x3b42 + reg )   # shadown reg
+        shadow = hex ( 0x3b42 + reg )   # shadow reg for VCC
+        vshadow = hex ( 0x33d1 + reg )   # shadow reg for VOP
         mask = 1<<bit
         imask = (~mask) & 0xff
         smask = xhex(mask)      # mask to set bit
@@ -39,10 +40,12 @@ def make ( names ) :
         svop = xhex ( 0xe8 + reg )  # VOP reg address
 
         #print ( pin, " ", n, " ", xpin, "TTL-", reg, " ", bit, " ", hex(mask), " ", hex(imask) )
-        print ( f"{pin:2}  {n:4} {xpin:3}  TTL-{reg}  {shadow}  {stt} ({svop})  {bit:2}  {smask}  {simask}" )
+        print ( f"{pin:2}  {n:4} {xpin:3}  TTL-{reg}  {shadow} ({vshadow}) {stt} ({svop})  {bit:2}  {smask}  {simask}" )
         pin += 1
 
-#make ( names24 )
+make ( names24 )
+print ( "" )
+print ( "" )
 make ( names28 )
 
 # THE END
